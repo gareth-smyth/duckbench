@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+/* eslint-disable */
+require('../services/LoggerService');
+const fs = require('fs');
+const yargs = require('yargs');
+
+const Configurator = require('../configurator/Configurator');
+const Communicator = require('../builder/Communicator');
+const DuckbenchBuilder = require('../builder/DuckbenchBuilder');
+const WinUAEEnvironment = require('../builder/WinUAEEnvironment');
+
+yargs.command({
+    command: 'build-workbench',
+    aliases: ['build'],
+    desc: 'Build a workbench in WinUAE based on the provided duckbench file',
+    builder: (yargs) => {
+        yargs.option('duckbench-file', {
+            alias: 'db',
+            description: 'The ".db" file describing the Workbench install.',
+            type: 'string',
+        }).option('logLevel', {
+            alias: 'l',
+            description: 'Log level for the execution',
+            choices: ['all', 'trace', 'debug', 'info', 'warn', 'error', 'fatal', 'none'],
+            default: 'info',
+        })
+            .demandOption('duckbench-file');
+    },
+    handler: async (args) => {
+        Logger.setLevel(args.logLevel);
+        const duckbenchBuilder = new DuckbenchBuilder();
+        await duckbenchBuilder.build(JSON.parse(fs.readFileSync(args.db)), WinUAEEnvironment, Communicator);
+    },
+}).command({
+    command: '*',
+    desc: 'Start up the duckbench configurator',
+    handler: () => {
+        const configurator = new Configurator();
+        configurator.start();
+    }
+})
+    .help()
+    .alias('help', 'h')
+    .strict()
+    .argv;
+

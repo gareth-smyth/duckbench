@@ -1,0 +1,31 @@
+--- ./install_original	2020-01-25 16:34:52.050000000 +0000
++++ ./install_fixed	2020-01-26 12:42:41.125955300 +0000
+@@ -3,6 +3,10 @@
+
+ (complete 0)
+
++; ADDED BY DUCKBENCH
++(set TRUE 1)
++(set FALSE 0)
++
+ ;=============================================================================
+ ; English strings
+
+@@ -3438,7 +3442,7 @@
+ ;=============================================================================
+ ; say hi!
+
+-(user 0)
++; REMOVED BY DUCKBENCH (user 0)
+ (welcome)
+ (set old_level @user-level)
+
+@@ -3613,7 +3617,7 @@
+
+ (if (exists cli-startup)
+ (
+-    (set oldfiles (cat oldfiles s/cli-startup "         \n"))   ; these are hard spaces
++    (set oldfiles (cat oldfiles cli-startup "         \n"))   ; these are hard spaces - FIXED BY DUCKBENCH
+ ))
+
+ (if (exists cd0)

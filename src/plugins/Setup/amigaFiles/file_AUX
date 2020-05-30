@@ -1,0 +1,4 @@
+/* Serial port hadnler mount */
+Handler=L:Aux-Handler
+StackSize=1000
+Priority=5

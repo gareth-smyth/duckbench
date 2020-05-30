@@ -1,0 +1,99 @@
+{
+  "name": "duckbench",
+  "version": "0.0.1-alpha",
+  "description": "A set of tools to help setup Amiga OS on real hardware or in an emulator.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint ./src ./test"
+  },
+  "bin": {
+    "convertrom": "src/tools/convertrom",
+    "duckbench": "src/tools/duckbench"
+  },
+  "keywords": [
+    "Amiga",
+    "Workbench",
+    "ROM",
+    "HDF",
+    "ADF"
+  ],
+  "author": "Gareth Smyth",
+  "license": "ISC",
+  "dependencies": {
+    "md5-file": "4.0.0",
+    "moment": "2.24.0",
+    "request": "2.88.2",
+    "request-promise": "4.2.5",
+    "simple-node-logger": "18.12.24",
+    "yargs": "^15.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-google": "^0.14.0",
+    "jest": "25.1.0",
+    "jest-when": "2.7.1"
+  },
+  "jest": {
+    "setupFiles": [
+      "./src/services/LoggerService.js"
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/configurator/**/*"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 0
+      }
+    }
+  },
+  "eslintConfig": {
+    "env": {
+      "commonjs": true,
+      "es6": true,
+      "node": true,
+      "jest": true
+    },
+    "extends": "google",
+    "globals": {
+      "Atomics": "readonly",
+      "SharedArrayBuffer": "readonly",
+      "Logger": "readonly"
+    },
+    "ignorePatterns": [
+      "configurator"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2018
+    },
+    "rules": {
+      "indent": [
+        "error",
+        4
+      ],
+      "linebreak-style": "off",
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ],
+      "require-jsdoc": "off",
+      "space-infix-ops": "error",
+      "max-len": [
+        "error",
+        120,
+        {
+          "ignoreTemplateLiterals": true
+        }
+      ]
+    }
+  }
+}

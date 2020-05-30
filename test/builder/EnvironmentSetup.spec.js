@@ -1,0 +1,125 @@
+const {when} = require('jest-when');
+const fs = require('fs');
+const path = require('path');
+
+const EnvironmentSetup = require('../../src/builder/EnvironmentSetup');
+
+jest.mock('fs');
+
+let RealDate;
+
+beforeEach(() => {
+    fs.existsSync.mockReset();
+    fs.mkdirSync.mockReset();
+    fs.copyFileSync.mockReset();
+    fs.chmodSync.mockReset();
+    RealDate = Date;
+});
+
+afterEach(() => {
+    global.Date = RealDate;
+});
+
+it('creates the execution root folder and execution folder if it does not exist', () => {
+    when(fs.existsSync).expectCalledWith('execution').mockReturnValueOnce(false);
+
+    global.Date = jest.fn(() => new RealDate('2020-04-01T17:29:30.235Z'));
+
+    new EnvironmentSetup({});
+
+    expect(fs.mkdirSync).toHaveBeenCalledTimes(2);
+    expect(fs.mkdirSync).toHaveBeenCalledWith('execution');
+    expect(fs.mkdirSync).toHaveBeenCalledWith(path.join('execution', '20200401172930235'));
+});
+
+it('deletes the execution folder when destory is called.', () => {
+    when(fs.existsSync).expectCalledWith('execution').mockReturnValueOnce(false);
+
+    global.Date = jest.fn(() => new RealDate('2020-04-01T17:29:30.235Z'));
+
+    const environmentSetup = new EnvironmentSetup({});
+    environmentSetup.destroy();
+
+    expect(fs.rmdirSync).toHaveBeenCalledTimes(1);
+    expect(fs.rmdirSync).toHaveBeenCalledWith(path.join('execution', '20200401172930235'), {recursive: true});
+});
+
+it('creates only the execution folder if the root folder exists', () => {
+    when(fs.existsSync).expectCalledWith('execution').mockReturnValueOnce(true);
+
+    global.Date = jest.fn(() => new RealDate('2020-04-01T18:29:30.235Z'));
+
+    new EnvironmentSetup({});
+
+    expect(fs.mkdirSync).toHaveBeenCalledTimes(1);
+    expect(fs.mkdirSync).toHaveBeenCalledWith(path.join('execution', '20200401182930235'));
+});
+
+it('sets the rom', () => {
+    const environmentSetup = new EnvironmentSetup({});
+    environmentSetup.setRom('somerom');
+    expect(environmentSetup.rom).toEqual('somerom');
+});
+
+it('sets the cpu', () => {
+    const environmentSetup = new EnvironmentSetup({});
+    environmentSetup.setCPU('68060');
+    expect(environmentSetup.cpu).toEqual('68060');
+});
+
+it('sets the chip ram', () => {
+    const environmentSetup = new EnvironmentSetup({});
+    environmentSetup.setChipMem('1MB');
+    expect(environmentSetup.chipMem).toEqual('1MB');
+});
+
+it('adds HDFs', () => {
+    const environmentSetup = new EnvironmentSetup({});
+    environmentSetup.attachHDF('dh0:', '/home/drive1');
+    environmentSetup.attachHDF('dh3:', '/home/drive2');
+    expect(environmentSetup.disks.HDF[0]).toEqual({drive: 'dh0:', location: '/home/drive1'});
+    expect(environmentSetup.disks.HDF[1]).toEqual({drive: 'dh3:', location: '/home/drive2'});
+});
+
+it('maps folders to drives', () => {
+    const environmentSetup = new EnvironmentSetup({});
+    environmentSetup.mapFolderToDrive('dh0:', '/home/drive1', 'driveA');
+    environmentSetup.mapFolderToDrive('dh3:', '/home/drive2', 'driveB');
+    expect(environmentSetup.disks.MAPPED_DRIVE[0]).toEqual({drive: 'dh0:', location: '/home/drive1', name: 'driveA'});
+    expect(environmentSetup.disks.MAPPED_DRIVE[1]).toEqual({drive: 'dh3:', location: '/home/drive2', name: 'driveB'});
+});
+
+it('inserts amiga and non-amiga os ADFs', () => {
+    global.Date = jest.fn(() => new RealDate('2020-04-01T20:29:30.235Z'));
+    const environmentSetup = new EnvironmentSetup({osFolder: '/home/osdisks/'});
+
+    environmentSetup.insertDisk('df0:', {location: '/home/disk1.adf'});
+    environmentSetup.insertDisk('df1:', {type: 'amigaos', name: 'amiga-os-310-workbench.adf'});
+    environmentSetup.insertDisk('df5:', {location: '/home/disk2.adf'});
+    expect(environmentSetup.disks.ADF[0]).toEqual({drive: 'df0:', location: '/home/disk1.adf'});
+    const wbDiskLocation = path.join('execution', '20200401202930235', 'df1.adf');
+    expect(environmentSetup.disks.ADF[1]).toEqual({drive: 'df1:', location: wbDiskLocation});
+    expect(environmentSetup.disks.ADF[2]).toEqual({drive: 'df5:', location: '/home/disk2.adf'});
+});
+
+it('sets disk permissions for non amiga os disks', () => {
+    global.Date = jest.fn(() => new RealDate('2020-04-01T20:29:30.235Z'));
+    const environmentSetup = new EnvironmentSetup({osFolder: '/home/osdisks/'});
+
+    environmentSetup.insertDisk('df0:', {location: '/home/disk1.adf'});
+    expect(fs.chmodSync).toHaveBeenCalledTimes(1);
+    expect(fs.chmodSync).toHaveBeenCalledWith('/home/disk1.adf', 0o0666);
+});
+
+it('copies os disks and sets permissions', () => {
+    global.Date = jest.fn(() => new RealDate('2020-04-01T20:29:30.235Z'));
+    const environmentSetup = new EnvironmentSetup({osFolder: '/home/osdisks/'});
+    const wbDiskLocation = path.join('execution', '20200401202930235', 'df1.adf');
+
+    environmentSetup.insertDisk('df1:', {type: 'amigaos', name: 'amiga-os-310-workbench.adf'});
+    expect(fs.copyFileSync).toHaveBeenCalledTimes(1);
+    expect(fs.copyFileSync)
+        .toHaveBeenCalledWith(path.join('/home/osdisks/', 'amiga-os-310-workbench.adf'), wbDiskLocation);
+    expect(fs.chmodSync).toHaveBeenCalledTimes(1);
+    expect(fs.chmodSync).toHaveBeenCalledWith(wbDiskLocation, 0o0666);
+});

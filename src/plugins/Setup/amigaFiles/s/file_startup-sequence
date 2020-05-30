@@ -1,0 +1,15 @@
+DF1:c/assign C: DF1:c/
+
+makedir RAM:ENV
+assign ENV: RAM:ENV
+
+assign DEVS: DF1:devs/
+assign LIBS: DF1:libs/
+assign L: DF1:L/
+assign S: DF1:S/
+assign T: DF0:T/
+
+path >NIL: DF1:System
+
+mount AUX from DF0:AUX
+newshell AUX:

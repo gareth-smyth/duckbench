@@ -1,0 +1,82 @@
+#!/usr/bin/env node
+/* eslint-disable */
+require('../services/LoggerService');
+const RomConversionService = require('../services/RomConversionService');
+const yargs = require('yargs');
+
+yargs.command({
+    command: 'real-to-emulated',
+    aliases: ['r2e'],
+    desc: 'Convert a real ROM (or roms) taken from a physical Amiga to a format that can be used in an emulator',
+    builder: (yargs) => {
+        yargs.option('force', {
+            alias: 'f',
+            description: 'Overwrite existing output files without asking.',
+            type: 'boolean',
+        }).option('output-size', {
+            description: 'Number of kilobytes for the output ROM. If multiple inputs are used it will take equally from each. If the input(s) are too small the data will be repeated.',
+            choices: ['64kb', '128kb', '256kb', '512kb', '1mb', '2mb'],
+        }).option('input', {
+            alias: 'i',
+            description: 'List of input ROMS. A1200 uses two physical ROMs. The first file should be the HIGH bytes, the second the LOW bytes.  There should be either one or two files. All files must be the same length.',
+            type: 'array',
+        }).option('output', {
+            alias: 'o',
+            description: 'Filename for the converted ROM.',
+            type: 'string',
+        }).option('logLevel', {
+            alias: 'l',
+            description: 'Log level  for the execution',
+            choices: ['all', 'trace', 'debug', 'info', 'warn', 'error', 'fatal', 'none'],
+            default: 'error',
+        })
+            .demandOption('i')
+            .demandOption('o')
+            .demandOption('output-size');
+    },
+    handler: (args) => {
+        Logger.setLevel(args.logLevel);
+        RomConversionService.realToEmulator(args.input, args.output, args.force, args.outputSize, 262144)
+    }
+}).command({
+    command: 'emulated-to-real',
+    aliases: ['e2r'],
+    desc: 'Convert a ROM supplied with Amiga Forever to a format that can be used in a real Amiga',
+    builder: (yargs) => {
+        yargs.option('force', {
+            alias: 'f',
+            description: 'Overwrite existing output files without asking.',
+            type: 'boolean',
+        }).option('output-size', {
+            description: 'Number of kilobytes for EACH output ROM. If multiple outputs are used it will give equally to each. If the input is too small the data will be repeated.',
+            choices: ['64kb', '128kb', '256kb', '512kb', '1mb', '2mb'],
+        }).option('split', {
+            description: 'Split the output in two.',
+            type: 'boolean',
+        }).option('input', {
+            alias: 'i',
+            description: 'Input ROM.',
+            type: 'string',
+        }).option('output', {
+            alias: 'o',
+            description: 'Base filename for the output ROM. If --split is also set the files will have "_HI_A" and "_LO_B" appended before the final ".".',
+            type: 'string',
+        }).option('logLevel', {
+            alias: 'l',
+            description: 'Log level  for the execution',
+            choices: ['all', 'trace', 'debug', 'info', 'warn', 'error', 'fatal', 'none'],
+            default: 'error',
+        })
+            .demandOption('i')
+            .demandOption('o');
+    },
+    handler: (args) => {
+        Logger.setLevel(args.logLevel);
+        RomConversionService.emulatorToReal(args.input, args.output, args.force, args.outputSize, args.split, 262144)
+    }
+})
+    .demandCommand()
+    .help()
+    .alias('help', 'h')
+    .strict()
+    .argv;
