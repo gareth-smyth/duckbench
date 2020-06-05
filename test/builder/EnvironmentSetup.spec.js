@@ -21,19 +21,19 @@ afterEach(() => {
 });
 
 it('creates the execution root folder and execution folder if it does not exist', () => {
-    when(fs.existsSync).expectCalledWith('execution').mockReturnValueOnce(false);
+    when(fs.existsSync).expectCalledWith(path.join(global.BASE_DIR, 'execution')).mockReturnValueOnce(false);
 
     global.Date = jest.fn(() => new RealDate('2020-04-01T17:29:30.235Z'));
 
     new EnvironmentSetup({});
 
     expect(fs.mkdirSync).toHaveBeenCalledTimes(2);
-    expect(fs.mkdirSync).toHaveBeenCalledWith('execution');
-    expect(fs.mkdirSync).toHaveBeenCalledWith(path.join('execution', '20200401172930235'));
+    expect(fs.mkdirSync).toHaveBeenCalledWith(path.join(global.BASE_DIR, 'execution'));
+    expect(fs.mkdirSync).toHaveBeenCalledWith(path.join(global.BASE_DIR, 'execution', '20200401172930235'));
 });
 
 it('deletes the execution folder when destory is called.', () => {
-    when(fs.existsSync).expectCalledWith('execution').mockReturnValueOnce(false);
+    when(fs.existsSync).expectCalledWith(path.join(global.BASE_DIR, 'execution')).mockReturnValueOnce(false);
 
     global.Date = jest.fn(() => new RealDate('2020-04-01T17:29:30.235Z'));
 
@@ -41,18 +41,19 @@ it('deletes the execution folder when destory is called.', () => {
     environmentSetup.destroy();
 
     expect(fs.rmdirSync).toHaveBeenCalledTimes(1);
-    expect(fs.rmdirSync).toHaveBeenCalledWith(path.join('execution', '20200401172930235'), {recursive: true});
+    const executionFolder = path.join(global.BASE_DIR, 'execution', '20200401172930235');
+    expect(fs.rmdirSync).toHaveBeenCalledWith(executionFolder, {recursive: true});
 });
 
 it('creates only the execution folder if the root folder exists', () => {
-    when(fs.existsSync).expectCalledWith('execution').mockReturnValueOnce(true);
+    when(fs.existsSync).expectCalledWith(path.join(global.BASE_DIR, 'execution')).mockReturnValueOnce(true);
 
     global.Date = jest.fn(() => new RealDate('2020-04-01T18:29:30.235Z'));
 
     new EnvironmentSetup({});
 
     expect(fs.mkdirSync).toHaveBeenCalledTimes(1);
-    expect(fs.mkdirSync).toHaveBeenCalledWith(path.join('execution', '20200401182930235'));
+    expect(fs.mkdirSync).toHaveBeenCalledWith(path.join(global.BASE_DIR, 'execution', '20200401182930235'));
 });
 
 it('sets the rom', () => {
@@ -97,7 +98,7 @@ it('inserts amiga and non-amiga os ADFs', () => {
     environmentSetup.insertDisk('df1:', {type: 'amigaos', name: 'amiga-os-310-workbench.adf'});
     environmentSetup.insertDisk('df5:', {location: '/home/disk2.adf'});
     expect(environmentSetup.disks.ADF[0]).toEqual({drive: 'df0:', location: '/home/disk1.adf'});
-    const wbDiskLocation = path.join('execution', '20200401202930235', 'df1.adf');
+    const wbDiskLocation = path.join(global.BASE_DIR, 'execution', '20200401202930235', 'df1.adf');
     expect(environmentSetup.disks.ADF[1]).toEqual({drive: 'df1:', location: wbDiskLocation});
     expect(environmentSetup.disks.ADF[2]).toEqual({drive: 'df5:', location: '/home/disk2.adf'});
 });
@@ -114,12 +115,12 @@ it('sets disk permissions for non amiga os disks', () => {
 it('copies os disks and sets permissions', () => {
     global.Date = jest.fn(() => new RealDate('2020-04-01T20:29:30.235Z'));
     const environmentSetup = new EnvironmentSetup({osFolder: '/home/osdisks/'});
-    const wbDiskLocation = path.join('execution', '20200401202930235', 'df1.adf');
+    const wbSourceLocation = path.join('/home/osdisks/', 'amiga-os-310-workbench.adf');
+    const wbDestLocation = path.join(global.BASE_DIR, 'execution', '20200401202930235', 'df1.adf');
 
     environmentSetup.insertDisk('df1:', {type: 'amigaos', name: 'amiga-os-310-workbench.adf'});
     expect(fs.copyFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.copyFileSync)
-        .toHaveBeenCalledWith(path.join('/home/osdisks/', 'amiga-os-310-workbench.adf'), wbDiskLocation);
+    expect(fs.copyFileSync).toHaveBeenCalledWith(wbSourceLocation, wbDestLocation);
     expect(fs.chmodSync).toHaveBeenCalledTimes(1);
-    expect(fs.chmodSync).toHaveBeenCalledWith(wbDiskLocation, 0o0666);
+    expect(fs.chmodSync).toHaveBeenCalledWith(wbDestLocation, 0o0666);
 });

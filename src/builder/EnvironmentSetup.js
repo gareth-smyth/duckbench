@@ -7,10 +7,10 @@ class EnvironmentSetup {
         this.disks = {};
 
         const executionNumber = (new Date()).toISOString().replace(/[^0-9]/g, '');
-        this.executionFolder = path.join('execution', executionNumber);
+        this.executionFolder = path.join(global.BASE_DIR, 'execution', executionNumber);
 
-        if (!fs.existsSync(path.join('./', 'execution'))) {
-            fs.mkdirSync(path.join('./', 'execution'));
+        if (!fs.existsSync(path.join(global.BASE_DIR, 'execution'))) {
+            fs.mkdirSync(path.join(global.BASE_DIR, 'execution'));
         }
 
         fs.mkdirSync(this.executionFolder);
