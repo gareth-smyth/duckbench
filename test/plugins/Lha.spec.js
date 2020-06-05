@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const request = require('request-promise');
 
 const Lha = require('../../src/plugins/Lha');
@@ -61,7 +62,7 @@ it('downloads the lha.run file when it does not exist', async () => {
     await lha.prepare();
 
     expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.writeFileSync).toHaveBeenCalledWith('./external_tools/lha.run', 'myfile');
+    expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(global.TOOLS_DIR, 'lha.run'), 'myfile');
     expect(request).toHaveBeenCalledTimes(1);
     const expectedUri = 'http://aminet.net/util/arc/lha.run';
     expect(request).toHaveBeenCalledWith({encoding: null, resolveWithFullResponse: true, uri: expectedUri});

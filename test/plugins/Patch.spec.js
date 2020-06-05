@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const request = require('request-promise');
 
 const Patch = require('../../src/plugins/Patch');
@@ -90,7 +91,7 @@ it('downloads the patch file when it does not exist', async () => {
     await patch.prepare();
 
     expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.writeFileSync).toHaveBeenCalledWith('./external_tools/patch-2.1.lha', 'myfile');
+    expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(global.TOOLS_DIR, 'patch-2.1.lha'), 'myfile');
     expect(request).toHaveBeenCalledTimes(1);
     const expectedUri = 'http://aminet.net/dev/misc/patch-2.1.lha';
     expect(request).toHaveBeenCalledWith({encoding: null, resolveWithFullResponse: true, uri: expectedUri});

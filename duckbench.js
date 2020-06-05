@@ -1,4 +1,6 @@
+require('./src/services/BaseDirService');
 require('./src/services/LoggerService');
+
 let configurator;
 
 try {

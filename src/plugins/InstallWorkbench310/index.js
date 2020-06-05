@@ -72,12 +72,12 @@ class InstallWorkbench310 {
 
     prepare() {
         const patchSource = path.join(__dirname, 'wb3.1_install.patch');
-        const patchDestination = path.join(process.cwd(), 'external_tools/wb3.1_install.patch');
+        const patchDestination = path.join(global.TOOLS_DIR, 'wb3.1_install.patch');
         Logger.debug(`Copying workbench 3.1 install script patch file from "${patchSource}" to "${patchDestination}".`);
         fs.copyFileSync(patchSource, patchDestination);
 
         const installKeySource = path.join(__dirname, 'install_key');
-        const installKeyDestination = path.join(process.cwd(), 'external_tools/install_key');
+        const installKeyDestination = path.join(global.TOOLS_DIR, 'install_key');
         Logger.debug(`Copying workbench 3.1 install script redirected input file from "${installKeySource}" to "${installKeyDestination}".`);
         fs.copyFileSync(installKeySource, installKeyDestination);
     }

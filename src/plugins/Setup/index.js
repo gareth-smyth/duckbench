@@ -34,8 +34,8 @@ class Setup {
             name: 'amiga-os-310-workbench.adf',
         });
 
-        Logger.debug(`Mapping DH6: as DB_TOOLS: at ${path.join(process.cwd(), 'external_tools')}`);
-        environmentSetup.mapFolderToDrive('DH6', path.join(process.cwd(), 'external_tools'), 'DB_TOOLS');
+        Logger.debug(`Mapping DH6: as DB_TOOLS: at ${global.TOOLS_DIR}`);
+        environmentSetup.mapFolderToDrive('DH6', global.TOOLS_DIR, 'DB_TOOLS');
 
         Logger.debug(`Mapping DH5: as DB_OS_DISKS: at ${environmentSetup.duckbenchConfig.osFolder}`);
         environmentSetup.mapFolderToDrive('DH5', environmentSetup.duckbenchConfig.osFolder, 'DB_OS_DISKS');

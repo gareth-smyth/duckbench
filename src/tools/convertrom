@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable */
+require('../services/BaseDirService');
 require('../services/LoggerService');
 const RomConversionService = require('../services/RomConversionService');
 const yargs = require('yargs');

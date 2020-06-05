@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const request = require('request-promise');
 
 const UnADF = require('../../src/plugins/UnADF');
@@ -91,7 +92,7 @@ describe('prepare', () => {
         await unADF.prepare();
 
         expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
-        expect(fs.writeFileSync).toHaveBeenCalledWith('./external_tools/UnADF.lha', 'myfile');
+        expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(global.TOOLS_DIR, 'UnADF.lha'), 'myfile');
         expect(request).toHaveBeenCalledTimes(1);
         const expectedURI = 'http://aminet.net/disk/misc/UnADF.lha';
         const expectedRequest = {encoding: null, resolveWithFullResponse: true, uri: expectedURI};

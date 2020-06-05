@@ -36,7 +36,8 @@
   },
   "jest": {
     "setupFiles": [
-      "./src/services/LoggerService.js"
+      "./src/services/LoggerService.js",
+      "./src/services/BaseDirService.js"
     ],
     "collectCoverage": true,
     "collectCoverageFrom": [

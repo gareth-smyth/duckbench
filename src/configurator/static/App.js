@@ -50,6 +50,7 @@ export default class App {
                     m('.mt-4', [
                         m('button.btn.btn-primary', {onclick: () => this.configuration.addSelectedPlugin() }, "Add"),
                     ]),
+                    m('button.btn.btn-success.mt-5', {onclick: this.runBuild.bind(this)}, "Build Workbench"),
                 ]),
             ])];
         } else {

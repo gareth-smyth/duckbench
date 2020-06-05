@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const request = require('request-promise');
 
 class Lha {
@@ -24,7 +25,7 @@ class Lha {
     }
 
     async prepare() {
-        if (!fs.existsSync('./external_tools/lha.run')) {
+        if (!fs.existsSync(path.join(global.TOOLS_DIR, 'lha.run'))) {
             Logger.debug('Downloading lha.run from http://aminet.net/util/arc/lha.run');
             const response = await request({
                 uri: 'http://aminet.net/util/arc/lha.run',
@@ -33,7 +34,7 @@ class Lha {
             }).catch((err) => {
                 throw new Error(err);
             });
-            fs.writeFileSync('./external_tools/lha.run', response.body);
+            fs.writeFileSync(path.join(global.TOOLS_DIR, 'lha.run'), response.body);
         } else {
             Logger.debug('Using cached version of lha.run');
         }

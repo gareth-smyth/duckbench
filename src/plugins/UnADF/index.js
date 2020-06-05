@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const request = require('request-promise');
 
 class UnADF {
@@ -33,7 +34,7 @@ class UnADF {
     }
 
     async prepare() {
-        if (!fs.existsSync('./external_tools/UnADF.lha')) {
+        if (!fs.existsSync(path.join(global.TOOLS_DIR, 'UnADF.lha'))) {
             Logger.debug('Downloading UnADF from http://aminet.net/disk/misc/UnADF.lha');
             const response = await request({
                 uri: 'http://aminet.net/disk/misc/UnADF.lha',
@@ -42,7 +43,7 @@ class UnADF {
             }).catch((err) => {
                 throw new Error(err);
             });
-            fs.writeFileSync('./external_tools/UnADF.lha', response.body);
+            fs.writeFileSync(path.join(global.TOOLS_DIR, 'UnADF.lha'), response.body);
         } else {
             Logger.debug('Using cached version of UnADF');
         }

@@ -9,11 +9,14 @@ const WinUAEEnvironment = require('../builder/WinUAEEnvironment');
 class Configurator {
     start() {
         http.createServer(function (request, response) {
+            Logger.debug(`Request for ${request.url}`);
             if(request.url === '/plugins.json') {
+                Logger.trace('Getting plugins');
                 const plugins = PluginStore.getStructures();
                 response.writeHead(200, {'Content-Type': 'application/json'});
                 response.end(JSON.stringify(plugins), 'utf-8');
             } else if(request.url === '/run') {
+                Logger.trace('Running duckbench builder');
                 let body = '';
                 request.on('data', chunk => {
                     body += chunk.toString();
@@ -25,9 +28,9 @@ class Configurator {
                 response.end();
             }
 
-            let filePath = './src/configurator/static' + request.url;
+            let filePath = path.join(__dirname, './static', request.url);
             if (filePath === './') {
-                filePath = './src/configurator/static/index.html';
+                filePath = path.join(__dirname, './static/index.html');
             }
 
             const extname = String(path.extname(filePath)).toLowerCase();
@@ -43,26 +46,29 @@ class Configurator {
             };
 
             const contentType = mimeTypes[extname] || 'application/octet-stream';
-
+            Logger.debug(`Reading file ${filePath}`);
             fs.readFile(filePath, function (error, content) {
                 if (error) {
                     if (error.code === 'ENOENT') {
-                        fs.readFile('./404.html', function (error, content) {
-                            response.writeHead(404, {'Content-Type': 'text/html'});
-                            response.end(content, 'utf-8');
-                        });
+                        Logger.error(`Did not find file ${filePath}`);
+                        Logger.debug(`${JSON.stringify(error)}`);
+                        response.writeHead(404);
+                        response.end();
                     } else {
+                        Logger.error(`Error reading ${filePath}`);
+                        Logger.debug(`${JSON.stringify(error)}`);
                         response.writeHead(500);
-                        response.end('Internal error: ' + error.code + '\n');
+                        response.end();
                     }
                 } else {
+                    Logger.trace('Responding with file');
                     response.writeHead(200, {'Content-Type': contentType});
                     response.end(content, 'utf-8');
                 }
             });
 
         }).listen(8552);
-        console.log('Open a browser at http://127.0.0.1:8552/index.html');
+        Logger.info('Open a browser at http://127.0.0.1:8552/index.html');
     }
 }
 

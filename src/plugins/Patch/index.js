@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const request = require('request-promise');
 
 class Patch {
@@ -33,7 +34,7 @@ class Patch {
     }
 
     async prepare() {
-        if (!fs.existsSync('./external_tools/patch-2.1.lha')) {
+        if (!fs.existsSync(path.join(global.TOOLS_DIR, 'patch-2.1.lha'))) {
             Logger.debug('Downloading patch from http://aminet.net/dev/misc/patch-2.1.lha');
             const response = await request({
                 uri: 'http://aminet.net/dev/misc/patch-2.1.lha',
@@ -42,7 +43,7 @@ class Patch {
             }).catch((err) => {
                 throw new Error(err);
             });
-            fs.writeFileSync('./external_tools/patch-2.1.lha', response.body);
+            fs.writeFileSync(path.join(global.TOOLS_DIR, 'patch-2.1.lha'), response.body);
         } else {
             Logger.debug('Using cached version of patch');
         }
