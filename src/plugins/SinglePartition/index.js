@@ -4,7 +4,7 @@ const RDBService = require('../../services/RDBService');
 class SinglePartition {
     structure() {
         return {
-            name: 'Partition',
+            name: 'SinglePartition',
             label: 'Single partition',
             description: 'Creates a new formatted partition',
             type: 'partition',

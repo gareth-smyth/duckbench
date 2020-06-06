@@ -21,13 +21,15 @@ If you are not using Amiga Forever you must set the following environment variab
 `DUCKBENCH_ROMS` - Full path to your amiga ROM folder.  At the minute duckbench uses only the 3.1 ROM. It *must be named* 
 * amiga-os-310-a1200.rom
   
-`DUCKBENCH_DISKS` - Full path to your amiga OS disks.  At the minute duckbench uses only the 3.1 OS. They *must be named* 
-* amiga-os-310-workbench.adf
-* amiga-os-310-install.adf
-* amiga-os-310-extras.adf
-* amiga-os-310-fonts.adf
-* amiga-os-310-storage.adf
-* amiga-os-310-locale.adf
+`DUCKBENCH_DISKS` - Full path to your amiga OS disks.  At the minute duckbench uses only the 3.1 or 3.0 OS. The disks *must be named* 
+* amiga-os-NNN-workbench.adf
+* amiga-os-NNN-install.adf
+* amiga-os-NNN-extras.adf
+* amiga-os-NNN-fonts.adf
+* amiga-os-NNN-storage.adf
+* amiga-os-NNN-locale.adf
+
+where NNN is either 310 (for Workbench 3.1) or 300 (for Workbench 3.0)
   
 `DUCKBENCH_EMU` -  Path to WinUAE installed folder e.g. `C:\Program Files\WinUAE`
 
@@ -70,8 +72,9 @@ Run the following commands from a terminal
 * Issues/bugs, and feature requests are always welcome using GitHub issues.
 
 ### Current limitations
-* Only supports Workbench 3.1 installs
+* Only supports Workbench 3.1 and 3.0 installs
 * Small set of available plugins
+* Only supports FastFileSystem, with it's associated limitations
 
 ### Assumptions
 Tested with

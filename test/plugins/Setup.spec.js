@@ -122,7 +122,7 @@ it('prepares the duckbench partition', async () => {
 
     expect(MockPartition).toHaveBeenCalledWith();
     expect(mockPartitionInstance.prepare).toHaveBeenCalledWith({
-        name: 'Partition',
+        name: 'SinglePartition',
         optionValues: {
             device: 'DH1',
             volumeName: 'DUCKBENCH',
@@ -150,7 +150,7 @@ it('installs the partition', async () => {
 
     expect(MockPartition).toHaveBeenCalledWith();
     expect(mockPartitionInstance.install).toHaveBeenCalledWith({
-        name: 'Partition',
+        name: 'SinglePartition',
         optionValues: {
             device: 'DH1',
             volumeName: 'DUCKBENCH',

@@ -4,7 +4,7 @@ export default class Configuration {
         this.currentId = 1001;
         this.selectedPlugins = [];
         const partitionPlugin = this.addSelectedPlugin('partition');
-        this.setSelectedPluginName(partitionPlugin.id, 'Partition');
+        this.setSelectedPluginName(partitionPlugin.id, 'SinglePartition');
         this.addSelectedPlugin('workbench');
     }
 

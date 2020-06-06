@@ -46,13 +46,13 @@ class Setup {
         Logger.debug('Set ROM to "68020"');
         environmentSetup.setCPU('68020');
 
-        Logger.debug('Set CipMem to "2"');
+        Logger.debug('Set ChipMem to "2"');
         environmentSetup.setChipMem('2');
 
         Logger.debug('Creating DUCKBENCH: partition as DH1');
         const partition = new Partition();
         return partition.prepare({
-            name: 'Partition',
+            name: 'SinglePartition',
             optionValues: {
                 device: 'DH1',
                 volumeName: 'DUCKBENCH',
@@ -68,7 +68,7 @@ class Setup {
 
         Logger.debug('Install DUCKBENCH: partition');
         await partition.install({
-            name: 'Partition',
+            name: 'SinglePartition',
             optionValues: {
                 device: 'DH1',
                 volumeName: 'DUCKBENCH',
