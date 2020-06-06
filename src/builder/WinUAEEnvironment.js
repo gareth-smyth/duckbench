@@ -32,7 +32,7 @@ class WinUAEEnvironment {
         if (disks.ADF) {
             disks.ADF.forEach((disk) => {
                 const diskNum = disk.drive[2];
-                fs.writeSync(configFile, `floppy${diskNum}=${path.join(process.cwd(), disk.location)}\n`);
+                fs.writeSync(configFile, `floppy${diskNum}=${disk.location}\n`);
             });
         }
 
@@ -63,7 +63,7 @@ class WinUAEEnvironment {
         const path64 = path.join(this.config.emuRoot, 'WinUAE64.exe');
         const executablePath = fs.existsSync(path32) ? path32 : path64;
         this.winuaeProcess = spawn(executablePath,
-            ['-f', path.join(process.cwd(), this.uaeRunningConfig)],
+            ['-f', path.join(this.uaeRunningConfig)],
         );
     }
 }

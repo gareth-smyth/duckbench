@@ -30,20 +30,29 @@ export default class App {
                 ]),
             m("", [
                 m('.container.section-container', [
-                    m('h2.mb-4.mt-4', "Which version of Workbench would you like to install?"),
+                    m('h2.mb-4.mt-4', "How would you like to partition your hard drives?"),
                     m(PluginSelect, {
                         configuration: this.configuration,
-                        includeTypes: ['root'],
-                        id: this.configuration.getRootSelectedPlugin().id,
+                        includeTypes: ['partition'],
+                        id: this.configuration.getPartitionSelectedPlugin().id,
                         noRemove: true,
                     }),
                 ]),
-                m('.container.section-container', {style:`display:${this.configuration.getRootSelectedPlugin().name === undefined ? 'none': 'default'}`}, [
+                m('.container.section-container', [
+                    m('h2.mb-4.mt-4', "Which version of Workbench would you like to install?"),
+                    m(PluginSelect, {
+                        configuration: this.configuration,
+                        includeTypes: ['workbench'],
+                        id: this.configuration.getWorkbenchSelectedPlugin().id,
+                        noRemove: true,
+                    }),
+                ]),
+                m('.container.section-container', [
                     m('h2.mb-4.mt-4', "Which tools would you like to install?"),
                     m('', this.configuration.getNonRootSelectedPlugins().map(selectedPlugin => {
                         return m(PluginSelect, {
                             configuration: this.configuration,
-                            ignoreTypes: ['root', 'internal'],
+                            ignoreTypes: ['workbench', 'internal', 'partition'],
                             id: selectedPlugin.id,
                         });
                     })),

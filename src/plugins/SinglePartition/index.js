@@ -1,30 +1,36 @@
 const path = require('path');
 const RDBService = require('../../services/RDBService');
 
-class Partition {
+class SinglePartition {
     structure() {
         return {
             name: 'Partition',
-            label: 'Partition',
+            label: 'Single partition',
             description: 'Creates a new formatted partition',
+            type: 'partition',
             options: {
                 device: {
                     name: 'device',
                     label: 'Drive name',
-                    description: 'The drive to create e.g. "DH0"',
+                    description: 'The drive to install workbench on e.g. "DH0"',
                     type: 'text',
+                    default: 'DH0',
+                    hide: true,
                 },
                 volumeName: {
                     name: 'volumeName',
                     label: 'Volume name',
-                    description: 'The name of the volume e.g. "WORK"',
+                    description: 'The name of the volume e.g. "WORKBENCH"',
                     type: 'text',
+                    default: 'WORKBENCH',
                 },
                 size: {
                     name: 'size',
-                    label: 'Size',
+                    label: 'Size in MB',
                     description: 'The size of the drive in MB',
                     type: 'text',
+                    default: '100',
+                    primary: true,
                 },
             },
         };
@@ -37,7 +43,7 @@ class Partition {
     }
 
     prepare(config, environmentSetup) {
-        const location = path.join(process.cwd(), environmentSetup.executionFolder, `${config.optionValues.device}.hdf`);
+        const location = path.join(environmentSetup.executionFolder, `${config.optionValues.device}.hdf`);
         RDBService.createRDB(location, config.optionValues.size, config.optionValues.device);
         environmentSetup.attachHDF(config.optionValues.device, location);
     }
@@ -48,4 +54,4 @@ class Partition {
     }
 }
 
-module.exports = Partition;
+module.exports = SinglePartition;

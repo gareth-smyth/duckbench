@@ -19,25 +19,11 @@ const standardConfig = {
 };
 
 describe('configure', () => {
-    it('returns Partition as a dependency', () => {
-        const installWorkbench310 = new InstallWorkbench310();
-        const config = installWorkbench310.configure(standardConfig);
-
-        expect(config[0]).toEqual({
-            name: 'Partition',
-            optionValues: {
-                device: 'dh0:',
-                volumeName: 'Workbench',
-                size: 100,
-            },
-        });
-    });
-
     it('returns UnADF dependency', () => {
         const installWorkbench310 = new InstallWorkbench310();
         const config = installWorkbench310.configure(standardConfig);
 
-        expect(config[1]).toEqual({
+        expect(config[0]).toEqual({
             name: 'UnADF',
             optionValues: {
                 location: 'duckbench:',
@@ -49,7 +35,7 @@ describe('configure', () => {
         const installWorkbench310 = new InstallWorkbench310();
         const config = installWorkbench310.configure(standardConfig);
 
-        expect(config[2]).toEqual({
+        expect(config[1]).toEqual({
             name: 'Patch',
             optionValues: {
                 location: 'duckbench:c/',
@@ -61,7 +47,7 @@ describe('configure', () => {
         const installWorkbench310 = new InstallWorkbench310();
         const config = installWorkbench310.configure(standardConfig);
 
-        expect(config[3]).toEqual({
+        expect(config[2]).toEqual({
             name: 'InstallerLG',
             optionValues: {
                 location: 'duckbench:c/',

@@ -1,12 +1,11 @@
 export default class Configuration {
-    constructor() {
-        this.currentId = 1001;
-        this.selectedPlugins = [];
-        this.addSelectedPlugin('root');
-    }
-
     setPlugins(plugins) {
         this.plugins = plugins;
+        this.currentId = 1001;
+        this.selectedPlugins = [];
+        const partitionPlugin = this.addSelectedPlugin('partition');
+        this.setSelectedPluginName(partitionPlugin.id, 'Partition');
+        this.addSelectedPlugin('workbench');
     }
 
     setSelectedPluginName(id, pluginName) {
@@ -40,15 +39,22 @@ export default class Configuration {
 
     addSelectedPlugin(type) {
         const newId = String(this.currentId++);
-        this.selectedPlugins.push({type, id: newId, optionValues: {}});
+        const newPlugin = {type, id: newId, optionValues: {}};
+        this.selectedPlugins.push(newPlugin);
+        return newPlugin;
     }
 
-    getRootSelectedPlugin() {
-        return this.selectedPlugins.find(selectedPlugin => selectedPlugin.type === 'root');
+    getWorkbenchSelectedPlugin() {
+        return this.selectedPlugins.find(selectedPlugin => selectedPlugin.type === 'workbench');
+    }
+
+    getPartitionSelectedPlugin() {
+        return this.selectedPlugins.find(selectedPlugin => selectedPlugin.type === 'partition');
     }
 
     getNonRootSelectedPlugins() {
-        return this.selectedPlugins.filter(selectedPlugin => selectedPlugin.type !== 'root');
+        return this.selectedPlugins.filter(selectedPlugin =>
+            selectedPlugin.type !== 'workbench' && selectedPlugin.type !== 'partition');
     }
 
     getSelectedPlugin(id) {

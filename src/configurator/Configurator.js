@@ -15,6 +15,7 @@ class Configurator {
                 const plugins = PluginStore.getStructures();
                 response.writeHead(200, {'Content-Type': 'application/json'});
                 response.end(JSON.stringify(plugins), 'utf-8');
+                return;
             } else if(request.url === '/run') {
                 Logger.trace('Running duckbench builder');
                 let body = '';
@@ -26,6 +27,7 @@ class Configurator {
                 });
                 response.writeHead(200);
                 response.end();
+                return;
             }
 
             let filePath = path.join(__dirname, './static', request.url);

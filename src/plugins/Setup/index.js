@@ -1,7 +1,7 @@
 const path = require('path');
 const ADFService = require('../../services/ADFService');
 const HitEnterFile = require('../HitEnterFile');
-const Partition = require('../Partition');
+const Partition = require('../SinglePartition');
 
 class Setup {
     structure() {

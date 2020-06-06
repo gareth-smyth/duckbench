@@ -21,7 +21,7 @@ it('spawns a new winuae 32 bit process', () => {
     );
     fs.existsSync = jest.fn().mockReturnValue(true);
     environment.start();
-    const configFileLocation = path.join(process.cwd(), '/some/folder/', 'amiga.uae');
+    const configFileLocation = path.join('/some/folder/', 'amiga.uae');
     expect(spawn).toHaveBeenCalledWith(path.join('/path/to/winuae/', 'WinUAE.exe'), ['-f', configFileLocation]);
 });
 
@@ -32,7 +32,7 @@ it('spawns a new winuae 64 bit process', () => {
     );
     fs.existsSync = jest.fn().mockReturnValue(false);
     environment.start();
-    const configFileLocation = path.join(process.cwd(), '/some/folder/', 'amiga.uae');
+    const configFileLocation = path.join('/some/folder/', 'amiga.uae');
     expect(spawn).toHaveBeenCalledWith(path.join('/path/to/winuae/', 'WinUAE64.exe'), ['-f', configFileLocation]);
 });
 
@@ -97,8 +97,8 @@ it('writes the floppy related parts of the config', () => {
         },
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, `floppy0=${path.join(process.cwd(), 'some/disk.adf')}\n`);
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, `floppy2=${path.join(process.cwd(), 'some/disk2.adf')}\n`);
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'floppy0=some/disk.adf\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'floppy2=some/disk2.adf\n');
 });
 
 it('writes the uaehf related parts of the config', () => {

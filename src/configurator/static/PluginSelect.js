@@ -7,8 +7,13 @@ export default class PluginSelect {
         const plugins = configuration.plugins;
         const selectedPlugin = configuration.getSelectedPlugin(node.attrs.id);
         const primaryConfigOption = this.getPrimaryConfigurationOption(configuration, selectedPlugin);
+        const showConfigButton = this.getNonPrimaryConfigurationOptions(configuration, selectedPlugin);
         return m('.mb-1', [
-            m('select.btn.btn-info.dropdown-toggle', { id:`${selectedPlugin.id}`,value: selectedPlugin.name, onchange: (event) => { this.selectPluginChange(event, configuration) } },
+            m('select.btn.btn-info.dropdown-toggle', {
+                    id:`${selectedPlugin.id}`,
+                    value: selectedPlugin.name,
+                    onchange: (event) => { this.selectPluginChange(event, configuration) }
+                },
                 Object.keys(plugins).filter(pluginName => {
                     return this.typeMatch(node.attrs.ignoreTypes, node.attrs.includeTypes, plugins[pluginName].type) && plugins[pluginName].name;
                 }).map(configKey => {
@@ -17,7 +22,7 @@ export default class PluginSelect {
                     return m('option', { value: plugin.name }, plugin.label)
                 }),
             ),
-            selectedPlugin.name ? m('.btn.btn-info.ml-1', { onclick: () => { this.toggleConfig(selectedPlugin.id, configuration) } }, [
+            (selectedPlugin.name && showConfigButton) ? m('.btn.btn-info.ml-1', { onclick: () => { this.toggleConfig(selectedPlugin.id, configuration) } }, [
                 m('img', { src: "./images/gear-fill.svg", width:"23", height:"23", title:"Configure"}),
             ]): '',
             !node.attrs.noRemove ? m('.btn.btn-info.ml-1', { onclick: () => { this.removePlugin(selectedPlugin.id, configuration) } }, [
@@ -34,6 +39,15 @@ export default class PluginSelect {
             const optionName = Object.keys(plugin.options).find(optionName => plugin.options[optionName].primary === true);
             return plugin.options[optionName];
         }
+    }
+
+    getNonPrimaryConfigurationOptions(configuration, selectedPlugin) {
+        const plugin = configuration.getPlugin(selectedPlugin.name);
+        if(plugin && plugin.options) {
+            return Object.keys(plugin.options).find(optionName => plugin.options[optionName].primary !== true);
+        }
+
+        return false;
     }
 
     selectPluginChange(event, configuration) {

@@ -1,6 +1,6 @@
 [
   {
-    "type": "root",
+    "type": "workbench",
     "id": "1001",
     "optionValues": {
       "device": "DH0",

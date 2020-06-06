@@ -5,7 +5,7 @@ const ADFService = require('../../src/services/ADFService');
 const MockPartition = jest.fn();
 const MockHitEnterFile = jest.fn();
 jest.mock('../../src/services/ADFService');
-jest.mock('../../src/plugins/Partition', () => MockPartition);
+jest.mock('../../src/plugins/SinglePartition', () => MockPartition);
 jest.mock('../../src/plugins/HitEnterFile', () => MockHitEnterFile);
 
 const mockPartitionInstance = {

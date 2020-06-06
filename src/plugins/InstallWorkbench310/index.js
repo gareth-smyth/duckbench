@@ -15,44 +15,12 @@ class InstallWorkbench310 {
         return {
             name: 'InstallWorkbench310',
             label: 'Workbench 3.1',
-            description: 'Install a fresh copy of Workbench 3.1 on a new hard drive.',
-            type: 'root',
-            options: {
-                device: {
-                    name: 'device',
-                    label: 'Drive name',
-                    description: 'The drive to install workbench on e.g. "DH0"',
-                    type: 'text',
-                    default: 'DH0',
-                },
-                volumeName: {
-                    name: 'volumeName',
-                    label: 'Volume name',
-                    description: 'The name of the volume e.g. "WORKBENCH"',
-                    type: 'text',
-                    default: 'WORKBENCH',
-                },
-                size: {
-                    name: 'size',
-                    label: 'Size in MB',
-                    description: 'The size of the drive in MB',
-                    type: 'text',
-                    default: '100',
-                    primary: true,
-                },
-            },
+            type: 'workbench',
         };
     }
 
-    configure(config) {
+    configure() {
         return [{
-            name: 'Partition',
-            optionValues: {
-                device: config.optionValues.device,
-                volumeName: config.optionValues.volumeName,
-                size: config.optionValues.size,
-            },
-        }, {
             name: 'UnADF',
             optionValues: {
                 location: 'duckbench:',
