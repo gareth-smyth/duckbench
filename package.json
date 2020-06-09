@@ -1,6 +1,6 @@
 {
   "name": "duckbench",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.2",
   "description": "A set of tools to help setup Amiga OS on real hardware or in an emulator.",
   "repository": "https://github.com/gareth-smyth/duckbench",
   "main": "index.js",
@@ -101,8 +101,12 @@
           "ignoreTemplateLiterals": true
         }
       ],
-      "no-undef": ["error"],
-      "no-use-before-define": ["error"]
+      "no-undef": [
+        "error"
+      ],
+      "no-use-before-define": [
+        "error"
+      ]
     }
   }
 }
