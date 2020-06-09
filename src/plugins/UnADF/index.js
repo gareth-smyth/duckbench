@@ -49,59 +49,21 @@ class UnADF {
         }
     }
 
-    async install(config, communicator) {
-        if (!Object.keys(this.installed).length) {
-            Logger.debug('Extracting unadf to duckbench:');
-            await communicator.sendCommand(`lha_68k x DB_TOOLS:UnADF.lha ${config.optionValues.location}`).then((response) => {
-                if (response.length === 0 || !response.join().includes('Operation successful.')) {
-                    throw new Error(`Expected "Operation successful." when installing unadf but got "${response}"`);
-                }
-                Logger.debug('extracted unadf to duckbench:');
-                this.installed[config.optionValues.location] = true;
-            }).catch((err) => {
-                throw new Error(err);
-            });
+    async install(config, communicator, pluginStore) {
+        if (!this.installed[config.optionValues.location]) {
+            const lha = pluginStore.getPlugin('Lha');
+            await lha.run('DB_TOOLS:UnADF.lha', config.optionValues.location, 'duckbench:c/', {}, communicator);
+            this.installed[config.optionValues.location] = true;
         } else {
-            Logger.trace('Not extracting unadf as it has already been extracted to duckbench:');
+            Logger.trace(`Not extracting unadf as it has already been extracted to ${config.optionValues.location}`);
         }
     }
 
-    async run(sourceLocation, sourceFile, destination, unADFLocation, communicator) {
-        await communicator.sendCommand(`copy ${sourceLocation}${sourceFile} duckbench:`).then((response) => {
-            if (response.length > 0) {
-                throw new Error(`Expected no response when copying ${sourceLocation}${sourceFile} to temporary location duckbench: but got "${response}"`);
-            }
-            Logger.debug(`Copied ${sourceLocation}${sourceFile} temporarily to duckbench:`);
-        }).catch((err) => {
-            throw new Error(err);
-        });
-
-        await communicator.sendCommand(`cd ${unADFLocation}UnADF`).then((response) => {
-            if (response.length > 0) {
-                throw new Error(`Expected no response when changing directory to ${unADFLocation}UnADF but got "${response}"`);
-            }
-            Logger.debug(`Changed directory to ${unADFLocation}UnADF`);
-        }).catch((err) => {
-            throw new Error(err);
-        });
-
-        await communicator.sendCommand(`unadf duckbench:${sourceFile} DEST=${destination}`).then((response) => {
-            if (response.length === 0 || !RegExp(/Saved \d* file/).test(response.join())) {
-                throw new Error(`Expected "Saved XX files" when calling "duckbench:${sourceFile} DEST=${destination}" but got "${response}"`);
-            }
-            Logger.debug(`Extracted ${sourceLocation}${sourceFile} to ${destination}`);
-        }).catch((err) => {
-            throw new Error(err);
-        });
-
-        await communicator.sendCommand(`delete duckbench:${sourceFile}`).then((response) => {
-            if (response.length === 0 || response.join() !== `duckbench:${sourceFile}  Deleted`) {
-                throw new Error(`Expected "duckbench:${sourceFile}  Deleted" when deleting "${sourceFile}" from temporary location duckbench: but got "${response}"`);
-            }
-            Logger.debug(`Deleted ${sourceFile} from temporary location in duckbench:`);
-        }).catch((err) => {
-            throw new Error(err);
-        });
+    async run(sourceLocation, sourceFile, destination, unADFLocation, unADFOptions, communicator, commandCallback) {
+        await communicator.copy(`${sourceLocation}${sourceFile}`, 'duckbench:');
+        await communicator.cd(`${unADFLocation}UnADF`);
+        await communicator.run(`unadf duckbench:${sourceFile} DEST=${destination}`, unADFOptions, commandCallback, RegExp(/Saved \d* files/));
+        await communicator.delete(`duckbench:${sourceFile}`);
     }
 }
 

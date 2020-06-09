@@ -76,7 +76,12 @@
     "rules": {
       "indent": [
         "error",
-        4
+        4,
+        {
+          "FunctionExpression": {
+            "parameters": "first"
+          }
+        }
       ],
       "linebreak-style": "off",
       "quotes": [
@@ -95,7 +100,9 @@
         {
           "ignoreTemplateLiterals": true
         }
-      ]
+      ],
+      "no-undef": ["error"],
+      "no-use-before-define": ["error"]
     }
   }
 }

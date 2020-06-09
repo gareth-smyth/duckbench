@@ -49,42 +49,21 @@ class Patch {
         }
     }
 
-    async install(config, communicator) {
-        await this.extractPatch(config, communicator);
-        await this.installPatch(config, communicator);
-    }
-
-    async installPatch(config, communicator) {
+    async install(config, communicator, pluginStore) {
         if (!this.installed[config.optionValues.location]) {
-            Logger.debug(`Installing patch to ${config.optionValues.location}`);
-            await communicator.sendCommand(`copy duckbench:patch-2.1/c/patch ${config.optionValues.location}`).then((response) => {
-                if (response.length > 0) {
-                    throw new Error(`Expected no response when installing patch but got "${response}"`);
-                }
-                Logger.debug(`Installed patch to ${config.optionValues.location}`);
-                this.installed[config.optionValues.location] = true;
-            }).catch((err) => {
-                throw new Error(err);
-            });
+            const lha = pluginStore.getPlugin('Lha');
+            await lha.run('DB_TOOLS:patch-2.1.lha', 'duckbench:', 'duckbench:c/', {}, communicator);
+            await communicator.copy('duckbench:patch-2.1/c/patch', config.optionValues.location);
+            await communicator.delete('duckbench:patch-2.1', {ALL: true});
+            this.installed[config.optionValues.location] = true;
         } else {
             Logger.trace(`Not installing patch as it has already been installed to ${config.optionValues.location}`);
         }
     }
 
-    async extractPatch(config, communicator) {
-        if (!Object.keys(this.installed).length) {
-            Logger.debug('Extracting patch to duckbench:');
-            await communicator.sendCommand('lha_68k x DB_TOOLS:Patch-2.1.lha duckbench:').then((response) => {
-                if (response.length === 0 || !response.join().includes('Operation successful.')) {
-                    throw new Error(`Expected "Operation successful." when installing patch but got "${response}"`);
-                }
-                Logger.debug('extracted patch to duckbench:');
-            }).catch((err) => {
-                throw new Error(err);
-            });
-        } else {
-            Logger.trace('Not extracting patch as it has already been extracted to duckbench:');
-        }
+    async run(target, patchFile, patchLocation, patchOptions, communicator,
+              commandCallback, expectedResponse = ['succeeded', 'done']) {
+        await communicator.run(`${patchLocation}patch ${target} ${patchFile}`, patchOptions, commandCallback, expectedResponse);
     }
 }
 

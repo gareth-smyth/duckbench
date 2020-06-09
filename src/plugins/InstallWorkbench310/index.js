@@ -53,47 +53,27 @@ class InstallWorkbench310 {
     async install(config, communicator, pluginStore) {
         const unADF = pluginStore.getPlugin('UnADF');
         for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
-            await unADF.run('DB_OS_DISKS:', workbenchDisks[diskIndex], 'duckbench:disks/', 'duckbench:', communicator)
-                .catch((error) => {
-                    throw Error(`Could not extract workbench disk ${workbenchDisks[diskIndex]} with error ${error}`);
-                });
+            const fileName = workbenchDisks[diskIndex];
+            await unADF.run('DB_OS_DISKS:', fileName, 'duckbench:disks/', 'duckbench:', {}, communicator);
         }
 
-        await communicator.sendCommand('assign Install3.1: duckbench:disks/Install3.1').then((response) => {
-            if (response.length > 0) {
-                throw new Error(`Expected no response when assigning Install3.1: but got "${response}"`);
-            }
-            Logger.debug('Assigned Install3.1: to duckbench:disks/Install3.1');
-        }).catch((err) => {
-            throw new Error(err);
-        });
+        await communicator.assign('Install3.1:', 'duckbench:disks/Install3.1');
 
-        await communicator.sendCommand('patch Install3.1:Install/Install DB_TOOLS:wb3.1_install.patch')
-            .then((response) => {
-                const responseJoin = response.join();
-                if (response.length === 0 || !responseJoin.includes('done') || !responseJoin.includes('succeeded')) {
-                    throw new Error(`Expected "done" and "succeeded" when patching Install3.1:Install/Install but got "${response}"`);
-                }
-                Logger.debug('Patched Install3.1:Install/Install');
-            }).catch((err) => {
-                throw new Error(err);
-            });
+        const patch = pluginStore.getPlugin('Patch');
+        await patch.run('Install3.1:Install/Install', 'DB_TOOLS:wb3.1_install.patch', 'duckbench:c/', {}, communicator);
 
-        await communicator.sendCommand('Installer68k Install3.1:install/install < DB_TOOLS:install_key', (event) => {
-            if (event.message === 'DATA_EVENT' && event.data.substr(0, 9) === 'Progress:') {
-                Logger.info(event.data.substr(10));
-            } else {
-                Logger.trace(JSON.stringify(event));
-            }
-        }).then((response) => {
-            const joinedResponse = response.join();
-            if (response.length === 0 || !joinedResponse.includes('The installation of Release 3.1 is now complete.')) {
-                throw new Error(`Expected 'The installation of Release 3.1 is now complete.' when installing Workbench 3.1 but got "${response}"`);
-            }
-            Logger.debug('Installed Workbench 3.1');
-        }).catch((err) => {
-            throw new Error(err);
-        });
+        const installerLg = pluginStore.getPlugin('InstallerLG');
+        const installOptions = {REDIRECT_IN: 'DB_TOOLS:install_key'};
+        await installerLg.run('Install3.1:install/install', installOptions, communicator,
+            this.handleInstallUpdates, 'The installation of Release 3.1 is now complete.');
+    }
+
+    handleInstallUpdates(event) {
+        if (event.message === 'DATA_EVENT' && event.data.substr(0, 9) === 'Progress:') {
+            Logger.info(event.data.substr(10));
+        } else {
+            Logger.trace(JSON.stringify(event));
+        }
     }
 
     finalise(config, environmentSetup) {

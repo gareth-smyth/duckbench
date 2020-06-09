@@ -74,7 +74,7 @@ Run the following commands from a terminal
 ### Current limitations
 * Only supports Workbench 3.1 and 3.0 installs
 * Small set of available plugins
-* Only supports FastFileSystem, with it's associated limitations
+* Only supports FastFileSystem, with its associated limitations
 
 ### Assumptions
 Tested with

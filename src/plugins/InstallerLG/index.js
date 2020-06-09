@@ -20,21 +20,17 @@ class InstallerLG {
         };
     }
 
-    async install(config, emu) {
+    async install(config, communicator) {
         if (!this.installed[config.optionValues.location]) {
-            Logger.debug(`Installing InstallerLG to ${config.optionValues.location}`);
-            await emu.sendCommand(`copy DB_TOOLS:Installer68k ${config.optionValues.location}`).then((response) => {
-                if (response.length > 0) {
-                    throw new Error(`Expected no response when installing Installer68k but got "${response}"`);
-                }
-                Logger.debug(`Installed InstallerLG to ${config.optionValues.location}`);
-                this.installed[config.optionValues.location] = true;
-            }).catch((err) => {
-                throw new Error(err);
-            });
+            await communicator.copy('DB_TOOLS:Installer68k', config.optionValues.location);
+            this.installed[config.optionValues.location] = true;
         } else {
             Logger.trace(`Not installing InstallerLG as it has already been installed to ${config.optionValues.location}`);
         }
+    }
+
+    async run(installScript, installOptions, communicator, commandCallback, expectedResponse) {
+        await communicator.run(`Installer68k ${installScript}`, installOptions, commandCallback, expectedResponse);
     }
 }
 

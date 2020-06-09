@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 const BLOCK_SIZE = 512;
 
 class FileFactory {

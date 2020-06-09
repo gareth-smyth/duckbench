@@ -11,16 +11,8 @@ class HitEnterFile {
 
     async install(config, communicator) {
         if (!this.installed) {
-            Logger.debug('Installing HitEnterFile ro ram:.');
-            await communicator.sendCommand('echo "\\n" > ram:HitEnterFile.txt').then((response) => {
-                if (response.length > 0) {
-                    throw new Error(`Expected no response when installing HitEnterFile.txt but got "${response}"`);
-                }
-                Logger.debug('Installed HitEnterFile.txt to ram:');
-                this.installed = true;
-            }).catch((err) => {
-                throw new Error(err);
-            });
+            await communicator.echo('\\n', {REDIRECT_OUT: 'ram:HitEnterFile.txt'});
+            this.installed = true;
         } else {
             Logger.trace('Not installing HitEnterFile as it has already been installed.');
         }

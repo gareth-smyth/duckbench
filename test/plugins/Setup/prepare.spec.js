@@ -1,23 +1,17 @@
 const path = require('path');
 
-const ADFService = require('../../src/services/ADFService');
+const ADFService = require('../../../src/services/ADFService');
 
 const MockPartition = jest.fn();
-const MockHitEnterFile = jest.fn();
-jest.mock('../../src/services/ADFService');
-jest.mock('../../src/plugins/SinglePartition', () => MockPartition);
-jest.mock('../../src/plugins/HitEnterFile', () => MockHitEnterFile);
+jest.mock('../../../src/services/ADFService');
+jest.mock('../../../src/plugins/SinglePartition', () => MockPartition);
 
 const mockPartitionInstance = {
     install: jest.fn(),
     prepare: jest.fn(),
 };
 
-const mockHitEnterFileInstance = {
-    install: jest.fn(),
-};
-
-const Setup = require('../../src/plugins/Setup');
+const Setup = require('../../../src/plugins/Setup');
 
 const environmentSetup = {
     duckbenchConfig: {
@@ -36,7 +30,6 @@ beforeEach(() => {
     ADFService.createFile.mockReset();
     ADFService.createDirectory.mockReset();
     MockPartition.mockImplementation(() => mockPartitionInstance);
-    MockHitEnterFile.mockImplementation(() => mockHitEnterFileInstance);
 });
 
 it('returns HitEnterFile as a dependency', () => {
@@ -104,11 +97,11 @@ it('creates the boot ADF with the required setup files', async () => {
 
     expect(ADFService.createBootableADF).toHaveBeenCalledWith(path.join('some folder', 'boot.adf'), 'DuckBoot');
     expect(ADFService.createFile).toHaveBeenCalledTimes(2);
-    const auxFileLocation = path.join(__dirname, '../../src/plugins/Setup/', 'amigaFiles/file_AUX');
+    const auxFileLocation = path.join(__dirname, '../../../src/plugins/Setup/', 'amigaFiles/file_AUX');
     expect(ADFService.createFile)
         .toHaveBeenCalledWith(path.join('some folder', 'boot.adf'), 'AUX', auxFileLocation);
     const startupSequenceLocation =
-        path.join(__dirname, '../../src/plugins/Setup/', 'amigaFiles/s/file_startup-sequence');
+        path.join(__dirname, '../../../src/plugins/Setup/', 'amigaFiles/s/file_startup-sequence');
     expect(ADFService.createFile)
         .toHaveBeenCalledWith(path.join('some folder', 'boot.adf'), 's/startup-sequence', startupSequenceLocation);
     expect(ADFService.createDirectory).toHaveBeenCalledTimes(2);
@@ -129,47 +122,4 @@ it('prepares the duckbench partition', async () => {
             size: 100,
         },
     }, environmentSetup);
-});
-
-it('installs the hit enter file', async () => {
-    const communicator = {sendCommand: jest.fn()};
-
-    const setup = new Setup();
-    await setup.install({}, communicator);
-
-    expect(MockHitEnterFile).toHaveBeenCalledWith();
-    expect(mockHitEnterFileInstance.install).toHaveBeenCalledWith({}, communicator);
-});
-
-it('installs the partition', async () => {
-    const communicator = {sendCommand: jest.fn()};
-    const pluginStore = {getPlugin: () => ({getFile: () => 'ram:somefile.txt'})};
-
-    const setup = new Setup();
-    await setup.install({}, communicator, pluginStore);
-
-    expect(MockPartition).toHaveBeenCalledWith();
-    expect(mockPartitionInstance.install).toHaveBeenCalledWith({
-        name: 'SinglePartition',
-        optionValues: {
-            device: 'DH1',
-            volumeName: 'DUCKBENCH',
-            size: 100,
-        },
-    }, communicator, pluginStore);
-});
-
-it('makes and assigns the required folders', async () => {
-    const communicator = {sendCommand: jest.fn()};
-    const pluginStore = {getPlugin: () => ({getFile: () => 'ram:somefile.txt'})};
-
-    const setup = new Setup();
-    await setup.install({}, communicator, pluginStore);
-
-    expect(communicator.sendCommand).toHaveBeenCalledTimes(5);
-    expect(communicator.sendCommand).toHaveBeenCalledWith('makedir duckbench:c');
-    expect(communicator.sendCommand).toHaveBeenCalledWith('path duckbench:c ADD');
-    expect(communicator.sendCommand).toHaveBeenCalledWith('makedir duckbench:t');
-    expect(communicator.sendCommand).toHaveBeenCalledWith('makedir duckbench:disks');
-    expect(communicator.sendCommand).toHaveBeenCalledWith('assign t: duckbench:t');
 });

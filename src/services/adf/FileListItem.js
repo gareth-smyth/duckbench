@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 class FileListItem {
     constructor(diskBuffer, buffer, diskConfig) {
         this.diskConfig = diskConfig;

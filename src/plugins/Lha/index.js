@@ -42,19 +42,15 @@ class Lha {
 
     async install(config, communicator) {
         if (!this.installed[config.optionValues.location]) {
-            Logger.debug(`Installing LHA to ${config.optionValues.location}`);
-            await communicator.sendCommand(`DB_TOOLS:lha.run -x ${config.optionValues.location}`).then((response) => {
-                if (response.length === 0 || !response.join().includes('Extracting: lha_68k')) {
-                    throw new Error(`Expected response to include "Extracting: lha_68k" when installing LHA but got "${response}"`);
-                }
-                Logger.debug(`Installed LHA to ${config.optionValues.location}`);
-                this.installed[config.optionValues.location] = true;
-            }).catch((err) => {
-                throw new Error(err);
-            });
+            await communicator.run(`DB_TOOLS:lha.run -x ${config.optionValues.location}`, {}, undefined, 'Extracting: lha_68k');
+            this.installed[config.optionValues.location] = true;
         } else {
             Logger.trace(`Not installing LHA as it has already been installed to ${config.optionValues.location}`);
         }
+    }
+
+    async run(sourceFile, destination, lhaLocation, lhaOptions, communicator, commandCallback) {
+        await communicator.run(`${lhaLocation}lha_68k x ${sourceFile} ${destination}`, lhaOptions, commandCallback, 'Operation successful.');
     }
 }
 

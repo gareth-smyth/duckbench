@@ -76,17 +76,11 @@ class Setup {
             },
         }, communicator, pluginStore);
 
-
-        Logger.debug('Creating "C" directory on DUCKBENCH: and adding it to path');
-        await communicator.sendCommand('makedir duckbench:c');
-        await communicator.sendCommand('path duckbench:c ADD');
-
-        Logger.debug('Creating "t" and "disks" directories on DUCKBENCH:');
-        await communicator.sendCommand('makedir duckbench:t');
-        await communicator.sendCommand('makedir duckbench:disks');
-
-        Logger.debug('Assign "t:" to "DUCKBENCH:t"');
-        await communicator.sendCommand('assign t: duckbench:t');
+        await communicator.makedir('duckbench:c');
+        await communicator.path('duckbench:c', {ADD: true});
+        await communicator.makedir('duckbench:t');
+        await communicator.makedir('duckbench:disks');
+        await communicator.assign('t:', 'duckbench:t');
     }
 }
 

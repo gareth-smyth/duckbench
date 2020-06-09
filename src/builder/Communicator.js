@@ -1,131 +1,63 @@
-const net = require('net');
-
-const CLOSE_EVENT = 'CLOSE_EVENT';
-const CONNECT_EVENT = 'CONNECT_EVENT';
-const READY_EVENT = 'READY_EVENT';
-const DATA_EVENT = 'DATA_EVENT';
-const COMMAND_RECEIVED = 'COMMAND_RECEIVED';
+const CommandBuilder = require('./CommandRunner');
+const SocketCommunicator = require('./SocketCommunicator');
 
 class Communicator {
-    constructor(controlCallback = this.noCallback) {
-        this.client = new net.Socket();
-        this.currentLine = '';
-        this.lastCharLF = false;
-        this.controlCallback = controlCallback;
-        this.client.on('data', this._dataEvent.bind(this));
-        this.client.on('close', this._closeEvent.bind(this));
-        this.client.on('connect', this._connectEvent.bind(this));
-        this.client.on('ready', this._readyEvent.bind(this));
+    /* istanbul ignore next */
+    constructor(controlCallback = this.noCallback,
+                socketCommunicator = new SocketCommunicator(controlCallback),
+                commandRunner = new CommandBuilder(socketCommunicator)) {
+        this.commandRunner = commandRunner;
+        this.socketCommunicator = socketCommunicator;
     }
 
-    /* Istanbul ignore function */
+    /* istanbul ignore next */
     noCallback() { }
 
-    sendCommand(commandString, commandCallback = this.noCallback) {
-        this.commandRunning = `${commandString}`;
-        this.commandCallback = commandCallback;
-        this.status = 'SEND_COMMAND';
-        Logger.info(`I am running the command "${commandString.trim()}" on the Amiga`);
-        this.client.write(`${commandString}\r`);
-        this.runningCommandData = [];
-        return new Promise((resolve) => {
-            this.runningCommandResolve = resolve;
-        });
+    async run(commandString, options, commandCallback, expectedResponse) {
+        return this.commandRunner.run(commandString, options, commandCallback, expectedResponse);
+    }
+
+    async assign(name, folder, options = {}, commandCallback = this.noCallback) {
+        return this.commandRunner.run(`assign ${name} ${folder}`, options, commandCallback);
+    }
+
+    async cd(folder, options = {}, commandCallback = this.noCallback) {
+        return this.commandRunner.run(`cd ${folder}`, options, commandCallback);
+    }
+
+    async copy(source, destination, options = {}, commandCallback = this.noCallback) {
+        return this.commandRunner.run(`copy ${source} ${destination}`, options, commandCallback);
+    }
+
+    async delete(filename, options = {}, commandCallback = this.noCallback) {
+        const expectedResponse = `${filename}  Deleted`;
+        return this.commandRunner.run(`delete ${filename}`, options, commandCallback, expectedResponse);
+    }
+
+    async echo(content, options = {}, commandCallback = this.noCallback) {
+        return this.commandRunner.run(`echo "${content}"`, options, commandCallback);
+    }
+
+    async format(drive, volumeName, options = {}, commandCallback = this.noCallback) {
+        const commandString = `format drive ${drive} name ${volumeName}`;
+        const expectedResponse = 'Initializing disk...';
+        return this.commandRunner.run(commandString, options, commandCallback, expectedResponse);
+    }
+
+    async makedir(folder, options = {}, commandCallback = this.noCallback) {
+        return this.commandRunner.run(`makedir ${folder}`, options, commandCallback);
+    }
+
+    async path(folder, options = {}, commandCallback = this.noCallback) {
+        return this.commandRunner.run(`path ${folder}`, options, commandCallback);
     }
 
     close() {
-        this.client.destroy();
-    }
-
-    _dataEvent(data) {
-        Logger.trace(`Got data ${JSON.stringify(data.toString())}`);
-        const dataString = data.toString();
-
-        for (let charIdx = 0; charIdx <= dataString.length; charIdx++) {
-            const char = dataString.charAt(charIdx);
-            this.currentLine += char;
-            if (((char === '\n' || char === '\r') && this.lastCharLF) || (this._responseIsPrompt(this.currentLine))) {
-                this._processResponse(this.currentLine.replace('\n\r', ''));
-                this.currentLine = '';
-                this.lastCharLF = false;
-            } else if (char === '\n' || char === '\r') {
-                this.lastCharLF = true;
-            }
-        }
-    }
-
-    _closeEvent() {
-        this.controlCallback({message: CLOSE_EVENT});
-        Logger.info('The Amiga has closed the connection');
-    }
-
-    _connectEvent() {
-        this.controlCallback({message: CONNECT_EVENT});
-        Logger.info('I am connected to the Amiga');
-    }
-
-    _readyEvent() {
-        this.controlCallback({message: READY_EVENT});
-        Logger.info('I have opened communication with the Amiga');
+        this.socketCommunicator.close();
     }
 
     connect() {
-        const connectingPromise = new Promise((resolve) => {
-            this.status = 'CONNECTING';
-            this.connectedResolve = resolve;
-        });
-        this.client.connect(1234, '127.0.0.1');
-        return connectingPromise;
-    }
-
-    _processResponse(responseLine) {
-        Logger.trace(`While status is ${this.status} I got ${JSON.stringify(responseLine)}`);
-
-        switch (this.status) {
-        case 'CONNECTING':
-            if (this._responseIsPrompt(responseLine)) {
-                Logger.info('I have communication with the Amiga.');
-                this.status = 'CONNECTED';
-                setTimeout(this.connectedResolve, 1000);
-            } else {
-                this.controlCallback({message: DATA_EVENT, data: responseLine});
-                Logger.debug(`While connecting I got this message: ${JSON.stringify(responseLine)}`);
-            }
-            break;
-        case 'CONNECTED':
-            this.controlCallback({message: DATA_EVENT, data: responseLine});
-            Logger.error(`While connected but not waiting on a command to finish I got this message: ${JSON.stringify(responseLine)}`);
-            break;
-        case 'SEND_COMMAND':
-            if (responseLine.replace('\\', '').match(this.commandRunning.replace('\\', ''))) {
-                this.status = 'COMMAND_RUNNING';
-                this.commandCallback({message: COMMAND_RECEIVED, data: responseLine});
-                Logger.info(`The Amiga is executing the command "${this.commandRunning.trim()}" and I am waiting for the response.`);
-            } else {
-                this.controlCallback({message: DATA_EVENT, data: responseLine});
-                Logger.error(`I ran the command "${this.commandRunning.trim()}" and have received the response ${JSON.stringify(responseLine)} but I expected an echo`);
-            }
-            break;
-        case 'COMMAND_RUNNING':
-            if (this._responseIsPrompt(responseLine)) {
-                Logger.debug(`I ran the command "${this.commandRunning.trim()}" and it has returned the values \r\n---\r\n${this.runningCommandData.join('\r\n')}\r\n---`);
-                Logger.info(`I ran the command ${this.commandRunning.trim()} and it completed.`);
-                this.status = 'CONNECTED';
-                setTimeout(() => {
-                    this.runningCommandResolve(this.runningCommandData);
-                    this.runningCommandData = [];
-                }, 1000);
-            } else {
-                this.commandCallback({message: DATA_EVENT, data: responseLine});
-                Logger.trace(`I ran the command ${this.commandRunning.trim()} and have received the response ${JSON.stringify(responseLine)}`);
-                this.runningCommandData.push(responseLine);
-            }
-            break;
-        }
-    }
-
-    _responseIsPrompt(responseLine) {
-        return responseLine.match('2..*>');
+        return this.socketCommunicator.connect();
     }
 }
 

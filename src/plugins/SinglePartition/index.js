@@ -48,9 +48,11 @@ class SinglePartition {
         environmentSetup.attachHDF(config.optionValues.device, location);
     }
 
-    async install(config, emu, pluginStore) {
+    async install(config, communicator, pluginStore) {
         const enterFile = pluginStore.getPlugin('HitEnterFile').getFile();
-        return emu.sendCommand(`format drive ${config.optionValues.device} name ${config.optionValues.volumeName} ffs quick intl noicons < ${enterFile}`);
+        return communicator.format(config.optionValues.device, config.optionValues.volumeName, {
+            ffs: true, quick: true, intl: true, noicons: true, REDIRECT_IN: enterFile,
+        });
     }
 }
 
