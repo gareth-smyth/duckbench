@@ -3,9 +3,15 @@ export default class Configuration {
         this.plugins = plugins;
         this.currentId = 1001;
         this.selectedPlugins = [];
+
         const partitionPlugin = this.addSelectedPlugin('partition');
         this.setSelectedPluginName(partitionPlugin.id, 'SinglePartition');
-        this.addSelectedPlugin('workbench');
+
+        const workbenchPlugin = this.addSelectedPlugin('workbench');
+        this.setSelectedPluginName(workbenchPlugin.id, 'InstallWorkbench310');
+
+        const systemPlugin = this.addSelectedPlugin('system');
+        this.setSelectedPluginName(systemPlugin.id, 'CD32');
     }
 
     setSelectedPluginName(id, pluginName) {
@@ -48,13 +54,17 @@ export default class Configuration {
         return this.selectedPlugins.find(selectedPlugin => selectedPlugin.type === 'workbench');
     }
 
+    getSystemSelectedPlugin() {
+        return this.selectedPlugins.find(selectedPlugin => selectedPlugin.type === 'system');
+    }
+
     getPartitionSelectedPlugin() {
         return this.selectedPlugins.find(selectedPlugin => selectedPlugin.type === 'partition');
     }
 
     getNonRootSelectedPlugins() {
         return this.selectedPlugins.filter(selectedPlugin =>
-            selectedPlugin.type !== 'workbench' && selectedPlugin.type !== 'partition');
+            selectedPlugin.type !== 'workbench' && selectedPlugin.type !== 'partition' && selectedPlugin.type !== 'system');
     }
 
     getSelectedPlugin(id) {

@@ -118,6 +118,18 @@ it('runs the path command with defaults', async () => {
     expect(commandRunner.run).toBeCalledWith('path dh1:folder', {}, expect.any(Function));
 });
 
+it('runs the protect command', async () => {
+    await communicator.protect('dh1:folder', options, callback);
+    expect(commandRunner.run).toHaveBeenCalledTimes(1);
+    expect(commandRunner.run).toBeCalledWith('protect dh1:folder', options, callback);
+});
+
+it('runs the protect command with defaults', async () => {
+    await communicator.protect('dh1:folder');
+    expect(commandRunner.run).toHaveBeenCalledTimes(1);
+    expect(commandRunner.run).toBeCalledWith('protect dh1:folder', {}, expect.any(Function));
+});
+
 it('closes the socket communicator', async () => {
     await communicator.close();
     expect(socketCommunicator.close).toHaveBeenCalledTimes(1);

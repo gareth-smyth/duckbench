@@ -24,7 +24,7 @@ beforeEach(() => {
 
 it('calls unADF for each workbench disk', async () => {
     const installWorkbench300 = new InstallWorkbench300();
-    await installWorkbench300.install({}, communicator, pluginStore);
+    await installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: true});
 
     expect(unADF.run).toHaveBeenCalledTimes(6);
     expect(unADF.run).toHaveBeenCalledWith('DB_OS_DISKS:', 'amiga-os-300-install.adf',
@@ -47,7 +47,8 @@ it('throws an error if it cannot unADF a disk', async () => {
     });
 
     const installWorkbench300 = new InstallWorkbench300();
-    await expect(installWorkbench300.install({}, communicator, pluginStore)).rejects.toThrowError('unadf error');
+    await expect(installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: true}))
+        .rejects.toThrowError('unadf error');
 
     expect(unADF.run).toHaveBeenCalledTimes(2);
     expect(communicator.assign).toHaveBeenCalledTimes(0);
@@ -57,7 +58,7 @@ it('throws an error if it cannot unADF a disk', async () => {
 
 it('calls the communicator to assign the install disk', async () => {
     const installWorkbench300 = new InstallWorkbench300();
-    await installWorkbench300.install({}, communicator, pluginStore);
+    await installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: true});
 
     expect(communicator.assign).toHaveBeenCalledTimes(6);
     expect(communicator.assign).toHaveBeenCalledWith('Install3.0:', 'duckbench:disks/Install3.0');
@@ -73,7 +74,8 @@ it('throws an error if assign fails', async () => {
         throw new Error('assign error');
     });
     const installWorkbench300 = new InstallWorkbench300();
-    await expect(installWorkbench300.install({}, communicator, pluginStore)).rejects.toThrowError('assign error');
+    await expect(installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: true}))
+        .rejects.toThrowError('assign error');
 
     expect(unADF.run).toHaveBeenCalledTimes(6);
     expect(communicator.assign).toHaveBeenCalledTimes(1);
@@ -83,7 +85,7 @@ it('throws an error if assign fails', async () => {
 
 it('calls patch for the install file', async () => {
     const installWorkbench300 = new InstallWorkbench300();
-    await installWorkbench300.install({}, communicator, pluginStore);
+    await installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: true});
 
     expect(patch.run).toHaveBeenCalledTimes(1);
     expect(patch.run).toHaveBeenCalledWith('Install3.0:Install/Install', 'DB_TOOLS:wb3.0_install.patch',
@@ -96,7 +98,8 @@ it('throws an error if patch fails', async () => {
     });
 
     const installWorkbench300 = new InstallWorkbench300();
-    await expect(installWorkbench300.install({}, communicator, pluginStore)).rejects.toThrowError('patch error');
+    await expect(installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: true}))
+        .rejects.toThrowError('patch error');
 
     expect(unADF.run).toHaveBeenCalledTimes(6);
     expect(communicator.assign).toHaveBeenCalledTimes(6);
@@ -104,9 +107,33 @@ it('throws an error if patch fails', async () => {
     expect(installerLG.run).toHaveBeenCalledTimes(0);
 });
 
+it('calls patch for the startup sequence if there is no floppy', async () => {
+    const installWorkbench300 = new InstallWorkbench300();
+    await installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: false});
+
+    expect(patch.run).toHaveBeenCalledTimes(2);
+    expect(patch.run).toHaveBeenCalledWith('DH0:s/startup-sequence', 'DB_TOOLS:wb3.0_no_floppy_startup.patch',
+        'duckbench:c/', {}, communicator);
+});
+
+it('throws an error if patching startup sequence fails', async () => {
+    patch.run.mockResolvedValueOnce({}).mockImplementation(() => {
+        throw new Error('patch startup error');
+    });
+
+    const installWorkbench300 = new InstallWorkbench300();
+    await expect(installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: false}))
+        .rejects.toThrowError('patch startup error');
+
+    expect(unADF.run).toHaveBeenCalledTimes(6);
+    expect(communicator.assign).toHaveBeenCalledTimes(6);
+    expect(patch.run).toHaveBeenCalledTimes(2);
+    expect(installerLG.run).toHaveBeenCalledTimes(1);
+});
+
 it('calls installerLG to install workbench', async () => {
     const installWorkbench300 = new InstallWorkbench300();
-    await installWorkbench300.install({}, communicator, pluginStore);
+    await installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: true});
 
     expect(installerLG.run).toHaveBeenCalledTimes(1);
     expect(installerLG.run).toHaveBeenCalledWith('Install3.0:install/install', {'REDIRECT_IN': 'DB_TOOLS:install_key'},
@@ -119,7 +146,8 @@ it('throws an error if installerLG fails', async () => {
     });
 
     const installWorkbench300 = new InstallWorkbench300();
-    await expect(installWorkbench300.install({}, communicator, pluginStore)).rejects.toThrowError('installerLG error');
+    await expect(installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: true}))
+        .rejects.toThrowError('installerLG error');
 
     expect(unADF.run).toHaveBeenCalledTimes(6);
     expect(communicator.assign).toHaveBeenCalledTimes(6);
@@ -136,7 +164,7 @@ it('logs progress messages', async () => {
     });
 
     const installWorkbench300 = new InstallWorkbench300();
-    await installWorkbench300.install({}, communicator, pluginStore);
+    await installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: true});
 
     expect(Logger.info).toHaveBeenCalledWith('10%');
 });
@@ -151,7 +179,7 @@ it('logs non-progress messages', async () => {
     });
 
     const installWorkbench300 = new InstallWorkbench300();
-    await installWorkbench300.install({}, communicator, pluginStore);
+    await installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: true});
 
     expect(Logger.trace).toHaveBeenCalledWith(JSON.stringify(event));
 });

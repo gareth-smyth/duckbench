@@ -30,12 +30,12 @@ class Runner {
         }
     }
 
-    async install(communicator) {
+    async install(communicator, environmentSetup) {
         for (let configIndex = 0; configIndex < this.configs.length; configIndex++) {
             const config = this.configs[configIndex];
             const plugin = this.pluginStore.getPlugin(config.name);
             if (plugin.install) {
-                await plugin.install(config, communicator, this.pluginStore);
+                await plugin.install(config, communicator, this.pluginStore, environmentSetup);
             }
         }
     }

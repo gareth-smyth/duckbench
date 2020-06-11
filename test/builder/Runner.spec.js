@@ -91,12 +91,13 @@ describe('install', () => {
         const runner = new Runner();
         runner.configs = [{name: 'a'}, {name: 'b'}, {name: 'c'}];
         const communicator = {};
-        await runner.install(communicator);
+        const environmentSetup = {};
+        await runner.install(communicator, environmentSetup);
 
         expect(installFunc1).toHaveBeenCalledTimes(1);
-        expect(installFunc1).toHaveBeenCalledWith({name: 'a'}, communicator, mockPluginStoreInstance);
+        expect(installFunc1).toHaveBeenCalledWith({name: 'a'}, communicator, mockPluginStoreInstance, environmentSetup);
         expect(installFunc2).toHaveBeenCalledTimes(1);
-        expect(installFunc2).toHaveBeenCalledWith({name: 'c'}, communicator, mockPluginStoreInstance);
+        expect(installFunc2).toHaveBeenCalledWith({name: 'c'}, communicator, mockPluginStoreInstance, environmentSetup);
     });
 });
 

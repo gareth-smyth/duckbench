@@ -1,6 +1,6 @@
 const UnADF = require('../../../src/plugins/UnADF');
 
-const communicator = {copy: jest.fn(), cd: jest.fn(), run: jest.fn(), delete: jest.fn()};
+const communicator = {copy: jest.fn(), cd: jest.fn(), run: jest.fn(), delete: jest.fn(), protect: jest.fn()};
 const callback = 'aCallback';
 const options = 'options';
 
@@ -9,6 +9,7 @@ beforeEach(() => {
     communicator.cd.mockReset();
     communicator.run.mockReset();
     communicator.delete.mockReset();
+    communicator.protect.mockReset();
 });
 
 it('copies the source file to the duckbench drive', async ()=> {
@@ -31,6 +32,13 @@ it('extracts the ADF to the requested folder', async ()=> {
 
     expect(communicator.run)
         .toHaveBeenCalledWith('unadf duckbench:file.adf DEST=b:disks/', options, callback, /Saved \d* files/);
+});
+
+it('unprotects the temp ADF', async ()=> {
+    const unADF = new UnADF();
+    await unADF.run('a:', 'file.adf', 'b:disks/', 'somewhere:', options, communicator, callback);
+
+    expect(communicator.protect).toHaveBeenCalledWith('duckbench:file.adf', {'d': true, 'ADD': true});
 });
 
 it('deletes the temp ADF', async ()=> {
@@ -71,6 +79,17 @@ it('throws an error when the unADF command throws an error', async () => {
     await expect(
         unADF.run('a:', 'file.adf', 'b:disks/', 'somewhere:', options, communicator, callback),
     ).rejects.toThrowError('unADF error');
+});
+
+it('throws an error when the protect command throws an error', async () => {
+    communicator.protect.mockImplementation(() => {
+        throw new Error('protect error');
+    });
+
+    const unADF = new UnADF();
+    await expect(
+        unADF.run('a:', 'file.adf', 'b:disks/', 'somewhere:', options, communicator, callback),
+    ).rejects.toThrowError('protect error');
 });
 
 it('throws an error when the delete command throws an error', async () => {

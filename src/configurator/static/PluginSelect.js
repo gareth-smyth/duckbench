@@ -19,7 +19,7 @@ export default class PluginSelect {
                 }).map(configKey => {
                     return plugins[configKey];
                 }).map(plugin => {
-                    return m('option', { value: plugin.name }, plugin.label)
+                    return m('option', { key: plugin.name, value: plugin.name }, plugin.label)
                 }),
             ),
             (selectedPlugin.name && showConfigButton) ? m('.btn.btn-info.ml-1', { onclick: () => { this.toggleConfig(selectedPlugin.id, configuration) } }, [

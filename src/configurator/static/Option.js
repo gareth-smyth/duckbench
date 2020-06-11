@@ -21,12 +21,30 @@ export default class Option {
     }
 
     option(selectedPlugin, option, optionValue, configuration) {
-        return m('input[type=text].form-control', {
-            selectedPluginId: selectedPlugin.id,
-            name: option.name,
-            value: optionValue,
-            onchange: (event) => { this.optionChanged(event, configuration) },
-        });
+        if(option.type === 'text') {
+            return m('input[type=text].form-control', {
+                selectedPluginId: selectedPlugin.id,
+                name: option.name,
+                value: optionValue,
+                onchange: (event) => { this.optionChanged(event, configuration) },
+            });
+        } else if(option.type === 'list'){
+            return m('select.btn.btn-info.dropdown-toggle', {
+                    selectedPluginId: selectedPlugin.id,
+                    name: option.name,
+                    value: optionValue,
+                    key: optionValue,
+                    onchange: (event) => { this.optionChanged(event, configuration) }
+                },
+                option.items.map(item => {
+                    if(typeof item === 'string') {
+                        return m('option', { key: item, value: item }, item)
+                    } else {
+                        return m('option', { key: item.value, value: item.value }, item.label)
+                    }
+                }),
+            );
+        }
     }
 
     optionChanged(event, configuration) {

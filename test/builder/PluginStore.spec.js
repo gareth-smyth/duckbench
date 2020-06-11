@@ -50,6 +50,6 @@ it('creates new plugins', () => {
 it('gets all plugin structures', () => {
     const structures = PluginStore.getStructures().sort((a, b) => a.name.localeCompare(b.name));
     expect(structures.length).toBeGreaterThan(1);
-    expect(structures[0].name).toEqual('HitEnterFile');
-    expect(structures[0].label).toEqual('Hit enter automator');
+    expect(structures[0].name).toEqual('Amiga1200');
+    expect(structures[0].label).toEqual('Amiga 1200');
 });

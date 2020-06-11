@@ -15,6 +15,7 @@ export default class App {
     view() {
         if(this.configuration.plugins) {
             return [
+                // m('pre', {style: 'position:absolute', 'overflow-y': 'scroll'}, JSON.stringify(this.configuration.selectedPlugins, null, 2)), // DEBUG ONLY
                 m('nav.navbar.navbar-default.fixed-top.navbar-inverse.bg-primary', [
                     m('.container',
                         m('.container', [
@@ -48,11 +49,20 @@ export default class App {
                     }),
                 ]),
                 m('.container.section-container', [
+                    m('h2.mb-4.mt-4', "Which Amiga are you running?"),
+                    m(PluginSelect, {
+                        configuration: this.configuration,
+                        includeTypes: ['system'],
+                        id: this.configuration.getSystemSelectedPlugin().id,
+                        noRemove: true,
+                    }),
+                ]),
+                m('.container.section-container', [
                     m('h2.mb-4.mt-4', "Which tools would you like to install?"),
                     m('', this.configuration.getNonRootSelectedPlugins().map(selectedPlugin => {
                         return m(PluginSelect, {
                             configuration: this.configuration,
-                            ignoreTypes: ['workbench', 'internal', 'partition'],
+                            ignoreTypes: ['workbench', 'internal', 'partition', 'system'],
                             id: selectedPlugin.id,
                         });
                     })),

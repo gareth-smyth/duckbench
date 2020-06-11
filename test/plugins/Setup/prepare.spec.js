@@ -32,13 +32,6 @@ beforeEach(() => {
     MockPartition.mockImplementation(() => mockPartitionInstance);
 });
 
-it('returns HitEnterFile as a dependency', () => {
-    const setup = new Setup();
-    const config = setup.configure();
-
-    expect(config).toEqual([{name: 'HitEnterFile'}]);
-});
-
 it('inserts the boot disk', async () => {
     const setup = new Setup();
     await setup.prepare({}, environmentSetup);
@@ -75,20 +68,6 @@ it('sets the rom', async () => {
     await setup.prepare({}, environmentSetup);
 
     expect(environmentSetup.setRom).toHaveBeenCalledWith('amiga-os-310-a1200.rom');
-});
-
-it('sets the cpu', async () => {
-    const setup = new Setup();
-    await setup.prepare({}, environmentSetup);
-
-    expect(environmentSetup.setCPU).toHaveBeenCalledWith('68020');
-});
-
-it('sets the chipmem', async () => {
-    const setup = new Setup();
-    await setup.prepare({}, environmentSetup);
-
-    expect(environmentSetup.setChipMem).toHaveBeenCalledWith('2');
 });
 
 it('creates the boot ADF with the required setup files', async () => {

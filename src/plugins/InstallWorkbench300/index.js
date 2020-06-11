@@ -38,11 +38,18 @@ class InstallWorkbench310 {
         }];
     }
 
-    prepare() {
+    prepare(config, environmentSetup) {
         const patchSource = path.join(__dirname, 'wb3.0_install.patch');
         const patchDestination = path.join(global.TOOLS_DIR, 'wb3.0_install.patch');
         Logger.debug(`Copying workbench 3.0 install script patch file from "${patchSource}" to "${patchDestination}".`);
         fs.copyFileSync(patchSource, patchDestination);
+
+        if (!environmentSetup.floppyDrive) {
+            const floppyPatchSource = path.join(__dirname, 'wb3.0_no_floppy_startup.patch');
+            const floppyPatchDestination = path.join(global.TOOLS_DIR, 'wb3.0_no_floppy_startup.patch');
+            Logger.debug(`Copying startup sequence no floppy patch file from "${floppyPatchSource}" to "${floppyPatchDestination}".`);
+            fs.copyFileSync(floppyPatchSource, floppyPatchDestination);
+        }
 
         const installKeySource = path.join(__dirname, 'install_key');
         const installKeyDestination = path.join(global.TOOLS_DIR, 'install_key');
@@ -50,7 +57,7 @@ class InstallWorkbench310 {
         fs.copyFileSync(installKeySource, installKeyDestination);
     }
 
-    async install(config, communicator, pluginStore) {
+    async install(config, communicator, pluginStore, environmentSetup) {
         const unADF = pluginStore.getPlugin('UnADF');
         for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
             const fileName = workbenchDisks[diskIndex].file;
@@ -68,6 +75,12 @@ class InstallWorkbench310 {
         const installOptions = {REDIRECT_IN: 'DB_TOOLS:install_key'};
         await installerLg.run('Install3.0:install/install', installOptions, communicator,
             this.handleInstallUpdates, 'The installation of Release 3 is now complete.');
+
+        if (!environmentSetup.floppyDrive) {
+            const installedStartupSequence = 'DH0:s/startup-sequence';
+            const startupSequencePatch = 'DB_TOOLS:wb3.0_no_floppy_startup.patch';
+            await patch.run(installedStartupSequence, startupSequencePatch, 'duckbench:c/', {}, communicator);
+        }
     }
 
     handleInstallUpdates(event) {
@@ -80,7 +93,7 @@ class InstallWorkbench310 {
 
     finalise(config, environmentSetup) {
         const runningLocation = path.join(environmentSetup.executionFolder, 'DH0.hdf');
-        const saveLocation = path.join(process.cwd(), 'Workbench.hdf');
+        const saveLocation = path.join(process.cwd(), `Workbench300_${environmentSetup.systemName}.hdf`);
         fs.copyFileSync(runningLocation, saveLocation);
     }
 }

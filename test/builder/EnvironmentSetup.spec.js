@@ -56,6 +56,12 @@ it('creates only the execution folder if the root folder exists', () => {
     expect(fs.mkdirSync).toHaveBeenCalledWith(path.join(global.BASE_DIR, 'execution', '20200401182930235'));
 });
 
+it('sets the system name', () => {
+    const environmentSetup = new EnvironmentSetup({});
+    environmentSetup.setSystemName('Amiga 100-');
+    expect(environmentSetup.systemName).toEqual('Amiga 100-');
+});
+
 it('sets the rom', () => {
     const environmentSetup = new EnvironmentSetup({});
     environmentSetup.setRom('somerom');
@@ -72,6 +78,18 @@ it('sets the chip ram', () => {
     const environmentSetup = new EnvironmentSetup({});
     environmentSetup.setChipMem('1MB');
     expect(environmentSetup.chipMem).toEqual('1MB');
+});
+
+it('sets the fast ram', () => {
+    const environmentSetup = new EnvironmentSetup({});
+    environmentSetup.setFastMem('4MB');
+    expect(environmentSetup.fastMem).toEqual('4MB');
+});
+
+it('sets the floppy drive', () => {
+    const environmentSetup = new EnvironmentSetup({});
+    environmentSetup.setFloppyDrive(true);
+    expect(environmentSetup.floppyDrive).toEqual(true);
 });
 
 it('adds HDFs', () => {

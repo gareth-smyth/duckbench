@@ -20,7 +20,8 @@ class WinUAEEnvironment {
         fs.writeSync(configFile, `rom_path=${config.romFolder}\n`);
         fs.writeSync(configFile, `cpu_type=${environment.cpu}\n`);
 
-        fs.writeSync(configFile, `chipmem_size=${environment.chipMem}\n`);
+        fs.writeSync(configFile, `chipmem_size=${Number(environment.chipMem) * 2}\n`);
+        fs.writeSync(configFile, `z3mem_size=${environment.fastMem}\n`);
         fs.writeSync(configFile, 'floppy_speed=800\n');
 
         this.writeDiskConfig(configFile, environment.disks);

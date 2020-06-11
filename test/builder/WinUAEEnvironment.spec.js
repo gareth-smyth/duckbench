@@ -71,13 +71,14 @@ it('writes the non-disk related parts of the config', () => {
     new WinUAEEnvironment(
         {emuRoot: '/path/to/winuae/', romFolder: 'path/to/rom/folder'},
         {
-            executionFolder: '/some/folder', disks: {}, rom: 'arom', cpu: 'acpu', chipMem: 'someMem',
+            executionFolder: '/some/folder', disks: {}, rom: 'arom', cpu: 'acpu', chipMem: '4', fastMem: 'someMem',
         },
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, `kickstart_rom_file=${path.join('path/to/rom/folder/', 'arom')}\n`);
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_type=acpu\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'chipmem_size=someMem\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'chipmem_size=8\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'z3mem_size=someMem\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'rom_path=path/to/rom/folder\n');
 });
 

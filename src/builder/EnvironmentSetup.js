@@ -16,6 +16,10 @@ class EnvironmentSetup {
         fs.mkdirSync(this.executionFolder);
     }
 
+    setSystemName(systemName) {
+        this.systemName = systemName;
+    }
+
     setRom(rom) {
         this.rom = rom;
     }
@@ -26,6 +30,14 @@ class EnvironmentSetup {
 
     setChipMem(chipMem) {
         this.chipMem = chipMem;
+    }
+
+    setFastMem(fastMem) {
+        this.fastMem = fastMem;
+    }
+
+    setFloppyDrive(floppyDrive) {
+        this.floppyDrive = floppyDrive;
     }
 
     insertDisk(drive, diskDefinition) {
