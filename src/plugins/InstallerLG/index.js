@@ -25,7 +25,8 @@ class InstallerLG {
             await communicator.copy('DB_TOOLS:Installer68k', config.optionValues.location);
             this.installed[config.optionValues.location] = true;
         } else {
-            Logger.trace(`Not installing InstallerLG as it has already been installed to ${config.optionValues.location}`);
+            Logger.trace('Not installing InstallerLG as it has already been installed ' +
+                `to ${config.optionValues.location}`);
         }
     }
 

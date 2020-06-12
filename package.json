@@ -96,10 +96,7 @@
       "space-infix-ops": "error",
       "max-len": [
         "error",
-        120,
-        {
-          "ignoreTemplateLiterals": true
-        }
+        120
       ],
       "no-undef": [
         "error"

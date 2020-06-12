@@ -47,13 +47,15 @@ class InstallWorkbench310 {
         if (!environmentSetup.floppyDrive) {
             const floppyPatchSource = path.join(__dirname, 'wb3.0_no_floppy_startup.patch');
             const floppyPatchDestination = path.join(global.TOOLS_DIR, 'wb3.0_no_floppy_startup.patch');
-            Logger.debug(`Copying startup sequence no floppy patch file from "${floppyPatchSource}" to "${floppyPatchDestination}".`);
+            Logger.debug(`Copying startup sequence no floppy patch file from "${floppyPatchSource}" ` +
+                `to "${floppyPatchDestination}".`);
             fs.copyFileSync(floppyPatchSource, floppyPatchDestination);
         }
 
         const installKeySource = path.join(__dirname, 'install_key');
         const installKeyDestination = path.join(global.TOOLS_DIR, 'install_key');
-        Logger.debug(`Copying workbench 3.0 install script redirected input file from "${installKeySource}" to "${installKeyDestination}".`);
+        Logger.debug(`Copying workbench 3.0 install script redirected input file from "${installKeySource}" ` +
+            `to "${installKeyDestination}".`);
         fs.copyFileSync(installKeySource, installKeyDestination);
     }
 
@@ -65,7 +67,8 @@ class InstallWorkbench310 {
         }
 
         for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
-            await communicator.assign(workbenchDisks[diskIndex].assign, `duckbench:disks/${workbenchDisks[diskIndex].diskName}`);
+            const target = `duckbench:disks/${workbenchDisks[diskIndex].diskName}`;
+            await communicator.assign(workbenchDisks[diskIndex].assign, target);
         }
 
         const patch = pluginStore.getPlugin('Patch');

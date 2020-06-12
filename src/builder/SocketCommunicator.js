@@ -94,21 +94,25 @@ class SocketCommunicator {
             break;
         case 'CONNECTED':
             this.controlCallback({message: DATA_EVENT, data: responseLine});
-            Logger.error(`While connected but not waiting on a command to finish I got this message: ${JSON.stringify(responseLine)}`);
+            Logger.error('While connected but not waiting on a command to finish I got this ' +
+                `message: ${JSON.stringify(responseLine)}`);
             break;
         case 'SEND_COMMAND':
             if (responseLine.replace('\\', '').match(this.commandRunning.replace('\\', ''))) {
                 this.status = 'COMMAND_RUNNING';
                 this.commandCallback({message: COMMAND_RECEIVED, data: responseLine});
-                Logger.info(`The Amiga is executing the command "${this.commandRunning.trim()}" and I am waiting for the response.`);
+                Logger.info(`The Amiga is executing the command "${this.commandRunning.trim()}"` +
+                    ' and I am waiting for the response.');
             } else {
                 this.controlCallback({message: DATA_EVENT, data: responseLine});
-                Logger.error(`I ran the command "${this.commandRunning.trim()}" and have received the response ${JSON.stringify(responseLine)} but I expected an echo`);
+                Logger.error(`I ran the command "${this.commandRunning.trim()}" and have received the response ` +
+                    `${JSON.stringify(responseLine)} but I expected an echo`);
             }
             break;
         case 'COMMAND_RUNNING':
             if (this._responseIsPrompt(responseLine)) {
-                Logger.debug(`I ran the command "${this.commandRunning.trim()}" and it has returned the values \r\n---\r\n${this.runningCommandData.join('\r\n')}\r\n---`);
+                Logger.debug(`I ran the command "${this.commandRunning.trim()}" and it has returned the values ` +
+                    `\r\n---\r\n${this.runningCommandData.join('\r\n')}\r\n---`);
                 Logger.info(`I ran the command ${this.commandRunning.trim()} and it completed.`);
                 this.status = 'CONNECTED';
                 setTimeout(() => {
@@ -117,7 +121,8 @@ class SocketCommunicator {
                 }, 1000);
             } else {
                 this.commandCallback({message: DATA_EVENT, data: responseLine});
-                Logger.trace(`I ran the command ${this.commandRunning.trim()} and have received the response ${JSON.stringify(responseLine)}`);
+                Logger.trace(`I ran the command ${this.commandRunning.trim()} and have received the ` +
+                    `response ${JSON.stringify(responseLine)}`);
                 this.runningCommandData.push(responseLine);
             }
             break;

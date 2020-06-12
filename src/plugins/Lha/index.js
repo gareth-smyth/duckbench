@@ -42,7 +42,8 @@ class Lha {
 
     async install(config, communicator) {
         if (!this.installed[config.optionValues.location]) {
-            await communicator.run(`DB_TOOLS:lha.run -x ${config.optionValues.location}`, {}, undefined, 'Extracting: lha_68k');
+            const commandString = `DB_TOOLS:lha.run -x ${config.optionValues.location}`;
+            await communicator.run(commandString, {}, undefined, 'Extracting: lha_68k');
             this.installed[config.optionValues.location] = true;
         } else {
             Logger.trace(`Not installing LHA as it has already been installed to ${config.optionValues.location}`);
@@ -50,7 +51,8 @@ class Lha {
     }
 
     async run(sourceFile, destination, lhaLocation, lhaOptions, communicator, commandCallback) {
-        await communicator.run(`${lhaLocation}lha_68k x ${sourceFile} ${destination}`, lhaOptions, commandCallback, 'Operation successful.');
+        const commandString = `${lhaLocation}lha_68k x ${sourceFile} ${destination}`;
+        await communicator.run(commandString, lhaOptions, commandCallback, 'Operation successful.');
     }
 }
 

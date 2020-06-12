@@ -44,7 +44,8 @@ class CD32 {
     }
 
     prepare(config, environmentSetup) {
-        environmentSetup.setSystemName(this.structure().name);
+        environmentSetup.setSystemName('cd32');
+        environmentSetup.setRom('3.1');
         environmentSetup.setCPU(config.optionValues.processor);
         environmentSetup.setChipMem('2');
         environmentSetup.setFastMem(config.optionValues.fastMem);

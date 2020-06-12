@@ -16,9 +16,9 @@ class WinUAEEnvironment {
         fs.writeSync(configFile, 'serial_direct=true\n');
         fs.writeSync(configFile, 'serial_translate=disabled\n');
 
-        fs.writeSync(configFile, `kickstart_rom_file=${path.join(config.romFolder, environment.rom)}\n`);
+        fs.writeSync(configFile, `kickstart_rom_file=${path.join(config.romFolder, environment.getRomFileName())}\n`);
         fs.writeSync(configFile, `rom_path=${config.romFolder}\n`);
-        fs.writeSync(configFile, `cpu_type=${environment.cpu}\n`);
+        fs.writeSync(configFile, `cpu_type=${environment.getCPU()}\n`);
 
         fs.writeSync(configFile, `chipmem_size=${Number(environment.chipMem) * 2}\n`);
         fs.writeSync(configFile, `z3mem_size=${environment.fastMem}\n`);
@@ -40,8 +40,10 @@ class WinUAEEnvironment {
         let diskIdx = 0;
         if (disks.HDF) {
             disks.HDF.forEach((disk) => {
-                fs.writeSync(configFile, `hardfile2=rw,${disk.drive}:${disk.location},0,0,0,512,0,,uae${diskIdx}\n`);
-                fs.writeSync(configFile, `uaehf${diskIdx}=hdf,rw,${disk.drive}:${disk.location},0,0,0,512,0,,uae${diskIdx}\n`);
+                const hardfileLine = `hardfile2=rw,${disk.drive}:${disk.location},0,0,0,512,0,,uae${diskIdx}\n`;
+                const hfLine = `uaehf${diskIdx}=hdf,rw,${disk.drive}:${disk.location},0,0,0,512,0,,uae${diskIdx}\n`;
+                fs.writeSync(configFile, hardfileLine);
+                fs.writeSync(configFile, hfLine);
                 diskIdx += 1;
             });
         }

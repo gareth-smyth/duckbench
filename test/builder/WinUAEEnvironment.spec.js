@@ -17,7 +17,8 @@ beforeEach(() => {
 it('spawns a new winuae 32 bit process', () => {
     const environment = new WinUAEEnvironment(
         {emuRoot: '/path/to/winuae/', romFolder: 'some/place'},
-        {executionFolder: '/some/folder', disks: {}, rom: 'a_rom'},
+        {executionFolder: '/some/folder', disks: {}, rom: 'a_rom',
+            getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
     );
     fs.existsSync = jest.fn().mockReturnValue(true);
     environment.start();
@@ -28,7 +29,8 @@ it('spawns a new winuae 32 bit process', () => {
 it('spawns a new winuae 64 bit process', () => {
     const environment = new WinUAEEnvironment(
         {emuRoot: '/path/to/winuae/', romFolder: 'some/place'},
-        {executionFolder: '/some/folder', disks: {}, rom: 'a_rom'},
+        {executionFolder: '/some/folder', disks: {}, rom: 'a_rom',
+            getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
     );
     fs.existsSync = jest.fn().mockReturnValue(false);
     environment.start();
@@ -39,7 +41,8 @@ it('spawns a new winuae 64 bit process', () => {
 it('kills the winuae process', () => {
     const environment = new WinUAEEnvironment(
         {emuRoot: '/path/to/winuae/', romFolder: 'some/place'},
-        {executionFolder: '/some/folder', disks: {}, rom: 'a_rom'},
+        {executionFolder: '/some/folder', disks: {}, rom: 'a_rom',
+            getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
     );
     const process = {kill: jest.fn()};
     spawn.mockReturnValueOnce(process);
@@ -53,7 +56,8 @@ it('writes the non-configurable parts of the config', () => {
     fs.openSync.mockReturnValueOnce(someFile);
     new WinUAEEnvironment(
         {emuRoot: '/path/to/winuae/', romFolder: 'some/place'},
-        {executionFolder: '/some/folder', disks: {}, rom: 'a_rom'},
+        {executionFolder: '/some/folder', disks: {}, rom: 'a_rom',
+            getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'use_gui=no\n');
@@ -71,12 +75,15 @@ it('writes the non-disk related parts of the config', () => {
     new WinUAEEnvironment(
         {emuRoot: '/path/to/winuae/', romFolder: 'path/to/rom/folder'},
         {
-            executionFolder: '/some/folder', disks: {}, rom: 'arom', cpu: 'acpu', chipMem: '4', fastMem: 'someMem',
+            executionFolder: '/some/folder', disks: {}, rom: 'arom', cpu: '68000',
+            chipMem: '4', fastMem: 'someMem',
+            getRomFileName: () => 'aRomFile', getCPU: () => '68020',
         },
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, `kickstart_rom_file=${path.join('path/to/rom/folder/', 'arom')}\n`);
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_type=acpu\n');
+    const expectedRomPath = `${path.join('path/to/rom/folder/', 'aRomFile')}`;
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, `kickstart_rom_file=${expectedRomPath}\n`);
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_type=68020\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'chipmem_size=8\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'z3mem_size=someMem\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'rom_path=path/to/rom/folder\n');
@@ -95,6 +102,7 @@ it('writes the floppy related parts of the config', () => {
                 ],
             },
             rom: 'arom',
+            getRomFileName: () => 'aRomFile', getCPU: () => '68020',
         },
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
@@ -117,6 +125,7 @@ it('writes the uaehf related parts of the config', () => {
                 ],
             },
             rom: 'arom',
+            getRomFileName: () => 'aRomFile', getCPU: () => '68020',
         },
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');

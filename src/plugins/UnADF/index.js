@@ -62,7 +62,8 @@ class UnADF {
     async run(sourceLocation, sourceFile, destination, unADFLocation, unADFOptions, communicator, commandCallback) {
         await communicator.copy(`${sourceLocation}${sourceFile}`, 'duckbench:');
         await communicator.cd(`${unADFLocation}UnADF`);
-        await communicator.run(`unadf duckbench:${sourceFile} DEST=${destination}`, unADFOptions, commandCallback, RegExp(/Saved \d* files/));
+        const commandString = `unadf duckbench:${sourceFile} DEST=${destination}`;
+        await communicator.run(commandString, unADFOptions, commandCallback, RegExp(/Saved \d* files/));
         await communicator.protect(`duckbench:${sourceFile}`, {'d': true, 'ADD': true});
         await communicator.delete(`duckbench:${sourceFile}`);
     }

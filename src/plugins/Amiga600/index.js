@@ -1,9 +1,9 @@
-class A1200 {
+class A600 {
     structure() {
         return {
-            name: 'Amiga1200',
-            label: 'Amiga 1200',
-            description: 'The home computer for the 90s',
+            name: 'Amiga600',
+            label: 'Amiga 600',
+            description: 'THE COMPUTER YOU`VE ALWAYS DREAMT ABOUT',
             type: 'system',
             options: {
                 rom: {
@@ -11,22 +11,34 @@ class A1200 {
                     label: 'Kickstart Version',
                     type: 'list',
                     items: [
-                        '3.0',
-                        '3.1',
+                        {label: '2.0/2.05', value: '2.05'},
+                        {label: '3.1', value: '3.1'},
                     ],
-                    default: '3.1',
+                    default: '2.05',
                 },
                 processor: {
                     name: 'processor',
                     label: 'Processor',
                     type: 'list',
                     items: [
+                        '68000',
                         '68020',
                         '68030',
                         '68040',
                         '68060',
                     ],
-                    default: '68020',
+                    default: '68000',
+                },
+                chipMem: {
+                    name: 'chipMem',
+                    label: 'Chip RAM',
+                    type: 'list',
+                    items: [
+                        {label: '1 MB', value: '2'},
+                        {label: '1.5 MB', value: '3'},
+                        {label: '2 MB', value: '4'},
+                    ],
+                    default: '2',
                 },
                 fastMem: {
                     name: 'fastMem',
@@ -45,13 +57,13 @@ class A1200 {
     }
 
     prepare(config, environmentSetup) {
-        environmentSetup.setSystemName('a1200');
-        environmentSetup.setRom(config.optionValues.rom);
+        environmentSetup.setSystemName('a600');
         environmentSetup.setCPU(config.optionValues.processor);
-        environmentSetup.setChipMem('2');
+        environmentSetup.setRom(config.optionValues.rom);
+        environmentSetup.setChipMem(config.optionValues.chipMem);
         environmentSetup.setFastMem(config.optionValues.fastMem);
         environmentSetup.setFloppyDrive(true);
     }
 }
 
-module.exports = A1200;
+module.exports = A600;

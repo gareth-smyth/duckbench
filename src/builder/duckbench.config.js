@@ -19,7 +19,8 @@ if (process.env.DUCKBENCH_ROMS && process.env.DUCKBENCH_DISKS && process.env.DUC
         emuRoot: path.join(process.env.AMIGAFOREVERROOT, 'winUAE'),
     };
 } else {
-    throw new Error(`Cannot find required paths. Either AMIGAFOREVERDATA and AMIGAFOREVERROOT should be set, or DUCKBENCH_ROMS, DUCKBENCH_DISKS, and DUCKBENCH_EMU.
+    throw new Error('Cannot find required paths. Either AMIGAFOREVERDATA and AMIGAFOREVERROOT should be set, ' +
+        `or DUCKBENCH_ROMS, DUCKBENCH_DISKS, and DUCKBENCH_EMU.
     AMIGAFOREVERDATA: "${process.env.AMIGAFOREVERDATA}",
     AMIGAFOREVERROOT: "${process.env.AMIGAFOREVERROOT}",
     DUCKBENCH_ROMS: "${process.env.DUCKBENCH_ROMS}",

@@ -87,7 +87,8 @@ it('rejects when the expected response does not match all expectations', async (
     socketCommunicator.runCommand.mockResolvedValue(['a response', 'some other a response']);
 
     const regExpExpected = /some third .* response/;
-    const expectedError = `Expected "${regExpExpected},some other" from "aCommand" but got "a response,some other a response"`;
+    const expectedError = `Expected "${regExpExpected},some other" from "aCommand" ` +
+        'but got "a response,some other a response"';
     await expect(commandRunner.run('aCommand', {}, callback, [regExpExpected, 'some other']))
         .rejects.toThrowError(expectedError);
 });

@@ -15,7 +15,7 @@ const mockEnvironmentSetupInstance = {
 };
 
 const mockRunnerInstance = {
-    configure: jest.fn(),
+    configureAndSetup: jest.fn(),
     prepare: jest.fn(),
     install: jest.fn(),
     finalise: jest.fn(),
@@ -84,8 +84,10 @@ it('creates a runner, configures, prepares, installs and finalises', async () =>
 
     expect(MockRunner).toHaveBeenCalledTimes(1);
     expect(MockRunner).toHaveBeenCalledWith('mock_config');
-    expect(mockRunnerInstance.configure).toHaveBeenCalledTimes(1);
-    expect(mockRunnerInstance.configure).toHaveBeenCalledWith([{name: 'Setup'}, 'plugin_config1', 'plugin_config2']);
+    expect(mockRunnerInstance.configureAndSetup).toHaveBeenCalledTimes(1);
+    expect(mockRunnerInstance.configureAndSetup).toHaveBeenCalledWith(
+        {name: 'Setup'}, ['plugin_config1', 'plugin_config2'],
+    );
     expect(mockRunnerInstance.prepare).toHaveBeenCalledTimes(1);
     expect(mockRunnerInstance.prepare).toHaveBeenCalledWith(mockEnvironmentSetupInstance);
     expect(mockRunnerInstance.install).toHaveBeenCalledTimes(1);
@@ -106,8 +108,8 @@ it('throws an exception when finalising the environment fails', async () => {
         expect(err.message).toEqual('Some error');
         expect(MockRunner).toHaveBeenCalledTimes(1);
         expect(MockRunner).toHaveBeenCalledWith('mock_config');
-        expect(mockRunnerInstance.configure).toHaveBeenCalledTimes(1);
-        expect(mockRunnerInstance.configure).toHaveBeenCalledWith([{name: 'Setup'}, 'plugin_config1']);
+        expect(mockRunnerInstance.configureAndSetup).toHaveBeenCalledTimes(1);
+        expect(mockRunnerInstance.configureAndSetup).toHaveBeenCalledWith({name: 'Setup'}, ['plugin_config1']);
         expect(mockRunnerInstance.prepare).toHaveBeenCalledTimes(1);
         expect(mockRunnerInstance.prepare).toHaveBeenCalledWith(mockEnvironmentSetupInstance);
         expect(mockRunnerInstance.install).toHaveBeenCalledTimes(1);

@@ -1,6 +1,8 @@
 **/amigaFiles/** text eol=lf
 **/install_key text eol=lf
-**/wb3.1_install.patch text eol=lf
+**/wb2.1_install.patch text eol=lf
 **/wb3.0_install.patch text eol=lf
-**/wb3.1_no_floppy_startup.patch text eol=lf
+**/wb3.1_install.patch text eol=lf
+**/wb2.1_no_floppy_startup.patch text eol=lf
 **/wb3.0_no_floppy_startup.patch text eol=lf
+**/wb3.1_no_floppy_startup.patch text eol=lf

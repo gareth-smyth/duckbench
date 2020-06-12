@@ -2,19 +2,18 @@ const fs = require('fs');
 const path = require('path');
 
 const workbenchDisks = [
-    'amiga-os-310-install.adf',
-    'amiga-os-310-workbench.adf',
-    'amiga-os-310-locale.adf',
-    'amiga-os-310-fonts.adf',
-    'amiga-os-310-extras.adf',
-    'amiga-os-310-storage.adf',
+    {file: 'amiga-os-210-install.adf', diskName: 'Install2.1', assign: 'Install2.1:'},
+    {file: 'amiga-os-210-workbench.adf', diskName: 'Workbench2.1', assign: 'Workbench2.1:'},
+    {file: 'amiga-os-210-locale.adf', diskName: 'Locale', assign: 'Locale:'},
+    {file: 'amiga-os-210-fonts.adf', diskName: 'Fonts', assign: 'Fonts:'},
+    {file: 'amiga-os-210-extras.adf', diskName: 'Extras2.1', assign: 'Extras2.1:'},
 ];
 
-class InstallWorkbench310 {
+class InstallWorkbench210 {
     structure() {
         return {
-            name: 'InstallWorkbench310',
-            label: 'Workbench 3.1',
+            name: 'InstallWorkbench210',
+            label: 'Workbench 2.1',
             type: 'workbench',
         };
     }
@@ -39,14 +38,14 @@ class InstallWorkbench310 {
     }
 
     prepare(config, environmentSetup) {
-        const patchSource = path.join(__dirname, 'wb3.1_install.patch');
-        const patchDestination = path.join(global.TOOLS_DIR, 'wb3.1_install.patch');
-        Logger.debug(`Copying workbench 3.1 install script patch file from "${patchSource}" to "${patchDestination}".`);
+        const patchSource = path.join(__dirname, 'wb2.1_install.patch');
+        const patchDestination = path.join(global.TOOLS_DIR, 'wb2.1_install.patch');
+        Logger.debug(`Copying workbench 2.1 install script patch file from "${patchSource}" to "${patchDestination}".`);
         fs.copyFileSync(patchSource, patchDestination);
 
         if (!environmentSetup.floppyDrive) {
-            const floppyPatchSource = path.join(__dirname, 'wb3.1_no_floppy_startup.patch');
-            const floppyPatchDestination = path.join(global.TOOLS_DIR, 'wb3.1_no_floppy_startup.patch');
+            const floppyPatchSource = path.join(__dirname, 'wb2.1_no_floppy_startup.patch');
+            const floppyPatchDestination = path.join(global.TOOLS_DIR, 'wb2.1_no_floppy_startup.patch');
             Logger.debug(`Copying startup sequence no floppy patch file from "${floppyPatchSource}" ` +
                 `to "${floppyPatchDestination}".`);
             fs.copyFileSync(floppyPatchSource, floppyPatchDestination);
@@ -54,32 +53,36 @@ class InstallWorkbench310 {
 
         const installKeySource = path.join(__dirname, 'install_key');
         const installKeyDestination = path.join(global.TOOLS_DIR, 'install_key');
-        Logger.debug(`Copying workbench 3.1 install script redirected input file from "${installKeySource}" ` +
+        Logger.debug(`Copying workbench 2.1 install script redirected input file from "${installKeySource}" ` +
             `to "${installKeyDestination}".`);
         fs.copyFileSync(installKeySource, installKeyDestination);
     }
 
     async install(config, communicator, pluginStore, environmentSetup) {
         const unADF = pluginStore.getPlugin('UnADF');
-        const patch = pluginStore.getPlugin('Patch');
-        const installerLg = pluginStore.getPlugin('InstallerLG');
-
         for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
-            const fileName = workbenchDisks[diskIndex];
+            const fileName = workbenchDisks[diskIndex].file;
             await unADF.run('DB_OS_DISKS:', fileName, 'duckbench:disks/', 'duckbench:', {}, communicator);
         }
 
-        await communicator.assign('Install3.1:', 'duckbench:disks/Install3.1');
+        await communicator.assign('Workbench2.1:', '', {'DISMOUNT': true});
+        for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
+            const target = `duckbench:disks/${workbenchDisks[diskIndex].diskName}`;
+            await communicator.assign(workbenchDisks[diskIndex].assign, target);
+        }
 
-        await patch.run('Install3.1:Install/Install', 'DB_TOOLS:wb3.1_install.patch', 'duckbench:c/', {}, communicator);
+        const patch = pluginStore.getPlugin('Patch');
+        await patch.run('"Install2.1:Install 2.1/Install 2.1"', 'DB_TOOLS:wb2.1_install.patch',
+            'duckbench:c/', {}, communicator);
 
+        const installerLg = pluginStore.getPlugin('InstallerLG');
         const installOptions = {REDIRECT_IN: 'DB_TOOLS:install_key'};
-        await installerLg.run('Install3.1:install/install', installOptions, communicator,
-            this.handleInstallUpdates, 'The installation of Release 3.1 is now complete.');
+        await installerLg.run('"Install2.1:Install 2.1/Install 2.1"', installOptions, communicator,
+            this.handleInstallUpdates, 'Installation complete');
 
         if (!environmentSetup.floppyDrive) {
             const installedStartupSequence = 'DH0:s/startup-sequence';
-            const startupSequencePatch = 'DB_TOOLS:wb3.1_no_floppy_startup.patch';
+            const startupSequencePatch = 'DB_TOOLS:wb2.1_no_floppy_startup.patch';
             await patch.run(installedStartupSequence, startupSequencePatch, 'duckbench:c/', {}, communicator);
         }
     }
@@ -94,9 +97,9 @@ class InstallWorkbench310 {
 
     finalise(config, environmentSetup) {
         const runningLocation = path.join(environmentSetup.executionFolder, 'DH0.hdf');
-        const saveLocation = path.join(process.cwd(), `Workbench310_${environmentSetup.systemName}.hdf`);
+        const saveLocation = path.join(process.cwd(), `Workbench210_${environmentSetup.systemName}.hdf`);
         fs.copyFileSync(runningLocation, saveLocation);
     }
 }
 
-module.exports = InstallWorkbench310;
+module.exports = InstallWorkbench210;

@@ -1,6 +1,27 @@
 const fs = require('fs');
 const path = require('path');
 
+// UnADF requires 300 to run
+const RomFileMappings = {
+    '2.05': {
+        'a600': 'amiga-os-310-a600.rom',
+    },
+    '3.0': {
+        'a1200': 'amiga-os-310-a1200.rom',
+    },
+    '3.1': {
+        'a600': 'amiga-os-310-a600.rom',
+        'a1200': 'amiga-os-310-a1200.rom',
+        'cd32': 'amiga-os-310-cd32.rom',
+    },
+};
+
+const WorkbenchDiskMappings = {
+    '2.05': 'amiga-os-210-workbench.adf',
+    '3.0': 'amiga-os-300-workbench.adf',
+    '3.1': 'amiga-os-310-workbench.adf',
+};
+
 class EnvironmentSetup {
     constructor(duckbenchConfig) {
         this.duckbenchConfig = duckbenchConfig;
@@ -24,8 +45,21 @@ class EnvironmentSetup {
         this.rom = rom;
     }
 
+    getRomFileName() {
+        return RomFileMappings[this.rom][this.systemName];
+    }
+
+    getWorkbenchDiskFileName() {
+        return WorkbenchDiskMappings[this.rom];
+    }
+
     setCPU(cpu) {
         this.cpu = cpu;
+    }
+
+    // UnADF requires an 020
+    getCPU() {
+        return Math.max(Number(this.cpu), 68020).toString();
     }
 
     setChipMem(chipMem) {

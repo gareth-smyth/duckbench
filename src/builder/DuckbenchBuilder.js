@@ -11,7 +11,7 @@ class DuckbenchBuilder {
         const environmentSetup = new EnvironmentSetup(duckbenchConfig);
 
         const runner = new Runner(duckbenchConfig);
-        runner.configure([setUpConfig, ...config]);
+        runner.configureAndSetup(setUpConfig, config);
         return runner.prepare(environmentSetup).then(async () => {
             environment = new Environment(duckbenchConfig, environmentSetup);
             environment.start();

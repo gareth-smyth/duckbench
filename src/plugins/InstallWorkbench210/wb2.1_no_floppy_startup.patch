@@ -1,0 +1,11 @@
+--- startup-sequence	2020-06-12 22:01:19.189484800 +0100
++++ startup-sequence_no	2020-06-12 22:04:25.876332000 +0100
+@@ -5,7 +5,7 @@
+ 
+ C:SetPatch QUIET
+ Version >NIL:
+-AddBuffers >NIL: DF0: 15
++;AddBuffers >NIL: DF0: 15
+ FailAt 21
+ 
+ MakeDir RAM:T RAM:Clipboards RAM:ENV RAM:ENV/Sys

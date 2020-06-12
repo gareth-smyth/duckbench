@@ -23,6 +23,7 @@ const environmentSetup = {
     setRom: jest.fn(),
     setCPU: jest.fn(),
     setChipMem: jest.fn(),
+    getWorkbenchDiskFileName: jest.fn().mockReturnValueOnce( 'amiga-os-310-workbench.adf'),
 };
 
 beforeEach(() => {
@@ -61,13 +62,6 @@ it('maps the workbench disks drive', async () => {
 
     expect(environmentSetup.mapFolderToDrive)
         .toHaveBeenCalledWith('DH5', 'someOsFolder', 'DB_OS_DISKS');
-});
-
-it('sets the rom', async () => {
-    const setup = new Setup();
-    await setup.prepare({}, environmentSetup);
-
-    expect(environmentSetup.setRom).toHaveBeenCalledWith('amiga-os-310-a1200.rom');
 });
 
 it('creates the boot ADF with the required setup files', async () => {

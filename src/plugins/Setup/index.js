@@ -11,12 +11,6 @@ class Setup {
         };
     }
 
-    configure() {
-        return [{
-            name: 'HitEnterFile',
-        }];
-    }
-
     prepare(config, environmentSetup) {
         const bootDiskFileName = path.join(environmentSetup.executionFolder, 'boot.adf');
         Logger.info(`Creating boot disk at ${bootDiskFileName}`);
@@ -31,7 +25,7 @@ class Setup {
         environmentSetup.insertDisk('DF0', {location: bootDiskFileName});
         environmentSetup.insertDisk('DF1', {
             type: 'amigaos',
-            name: 'amiga-os-310-workbench.adf',
+            name: environmentSetup.getWorkbenchDiskFileName(),
         });
 
         Logger.debug(`Mapping DH6: as DB_TOOLS: at ${global.TOOLS_DIR}`);
@@ -39,9 +33,6 @@ class Setup {
 
         Logger.debug(`Mapping DH5: as DB_OS_DISKS: at ${environmentSetup.duckbenchConfig.osFolder}`);
         environmentSetup.mapFolderToDrive('DH5', environmentSetup.duckbenchConfig.osFolder, 'DB_OS_DISKS');
-
-        Logger.debug('Set ROM to "amiga-os-310-a1200.rom"');
-        environmentSetup.setRom('amiga-os-310-a1200.rom');
 
         Logger.debug('Creating DUCKBENCH: partition as DH1');
         const partition = new Partition();

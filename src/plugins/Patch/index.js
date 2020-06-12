@@ -63,7 +63,8 @@ class Patch {
 
     async run(target, patchFile, patchLocation, patchOptions, communicator,
               commandCallback, expectedResponse = ['succeeded', 'done']) {
-        await communicator.run(`${patchLocation}patch ${target} ${patchFile}`, patchOptions, commandCallback, expectedResponse);
+        const commandString = `${patchLocation}patch ${target} ${patchFile}`;
+        await communicator.run(commandString, patchOptions, commandCallback, expectedResponse);
     }
 }
 

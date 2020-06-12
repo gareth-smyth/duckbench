@@ -6,6 +6,13 @@ class Runner {
         this.pluginStore = new PluginStore();
     }
 
+    configureAndSetup(setupConfig, configs) {
+        this.setupConfig = setupConfig;
+        this.setupPlugin = this.pluginStore.create(setupConfig.name);
+        this.pluginStore.add(setupConfig.name, this.setupPlugin);
+        this.configure(configs);
+    }
+
     configure(configs) {
         configs.forEach((config) => {
             if (!this.pluginStore.hasPlugin(config.name)) {
@@ -28,9 +35,11 @@ class Runner {
                 await plugin.prepare(config, environmentSetup);
             }
         }
+        await this.setupPlugin.prepare(this.setupConfig, environmentSetup);
     }
 
     async install(communicator, environmentSetup) {
+        await this.setupPlugin.install(this.setupConfig, communicator, this.pluginStore, environmentSetup);
         for (let configIndex = 0; configIndex < this.configs.length; configIndex++) {
             const config = this.configs[configIndex];
             const plugin = this.pluginStore.getPlugin(config.name);
