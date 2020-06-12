@@ -19,17 +19,21 @@ variables set, duckbench should pick up ROMs, OS floppies, and WinUAE automatica
 If you are not using Amiga Forever you must set the following environment variables:
 
 `DUCKBENCH_ROMS` - Full path to your amiga ROM folder.  At the minute duckbench uses only the 3.1 ROM. It *must be named* 
+* amiga-os-310-a600.rom
 * amiga-os-310-a1200.rom
+* amiga-os-310-cd32.rom
+
+depending on the installed system.
   
-`DUCKBENCH_DISKS` - Full path to your amiga OS disks.  At the minute duckbench uses only the 3.1 or 3.0 OS. The disks *must be named* 
+`DUCKBENCH_DISKS` - Full path to your amiga OS disks.  At the minute duckbench uses only the 2.1, 3.1 or 3.0 OS. The disks *must be named* 
 * amiga-os-NNN-workbench.adf
 * amiga-os-NNN-install.adf
 * amiga-os-NNN-extras.adf
 * amiga-os-NNN-fonts.adf
-* amiga-os-NNN-storage.adf
+* amiga-os-NNN-storage.adf (Not for Workbench 2.1)
 * amiga-os-NNN-locale.adf
 
-where NNN is either 310 (for Workbench 3.1) or 300 (for Workbench 3.0)
+where NNN is either 210 (For Workbench 2.1), 310 (for Workbench 3.1) or 300 (for Workbench 3.0)
   
 `DUCKBENCH_EMU` -  Path to WinUAE installed folder e.g. `C:\Program Files\WinUAE`
 
