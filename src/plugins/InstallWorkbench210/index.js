@@ -39,20 +39,20 @@ class InstallWorkbench210 {
 
     prepare(config, environmentSetup) {
         const patchSource = path.join(__dirname, 'wb2.1_install.patch');
-        const patchDestination = path.join(global.TOOLS_DIR, 'wb2.1_install.patch');
+        const patchDestination = path.join(environmentSetup.executionFolder, 'wb2.1_install.patch');
         Logger.debug(`Copying workbench 2.1 install script patch file from "${patchSource}" to "${patchDestination}".`);
         fs.copyFileSync(patchSource, patchDestination);
 
         if (!environmentSetup.floppyDrive) {
             const floppyPatchSource = path.join(__dirname, 'wb2.1_no_floppy_startup.patch');
-            const floppyPatchDestination = path.join(global.TOOLS_DIR, 'wb2.1_no_floppy_startup.patch');
+            const floppyPatchDestination = path.join(environmentSetup.executionFolder, 'wb2.1_no_floppy_startup.patch');
             Logger.debug(`Copying startup sequence no floppy patch file from "${floppyPatchSource}" ` +
                 `to "${floppyPatchDestination}".`);
             fs.copyFileSync(floppyPatchSource, floppyPatchDestination);
         }
 
         const installKeySource = path.join(__dirname, 'install_key');
-        const installKeyDestination = path.join(global.TOOLS_DIR, 'install_key');
+        const installKeyDestination = path.join(environmentSetup.executionFolder, 'install_key');
         Logger.debug(`Copying workbench 2.1 install script redirected input file from "${installKeySource}" ` +
             `to "${installKeyDestination}".`);
         fs.copyFileSync(installKeySource, installKeyDestination);
@@ -72,17 +72,17 @@ class InstallWorkbench210 {
         }
 
         const patch = pluginStore.getPlugin('Patch');
-        await patch.run('"Install2.1:Install 2.1/Install 2.1"', 'DB_TOOLS:wb2.1_install.patch',
+        await patch.run('"Install2.1:Install 2.1/Install 2.1"', 'DB_EXECUTION:wb2.1_install.patch',
             'duckbench:c/', {}, communicator);
 
         const installerLg = pluginStore.getPlugin('InstallerLG');
-        const installOptions = {REDIRECT_IN: 'DB_TOOLS:install_key'};
+        const installOptions = {REDIRECT_IN: 'DB_EXECUTION:install_key'};
         await installerLg.run('"Install2.1:Install 2.1/Install 2.1"', installOptions, communicator,
             this.handleInstallUpdates, 'Installation complete');
 
         if (!environmentSetup.floppyDrive) {
             const installedStartupSequence = 'DH0:s/startup-sequence';
-            const startupSequencePatch = 'DB_TOOLS:wb2.1_no_floppy_startup.patch';
+            const startupSequencePatch = 'DB_EXECUTION:wb2.1_no_floppy_startup.patch';
             await patch.run(installedStartupSequence, startupSequencePatch, 'duckbench:c/', {}, communicator);
         }
     }

@@ -4,10 +4,6 @@ const communicator = {run: jest.fn()};
 const callback = 'aCallback';
 const options = 'options';
 
-beforeEach(() => {
-    communicator.run.mockReset();
-});
-
 it('runs the patch command', async ()=> {
     const patch = new Patch();
     await patch.run('A', 'B', 'C:', options, communicator, callback, ['some response']);

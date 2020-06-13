@@ -3,7 +3,6 @@ const net = require('net');
 const SocketCommunicator = require('../../src/builder/SocketCommunicator');
 
 jest.mock('net');
-jest.useFakeTimers();
 
 // As some functionality resolves promises with setTimeout we need to fake time passing and promise resolution cycle
 async function flushTimeoutsAndPromises() {
@@ -13,6 +12,7 @@ async function flushTimeoutsAndPromises() {
 
 let mockSocket;
 beforeEach(() => {
+    jest.useFakeTimers();
     mockSocket = {
         eventFunctions: [],
         destroy: jest.fn(),

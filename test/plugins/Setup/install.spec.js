@@ -1,12 +1,10 @@
-const MockPartition = jest.fn();
-const MockHitEnterFile = jest.fn();
-jest.mock('../../../src/plugins/SinglePartition', () => MockPartition);
-jest.mock('../../../src/plugins/HitEnterFile', () => MockHitEnterFile);
+const Communicator = require('../../../src/builder/Communicator');
+const PluginStore = require('../../../src/builder/PluginStore');
 
-const mockPartitionInstance = {
-    install: jest.fn(),
-    prepare: jest.fn(),
-};
+const MockHitEnterFile = jest.fn();
+jest.mock('../../../src/builder/Communicator');
+jest.mock('../../../src/builder/PluginStore');
+jest.mock('../../../src/plugins/HitEnterFile', () => MockHitEnterFile);
 
 const mockHitEnterFileInstance = {
     install: jest.fn(),
@@ -14,43 +12,54 @@ const mockHitEnterFileInstance = {
 
 const Setup = require('../../../src/plugins/Setup');
 
+let communicator;
+let pluginStore;
 beforeEach(() => {
-    MockPartition.mockImplementation(() => mockPartitionInstance);
+    communicator = new Communicator();
+    pluginStore = new PluginStore();
+    pluginStore.getPlugin.mockReturnValue(({getFile: () => 'ram:somefile.txt'}));
     MockHitEnterFile.mockImplementation(() => mockHitEnterFileInstance);
 });
 
 it('installs the hit enter file', async () => {
-    const communicator = {makedir: jest.fn(), assign: jest.fn(), path: jest.fn()};
-
     const setup = new Setup();
-    await setup.install({}, communicator);
+    await setup.install({}, communicator, pluginStore);
 
     expect(MockHitEnterFile).toHaveBeenCalledWith();
     expect(mockHitEnterFileInstance.install).toHaveBeenCalledWith({}, communicator);
 });
 
-it('installs the partition', async () => {
-    const communicator = {makedir: jest.fn(), assign: jest.fn(), path: jest.fn()};
-    const pluginStore = {getPlugin: () => ({getFile: () => 'ram:somefile.txt'})};
-
+it('installs the duckbench partition', async () => {
     const setup = new Setup();
     await setup.install({}, communicator, pluginStore);
 
-    expect(MockPartition).toHaveBeenCalledWith();
-    expect(mockPartitionInstance.install).toHaveBeenCalledWith({
-        name: 'SinglePartition',
-        optionValues: {
-            device: 'DH1',
-            volumeName: 'DUCKBENCH',
-            size: 100,
-        },
-    }, communicator, pluginStore);
+    expect(communicator.format).toHaveBeenCalledWith('DB0', 'DUCKBENCH', {
+        ffs: true, quick: true, intl: true, noicons: true, REDIRECT_IN: 'ram:somefile.txt',
+    });
+});
+
+it('installs the cache partition when does not exist', async () => {
+    communicator.assign.mockResolvedValueOnce();
+    const setup = new Setup();
+    await setup.install({}, communicator, pluginStore);
+
+    expect(communicator.format).toHaveBeenCalledTimes(2);
+    expect(communicator.format).toHaveBeenCalledWith('DB1', 'DB_CLIENT_CACHE', {
+        ffs: true, quick: true, intl: true, noicons: true, REDIRECT_IN: 'ram:somefile.txt',
+    });
+});
+
+it('installs the cache partition when does not exist', async () => {
+    communicator.assign.mockImplementationOnce(() => {
+        throw new Error('assign error');
+    });
+    const setup = new Setup();
+    await setup.install({}, communicator, pluginStore);
+
+    expect(communicator.format).toHaveBeenCalledTimes(1);
 });
 
 it('makes duckbench:c folder', async () => {
-    const communicator = {makedir: jest.fn(), assign: jest.fn(), path: jest.fn()};
-    const pluginStore = {getPlugin: () => ({getFile: () => 'ram:somefile.txt'})};
-
     const setup = new Setup();
     await setup.install({}, communicator, pluginStore);
 
@@ -59,9 +68,6 @@ it('makes duckbench:c folder', async () => {
 });
 
 it('adds duckbench:c to the path', async () => {
-    const communicator = {makedir: jest.fn(), assign: jest.fn(), path: jest.fn()};
-    const pluginStore = {getPlugin: () => ({getFile: () => 'ram:somefile.txt'})};
-
     const setup = new Setup();
     await setup.install({}, communicator, pluginStore);
 
@@ -70,9 +76,6 @@ it('adds duckbench:c to the path', async () => {
 });
 
 it('makes duckbench:t folder', async () => {
-    const communicator = {makedir: jest.fn(), assign: jest.fn(), path: jest.fn()};
-    const pluginStore = {getPlugin: () => ({getFile: () => 'ram:somefile.txt'})};
-
     const setup = new Setup();
     await setup.install({}, communicator, pluginStore);
 
@@ -81,20 +84,13 @@ it('makes duckbench:t folder', async () => {
 });
 
 it('assigns t: to the duckbench:t folder', async () => {
-    const communicator = {makedir: jest.fn(), assign: jest.fn(), path: jest.fn()};
-    const pluginStore = {getPlugin: () => ({getFile: () => 'ram:somefile.txt'})};
-
     const setup = new Setup();
     await setup.install({}, communicator, pluginStore);
 
-    expect(communicator.assign).toHaveBeenCalledTimes(1);
     expect(communicator.assign).toHaveBeenCalledWith('t:', 'duckbench:t');
 });
 
 it('makes duckbench:disks folder', async () => {
-    const communicator = {makedir: jest.fn(), assign: jest.fn(), path: jest.fn()};
-    const pluginStore = {getPlugin: () => ({getFile: () => 'ram:somefile.txt'})};
-
     const setup = new Setup();
     await setup.install({}, communicator, pluginStore);
 

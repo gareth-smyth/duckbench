@@ -16,10 +16,6 @@ beforeEach(() => {
         .mockReturnValueOnce(unADF)
         .mockReturnValueOnce(patch)
         .mockReturnValueOnce(installerLG);
-    unADF.run.mockReset();
-    patch.run.mockReset();
-    installerLG.run.mockReset();
-    communicator.assign.mockReset();
 });
 
 it('calls unADF for each workbench disk', async () => {
@@ -88,7 +84,7 @@ it('calls patch for the install file', async () => {
     await installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: true});
 
     expect(patch.run).toHaveBeenCalledTimes(1);
-    expect(patch.run).toHaveBeenCalledWith('Install3.0:Install/Install', 'DB_TOOLS:wb3.0_install.patch',
+    expect(patch.run).toHaveBeenCalledWith('Install3.0:Install/Install', 'DB_EXECUTION:wb3.0_install.patch',
         'duckbench:c/', {}, communicator);
 });
 
@@ -112,7 +108,7 @@ it('calls patch for the startup sequence if there is no floppy', async () => {
     await installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: false});
 
     expect(patch.run).toHaveBeenCalledTimes(2);
-    expect(patch.run).toHaveBeenCalledWith('DH0:s/startup-sequence', 'DB_TOOLS:wb3.0_no_floppy_startup.patch',
+    expect(patch.run).toHaveBeenCalledWith('DH0:s/startup-sequence', 'DB_EXECUTION:wb3.0_no_floppy_startup.patch',
         'duckbench:c/', {}, communicator);
 });
 
@@ -136,7 +132,8 @@ it('calls installerLG to install workbench', async () => {
     await installWorkbench300.install({}, communicator, pluginStore, {floppyDrive: true});
 
     expect(installerLG.run).toHaveBeenCalledTimes(1);
-    expect(installerLG.run).toHaveBeenCalledWith('Install3.0:install/install', {'REDIRECT_IN': 'DB_TOOLS:install_key'},
+    expect(installerLG.run).toHaveBeenCalledWith('Install3.0:install/install',
+        {'REDIRECT_IN': 'DB_EXECUTION:install_key'},
         communicator, expect.any(Function), 'The installation of Release 3 is now complete.');
 });
 

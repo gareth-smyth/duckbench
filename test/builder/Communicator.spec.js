@@ -19,15 +19,15 @@ it('runs the command runner', async () => {
 });
 
 it('runs the assign command', async () => {
-    await communicator.assign('name:', 'some:folder', options, callback);
+    await communicator.assign('name:', 'some:folder', options, callback, 'expected response');
     expect(commandRunner.run).toHaveBeenCalledTimes(1);
-    expect(commandRunner.run).toBeCalledWith('assign name: some:folder', options, callback);
+    expect(commandRunner.run).toBeCalledWith('assign name: some:folder', options, callback, 'expected response');
 });
 
 it('runs the assign command with defaults', async () => {
     await communicator.assign('name:', 'some:folder');
     expect(commandRunner.run).toHaveBeenCalledTimes(1);
-    expect(commandRunner.run).toBeCalledWith('assign name: some:folder', {}, expect.any(Function));
+    expect(commandRunner.run).toBeCalledWith('assign name: some:folder', {}, expect.any(Function), undefined);
 });
 
 it('runs the cd command', async () => {
@@ -95,39 +95,39 @@ it('runs the format command with defaults', async () => {
 });
 
 it('runs the makedir command', async () => {
-    await communicator.makedir('dh1:folder', options, callback);
+    await communicator.makedir('DB0:folder', options, callback);
     expect(commandRunner.run).toHaveBeenCalledTimes(1);
-    expect(commandRunner.run).toBeCalledWith('makedir dh1:folder', options, callback);
+    expect(commandRunner.run).toBeCalledWith('makedir DB0:folder', options, callback);
 });
 
 it('runs the makedir command with defaults', async () => {
-    await communicator.makedir('dh1:folder');
+    await communicator.makedir('DB0:folder');
     expect(commandRunner.run).toHaveBeenCalledTimes(1);
-    expect(commandRunner.run).toBeCalledWith('makedir dh1:folder', {}, expect.any(Function));
+    expect(commandRunner.run).toBeCalledWith('makedir DB0:folder', {}, expect.any(Function));
 });
 
 it('runs the path command', async () => {
-    await communicator.path('dh1:folder', options, callback);
+    await communicator.path('DB0:folder', options, callback);
     expect(commandRunner.run).toHaveBeenCalledTimes(1);
-    expect(commandRunner.run).toBeCalledWith('path dh1:folder', options, callback);
+    expect(commandRunner.run).toBeCalledWith('path DB0:folder', options, callback);
 });
 
 it('runs the path command with defaults', async () => {
-    await communicator.path('dh1:folder');
+    await communicator.path('DB0:folder');
     expect(commandRunner.run).toHaveBeenCalledTimes(1);
-    expect(commandRunner.run).toBeCalledWith('path dh1:folder', {}, expect.any(Function));
+    expect(commandRunner.run).toBeCalledWith('path DB0:folder', {}, expect.any(Function));
 });
 
 it('runs the protect command', async () => {
-    await communicator.protect('dh1:folder', options, callback);
+    await communicator.protect('DB0:folder', options, callback);
     expect(commandRunner.run).toHaveBeenCalledTimes(1);
-    expect(commandRunner.run).toBeCalledWith('protect dh1:folder', options, callback);
+    expect(commandRunner.run).toBeCalledWith('protect DB0:folder', options, callback);
 });
 
 it('runs the protect command with defaults', async () => {
-    await communicator.protect('dh1:folder');
+    await communicator.protect('DB0:folder');
     expect(commandRunner.run).toHaveBeenCalledTimes(1);
-    expect(commandRunner.run).toBeCalledWith('protect dh1:folder', {}, expect.any(Function));
+    expect(commandRunner.run).toBeCalledWith('protect DB0:folder', {}, expect.any(Function));
 });
 
 it('closes the socket communicator', async () => {

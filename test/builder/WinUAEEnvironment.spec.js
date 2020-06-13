@@ -7,13 +7,6 @@ const WinUAEEnvironment = require('../../src/builder/WinUAEEnvironment');
 jest.mock('child_process');
 jest.mock('fs');
 
-beforeEach(() => {
-    fs.openSync.mockReset();
-    fs.writeSync.mockReset();
-    fs.closeSync.mockReset();
-    fs.existsSync.mockReset();
-});
-
 it('spawns a new winuae 32 bit process', () => {
     const environment = new WinUAEEnvironment(
         {emuRoot: '/path/to/winuae/', romFolder: 'some/place'},

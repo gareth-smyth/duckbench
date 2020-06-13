@@ -1,7 +1,8 @@
+const fs = require('fs');
 const path = require('path');
 const ADFService = require('../../services/ADFService');
 const HitEnterFile = require('../HitEnterFile');
-const Partition = require('../SinglePartition');
+const RDBService = require('../../services/RDBService');
 
 class Setup {
     structure() {
@@ -28,38 +29,53 @@ class Setup {
             name: environmentSetup.getWorkbenchDiskFileName(),
         });
 
-        Logger.debug(`Mapping DH6: as DB_TOOLS: at ${global.TOOLS_DIR}`);
-        environmentSetup.mapFolderToDrive('DH6', global.TOOLS_DIR, 'DB_TOOLS');
+        Logger.debug(`Mapping DB5: as DB_HOST_CACHE: at ${global.CACHE_DIR}`);
+        environmentSetup.mapFolderToDrive('DB5', global.CACHE_DIR, 'DB_HOST_CACHE');
 
-        Logger.debug(`Mapping DH5: as DB_OS_DISKS: at ${environmentSetup.duckbenchConfig.osFolder}`);
-        environmentSetup.mapFolderToDrive('DH5', environmentSetup.duckbenchConfig.osFolder, 'DB_OS_DISKS');
+        Logger.debug(`Mapping DB4: as DB_TOOLS: at ${global.TOOLS_DIR}`);
+        environmentSetup.mapFolderToDrive('DB4', global.TOOLS_DIR, 'DB_TOOLS');
 
-        Logger.debug('Creating DUCKBENCH: partition as DH1');
-        const partition = new Partition();
-        return partition.prepare({
-            name: 'SinglePartition',
-            optionValues: {
-                device: 'DH1',
-                volumeName: 'DUCKBENCH',
-                size: 100,
-            },
-        }, environmentSetup);
+        Logger.debug(`Mapping DB3: as DB_OS_DISKS: at ${environmentSetup.duckbenchConfig.osFolder}`);
+        environmentSetup.mapFolderToDrive('DB3', environmentSetup.duckbenchConfig.osFolder, 'DB_OS_DISKS');
+
+        Logger.debug(`Mapping DB2: as DB_EXECUTION: at ${environmentSetup.executionFolder}`);
+        environmentSetup.mapFolderToDrive('DB2', environmentSetup.executionFolder, 'DB_EXECUTION');
+
+        const cacheLocation = path.join(global.CACHE_DIR, 'client_cache.hdf');
+        if (!fs.existsSync(cacheLocation)) {
+            Logger.debug('Creating DB1: as DB_CLIENT_CACHE: as new HDF');
+            RDBService.createRDB(cacheLocation, 100, 'DB1');
+            environmentSetup.attachHDF('DB1', cacheLocation);
+        } else {
+            Logger.debug('Using existing HDF as DB1: as DB_CLIENT_CACHE:');
+        }
+
+        Logger.debug('Creating DB0: as DUCKBENCH: as new HDF');
+        const location = path.join(environmentSetup.executionFolder, 'duckbench.hdf');
+        RDBService.createRDB(location, 100, 'DB0');
+        environmentSetup.attachHDF('DB0', location);
     }
 
     async install(config, communicator, pluginStore) {
         const hitEnterFile = new HitEnterFile();
         await hitEnterFile.install({}, communicator);
-        const partition = new Partition();
+        const enterFile = pluginStore.getPlugin('HitEnterFile').getFile();
 
-        Logger.debug('Install DUCKBENCH: partition');
-        await partition.install({
-            name: 'SinglePartition',
-            optionValues: {
-                device: 'DH1',
-                volumeName: 'DUCKBENCH',
-                size: 100,
-            },
-        }, communicator, pluginStore);
+        try {
+            const expectedResponse = 'DB_CLIENT_CACHE: not assigned';
+            await communicator.assign('DB_CLIENT_CACHE:', '', {'EXISTS': true}, undefined, expectedResponse);
+            Logger.debug('Formatting DB1: as DB_CLIENT_CACHE: as new HDF');
+            await communicator.format('DB1', 'DB_CLIENT_CACHE', {
+                ffs: true, quick: true, intl: true, noicons: true, REDIRECT_IN: enterFile,
+            });
+        } catch (err) {
+            Logger.debug('Using existing formatted HDF as DB1: as DB_CLIENT_CACHE:');
+        }
+
+        Logger.debug('Format DUCKBENCH: partition');
+        await communicator.format('DB0', 'DUCKBENCH', {
+            ffs: true, quick: true, intl: true, noicons: true, REDIRECT_IN: enterFile,
+        });
 
         await communicator.makedir('duckbench:c');
         await communicator.path('duckbench:c', {ADD: true});

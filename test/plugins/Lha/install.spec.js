@@ -10,8 +10,8 @@ it('calls the communicator to install lha once in each location requested', asyn
 
     const command = communicator.run;
     expect(command).toHaveBeenCalledTimes(2);
-    expect(command).toHaveBeenCalledWith('DB_TOOLS:lha.run -x A:', {}, undefined, 'Extracting: lha_68k');
-    expect(command).toHaveBeenCalledWith('DB_TOOLS:lha.run -x B:', {}, undefined, 'Extracting: lha_68k');
+    expect(command).toHaveBeenCalledWith('DB_HOST_CACHE:lha.run -x A:', {}, undefined, 'Extracting: lha_68k');
+    expect(command).toHaveBeenCalledWith('DB_HOST_CACHE:lha.run -x B:', {}, undefined, 'Extracting: lha_68k');
 });
 
 it('throws an error when send command rejects', async () => {

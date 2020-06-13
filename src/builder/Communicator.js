@@ -17,8 +17,8 @@ class Communicator {
         return this.commandRunner.run(commandString, options, commandCallback, expectedResponse);
     }
 
-    async assign(name, folder, options = {}, commandCallback = this.noCallback) {
-        return this.commandRunner.run(`assign ${name} ${folder}`, options, commandCallback);
+    async assign(name, folder, options = {}, commandCallback = this.noCallback, expectedResponse = undefined) {
+        return this.commandRunner.run(`assign ${name} ${folder}`, options, commandCallback, expectedResponse);
     }
 
     async cd(folder, options = {}, commandCallback = this.noCallback) {

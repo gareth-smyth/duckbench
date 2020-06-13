@@ -8,7 +8,6 @@ const mockPluginStoreInstance = {
 };
 beforeEach(() => {
     MockPluginStore.mockImplementation(() => mockPluginStoreInstance);
-    mockPluginStoreInstance.add.mockReset();
 });
 
 const Runner = require('../../src/builder/Runner');

@@ -5,9 +5,7 @@ const lha = {run: jest.fn()};
 const communicator = 'aCommunicator';
 
 beforeEach(() => {
-    pluginStore.getPlugin.mockReset();
     pluginStore.getPlugin.mockReturnValue(lha);
-    lha.run.mockReset();
 });
 
 it('calls the communicator to install unADF once in each location requested', async () => {
@@ -29,8 +27,8 @@ it('calls the communicator to install unADF once in each location requested', as
     }, communicator, pluginStore);
 
     expect(lha.run).toHaveBeenCalledTimes(2);
-    expect(lha.run).toHaveBeenCalledWith('DB_TOOLS:UnADF.lha', 'A:', 'duckbench:c/', {}, communicator);
-    expect(lha.run).toHaveBeenCalledWith('DB_TOOLS:UnADF.lha', 'B:', 'duckbench:c/', {}, communicator);
+    expect(lha.run).toHaveBeenCalledWith('DB_HOST_CACHE:UnADF.lha', 'A:', 'duckbench:c/', {}, communicator);
+    expect(lha.run).toHaveBeenCalledWith('DB_HOST_CACHE:UnADF.lha', 'B:', 'duckbench:c/', {}, communicator);
 });
 
 it('throws an error when extraction throws', async () => {

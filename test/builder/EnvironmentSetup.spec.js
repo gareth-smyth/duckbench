@@ -9,10 +9,6 @@ jest.mock('fs');
 let RealDate;
 
 beforeEach(() => {
-    fs.existsSync.mockReset();
-    fs.mkdirSync.mockReset();
-    fs.copyFileSync.mockReset();
-    fs.chmodSync.mockReset();
     RealDate = Date;
 });
 
@@ -181,13 +177,13 @@ it('inserts amiga and non-amiga os ADFs', () => {
     global.Date = jest.fn(() => new RealDate('2020-04-01T20:29:30.235Z'));
     const environmentSetup = new EnvironmentSetup({osFolder: '/home/osdisks/'});
 
-    environmentSetup.insertDisk('df0:', {location: '/home/disk1.adf'});
-    environmentSetup.insertDisk('df1:', {type: 'amigaos', name: 'amiga-os-310-workbench.adf'});
-    environmentSetup.insertDisk('df5:', {location: '/home/disk2.adf'});
-    expect(environmentSetup.disks.ADF[0]).toEqual({drive: 'df0:', location: '/home/disk1.adf'});
+    environmentSetup.insertDisk('df0', {location: '/home/disk1.adf'});
+    environmentSetup.insertDisk('df1', {type: 'amigaos', name: 'amiga-os-310-workbench.adf'});
+    environmentSetup.insertDisk('df5', {location: '/home/disk2.adf'});
+    expect(environmentSetup.disks.ADF[0]).toEqual({drive: 'df0', location: '/home/disk1.adf'});
     const wbDiskLocation = path.join(global.BASE_DIR, 'execution', '20200401202930235', 'df1.adf');
-    expect(environmentSetup.disks.ADF[1]).toEqual({drive: 'df1:', location: wbDiskLocation});
-    expect(environmentSetup.disks.ADF[2]).toEqual({drive: 'df5:', location: '/home/disk2.adf'});
+    expect(environmentSetup.disks.ADF[1]).toEqual({drive: 'df1', location: wbDiskLocation});
+    expect(environmentSetup.disks.ADF[2]).toEqual({drive: 'df5', location: '/home/disk2.adf'});
 });
 
 it('sets disk permissions for non amiga os disks', () => {
@@ -205,7 +201,7 @@ it('copies os disks and sets permissions', () => {
     const wbSourceLocation = path.join('/home/osdisks/', 'amiga-os-310-workbench.adf');
     const wbDestLocation = path.join(global.BASE_DIR, 'execution', '20200401202930235', 'df1.adf');
 
-    environmentSetup.insertDisk('df1:', {type: 'amigaos', name: 'amiga-os-310-workbench.adf'});
+    environmentSetup.insertDisk('df1', {type: 'amigaos', name: 'amiga-os-310-workbench.adf'});
     expect(fs.copyFileSync).toHaveBeenCalledTimes(1);
     expect(fs.copyFileSync).toHaveBeenCalledWith(wbSourceLocation, wbDestLocation);
     expect(fs.chmodSync).toHaveBeenCalledTimes(1);

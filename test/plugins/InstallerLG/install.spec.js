@@ -10,8 +10,8 @@ it('calls the communicator to install installerLG once in each location requeste
     await installerLG.install({optionValues: {location: 'B:'}}, communicator);
 
     expect(communicator.copy).toHaveBeenCalledTimes(2);
-    expect(communicator.copy).toHaveBeenCalledWith('DB_TOOLS:Installer68k', 'A:');
-    expect(communicator.copy).toHaveBeenCalledWith('DB_TOOLS:Installer68k', 'B:');
+    expect(communicator.copy).toHaveBeenCalledWith('DB_TOOLS:InstallerLG', 'A:');
+    expect(communicator.copy).toHaveBeenCalledWith('DB_TOOLS:InstallerLG', 'B:');
 });
 
 it('throws an error when copying throws', async () => {

@@ -4,13 +4,6 @@ const RomConversionService = require('../../src/services/RomConversionService');
 
 jest.mock('fs');
 
-beforeEach(() => {
-    fs.readFileSync.mockReset();
-    fs.closeSync.mockReset();
-    fs.openSync.mockReset();
-    fs.writeSync.mockReset();
-});
-
 describe('realToEmulator', () => {
     it('fails and closes open files when an input file does not exist', () => {
         const fd = 'ABCDEFGH';

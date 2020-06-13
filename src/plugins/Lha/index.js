@@ -25,7 +25,7 @@ class Lha {
     }
 
     async prepare() {
-        if (!fs.existsSync(path.join(global.TOOLS_DIR, 'lha.run'))) {
+        if (!fs.existsSync(path.join(global.CACHE_DIR, 'lha.run'))) {
             Logger.debug('Downloading lha.run from http://aminet.net/util/arc/lha.run');
             const response = await request({
                 uri: 'http://aminet.net/util/arc/lha.run',
@@ -34,7 +34,7 @@ class Lha {
             }).catch((err) => {
                 throw new Error(err);
             });
-            fs.writeFileSync(path.join(global.TOOLS_DIR, 'lha.run'), response.body);
+            fs.writeFileSync(path.join(global.CACHE_DIR, 'lha.run'), response.body);
         } else {
             Logger.debug('Using cached version of lha.run');
         }
@@ -42,7 +42,7 @@ class Lha {
 
     async install(config, communicator) {
         if (!this.installed[config.optionValues.location]) {
-            const commandString = `DB_TOOLS:lha.run -x ${config.optionValues.location}`;
+            const commandString = `DB_HOST_CACHE:lha.run -x ${config.optionValues.location}`;
             await communicator.run(commandString, {}, undefined, 'Extracting: lha_68k');
             this.installed[config.optionValues.location] = true;
         } else {

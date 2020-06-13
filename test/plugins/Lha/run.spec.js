@@ -4,10 +4,6 @@ const communicator = {run: jest.fn()};
 const callback = 'aCallback';
 const options = 'options';
 
-beforeEach(() => {
-    communicator.run.mockReset();
-});
-
 it('runs the lha command', async ()=> {
     const lha = new Lha();
     await lha.run('source', 'dest', 'lhaloc:', options, communicator, callback);

@@ -34,7 +34,7 @@ class UnADF {
     }
 
     async prepare() {
-        if (!fs.existsSync(path.join(global.TOOLS_DIR, 'UnADF.lha'))) {
+        if (!fs.existsSync(path.join(global.CACHE_DIR, 'UnADF.lha'))) {
             Logger.debug('Downloading UnADF from http://aminet.net/disk/misc/UnADF.lha');
             const response = await request({
                 uri: 'http://aminet.net/disk/misc/UnADF.lha',
@@ -43,7 +43,7 @@ class UnADF {
             }).catch((err) => {
                 throw new Error(err);
             });
-            fs.writeFileSync(path.join(global.TOOLS_DIR, 'UnADF.lha'), response.body);
+            fs.writeFileSync(path.join(global.CACHE_DIR, 'UnADF.lha'), response.body);
         } else {
             Logger.debug('Using cached version of UnADF');
         }
@@ -52,7 +52,7 @@ class UnADF {
     async install(config, communicator, pluginStore) {
         if (!this.installed[config.optionValues.location]) {
             const lha = pluginStore.getPlugin('Lha');
-            await lha.run('DB_TOOLS:UnADF.lha', config.optionValues.location, 'duckbench:c/', {}, communicator);
+            await lha.run('DB_HOST_CACHE:UnADF.lha', config.optionValues.location, 'duckbench:c/', {}, communicator);
             this.installed[config.optionValues.location] = true;
         } else {
             Logger.trace(`Not extracting unadf as it has already been extracted to ${config.optionValues.location}`);

@@ -36,6 +36,7 @@
     "jest-when": "2.7.1"
   },
   "jest": {
+    "resetMocks": true,
     "setupFiles": [
       "./src/services/LoggerService.js",
       "./src/services/BaseDirService.js"
@@ -103,6 +104,13 @@
       ],
       "no-use-before-define": [
         "error"
+      ],
+      "no-unused-vars": [
+        "error",
+        {
+          "vars": "all",
+          "args": "after-used"
+        }
       ]
     }
   }

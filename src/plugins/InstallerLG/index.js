@@ -22,16 +22,16 @@ class InstallerLG {
 
     async install(config, communicator) {
         if (!this.installed[config.optionValues.location]) {
-            await communicator.copy('DB_TOOLS:Installer68k', config.optionValues.location);
+            await communicator.copy('DB_TOOLS:InstallerLG', config.optionValues.location);
             this.installed[config.optionValues.location] = true;
         } else {
-            Logger.trace('Not installing InstallerLG as it has already been installed ' +
-                `to ${config.optionValues.location}`);
+            const location = config.optionValues.location;
+            Logger.trace(`Not installing InstallerLG as it has already been installed to ${location}`);
         }
     }
 
     async run(installScript, installOptions, communicator, commandCallback, expectedResponse) {
-        await communicator.run(`Installer68k ${installScript}`, installOptions, commandCallback, expectedResponse);
+        await communicator.run(`InstallerLG ${installScript}`, installOptions, commandCallback, expectedResponse);
     }
 }
 

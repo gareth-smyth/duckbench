@@ -34,7 +34,7 @@ class Patch {
     }
 
     async prepare() {
-        if (!fs.existsSync(path.join(global.TOOLS_DIR, 'patch-2.1.lha'))) {
+        if (!fs.existsSync(path.join(global.CACHE_DIR, 'patch-2.1.lha'))) {
             Logger.debug('Downloading patch from http://aminet.net/dev/misc/patch-2.1.lha');
             const response = await request({
                 uri: 'http://aminet.net/dev/misc/patch-2.1.lha',
@@ -43,7 +43,7 @@ class Patch {
             }).catch((err) => {
                 throw new Error(err);
             });
-            fs.writeFileSync(path.join(global.TOOLS_DIR, 'patch-2.1.lha'), response.body);
+            fs.writeFileSync(path.join(global.CACHE_DIR, 'patch-2.1.lha'), response.body);
         } else {
             Logger.debug('Using cached version of patch');
         }
@@ -52,7 +52,7 @@ class Patch {
     async install(config, communicator, pluginStore) {
         if (!this.installed[config.optionValues.location]) {
             const lha = pluginStore.getPlugin('Lha');
-            await lha.run('DB_TOOLS:patch-2.1.lha', 'duckbench:', 'duckbench:c/', {}, communicator);
+            await lha.run('DB_HOST_CACHE:patch-2.1.lha', 'duckbench:', 'duckbench:c/', {}, communicator);
             await communicator.copy('duckbench:patch-2.1/c/patch', config.optionValues.location);
             await communicator.delete('duckbench:patch-2.1', {ALL: true});
             this.installed[config.optionValues.location] = true;

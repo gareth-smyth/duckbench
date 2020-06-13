@@ -1,36 +1,25 @@
+const fs = require('fs');
 const path = require('path');
 
+const EnvironmentSetup = require('../../../src/builder/EnvironmentSetup');
 const ADFService = require('../../../src/services/ADFService');
+const RDBService = require('../../../src/services/RDBService');
 
-const MockPartition = jest.fn();
+jest.mock('fs');
+jest.mock('../../../src/builder/EnvironmentSetup');
 jest.mock('../../../src/services/ADFService');
-jest.mock('../../../src/plugins/SinglePartition', () => MockPartition);
-
-const mockPartitionInstance = {
-    install: jest.fn(),
-    prepare: jest.fn(),
-};
+jest.mock('../../../src/services/RDBService');
 
 const Setup = require('../../../src/plugins/Setup');
 
-const environmentSetup = {
-    duckbenchConfig: {
-        osFolder: 'someOsFolder',
-    },
-    executionFolder: 'some folder',
-    insertDisk: jest.fn(),
-    mapFolderToDrive: jest.fn(),
-    setRom: jest.fn(),
-    setCPU: jest.fn(),
-    setChipMem: jest.fn(),
-    getWorkbenchDiskFileName: jest.fn().mockReturnValueOnce( 'amiga-os-310-workbench.adf'),
-};
+let environmentSetup;
 
 beforeEach(() => {
-    ADFService.createBootableADF.mockReset();
-    ADFService.createFile.mockReset();
-    ADFService.createDirectory.mockReset();
-    MockPartition.mockImplementation(() => mockPartitionInstance);
+    environmentSetup = new EnvironmentSetup({});
+    environmentSetup.duckbenchConfig = {
+        osFolder: 'someOsFolder',
+    };
+    environmentSetup.executionFolder = 'some folder';
 });
 
 it('inserts the boot disk', async () => {
@@ -41,6 +30,7 @@ it('inserts the boot disk', async () => {
 });
 
 it('inserts the workbench disk', async () => {
+    environmentSetup.getWorkbenchDiskFileName.mockReturnValue('amiga-os-310-workbench.adf');
     const setup = new Setup();
     await setup.prepare({}, environmentSetup);
 
@@ -48,20 +38,62 @@ it('inserts the workbench disk', async () => {
         .toHaveBeenCalledWith('DF1', {name: 'amiga-os-310-workbench.adf', type: 'amigaos'});
 });
 
+it('maps the host cache drive', async () => {
+    const setup = new Setup();
+    await setup.prepare({}, environmentSetup);
+
+    expect(environmentSetup.mapFolderToDrive)
+        .toHaveBeenCalledWith('DB5', path.join(process.cwd(), 'cache'), 'DB_HOST_CACHE');
+});
+
 it('maps the external tools drive', async () => {
     const setup = new Setup();
     await setup.prepare({}, environmentSetup);
 
     expect(environmentSetup.mapFolderToDrive)
-        .toHaveBeenCalledWith('DH6', path.join(process.cwd(), 'external_tools'), 'DB_TOOLS');
+        .toHaveBeenCalledWith('DB4', path.join(process.cwd(), 'external_tools'), 'DB_TOOLS');
 });
 
-it('maps the workbench disks drive', async () => {
+it('maps the os disks drive', async () => {
     const setup = new Setup();
     await setup.prepare({}, environmentSetup);
 
-    expect(environmentSetup.mapFolderToDrive)
-        .toHaveBeenCalledWith('DH5', 'someOsFolder', 'DB_OS_DISKS');
+    expect(environmentSetup.mapFolderToDrive).toHaveBeenCalledWith('DB3', 'someOsFolder', 'DB_OS_DISKS');
+});
+
+it('maps the running execution drive', async () => {
+    const setup = new Setup();
+    await setup.prepare({}, environmentSetup);
+
+    expect(environmentSetup.mapFolderToDrive).toHaveBeenCalledWith('DB2', 'some folder', 'DB_EXECUTION');
+});
+
+it('creates and adds the cache partition when it does not exist', async () => {
+    fs.existsSync.mockReturnValueOnce(false);
+    const setup = new Setup();
+    await setup.prepare({}, environmentSetup);
+
+    expect(RDBService.createRDB).toHaveBeenCalledTimes(2);
+    expect(environmentSetup.attachHDF).toHaveBeenCalledTimes(2);
+    expect(RDBService.createRDB).toHaveBeenCalledWith(path.join(global.CACHE_DIR, 'client_cache.hdf'), 100, 'DB1');
+    expect(environmentSetup.attachHDF).toHaveBeenCalledWith('DB1', path.join(global.CACHE_DIR, 'client_cache.hdf'));
+});
+
+it('does not create or add the cache partition when it already exists', async () => {
+    fs.existsSync.mockReturnValueOnce(true);
+    const setup = new Setup();
+    await setup.prepare({}, environmentSetup);
+
+    expect(RDBService.createRDB).toHaveBeenCalledTimes(1);
+    expect(environmentSetup.attachHDF).toHaveBeenCalledTimes(1);
+});
+
+it('creates and adds the duckbench partition', async () => {
+    const setup = new Setup();
+    await setup.prepare({}, environmentSetup);
+
+    expect(RDBService.createRDB).toHaveBeenCalledWith(path.join('some folder', 'duckbench.hdf'), 100, 'DB0');
+    expect(environmentSetup.attachHDF).toHaveBeenCalledWith('DB0', path.join('some folder', 'duckbench.hdf'));
 });
 
 it('creates the boot ADF with the required setup files', async () => {
@@ -80,19 +112,4 @@ it('creates the boot ADF with the required setup files', async () => {
     expect(ADFService.createDirectory).toHaveBeenCalledTimes(2);
     expect(ADFService.createDirectory).toHaveBeenCalledWith(path.join('some folder', 'boot.adf'), '', 's');
     expect(ADFService.createDirectory).toHaveBeenCalledWith(path.join('some folder', 'boot.adf'), '', 't');
-});
-
-it('prepares the duckbench partition', async () => {
-    const setup = new Setup();
-    await setup.prepare({}, environmentSetup);
-
-    expect(MockPartition).toHaveBeenCalledWith();
-    expect(mockPartitionInstance.prepare).toHaveBeenCalledWith({
-        name: 'SinglePartition',
-        optionValues: {
-            device: 'DH1',
-            volumeName: 'DUCKBENCH',
-            size: 100,
-        },
-    }, environmentSetup);
 });

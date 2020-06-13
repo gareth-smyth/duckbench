@@ -78,7 +78,7 @@ class EnvironmentSetup {
         let location;
         if ('amigaos'.localeCompare(diskDefinition.type, undefined, {sensitivity: 'accent'}) === 0) {
             const startLocation = path.join(this.duckbenchConfig.osFolder, diskDefinition.name);
-            location = path.join(this.executionFolder, drive.replace(':', '.adf'));
+            location = path.join(this.executionFolder, drive + '.adf');
             fs.copyFileSync(startLocation, location);
             fs.chmodSync(location, 0o0666);
         } else {

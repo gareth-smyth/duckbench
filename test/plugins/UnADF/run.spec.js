@@ -4,14 +4,6 @@ const communicator = {copy: jest.fn(), cd: jest.fn(), run: jest.fn(), delete: je
 const callback = 'aCallback';
 const options = 'options';
 
-beforeEach(() => {
-    communicator.copy.mockReset();
-    communicator.cd.mockReset();
-    communicator.run.mockReset();
-    communicator.delete.mockReset();
-    communicator.protect.mockReset();
-});
-
 it('copies the source file to the duckbench drive', async ()=> {
     const unADF = new UnADF();
     await unADF.run('a:', 'file.adf', 'b:disks/', 'somewhere:', options, communicator, callback);

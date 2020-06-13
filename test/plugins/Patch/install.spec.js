@@ -5,11 +5,7 @@ const lha = {run: jest.fn()};
 const communicator = {copy: jest.fn(), delete: jest.fn()};
 
 beforeEach(() => {
-    pluginStore.getPlugin.mockReset();
     pluginStore.getPlugin.mockReturnValue(lha);
-    lha.run.mockReset();
-    communicator.copy.mockReset();
-    communicator.delete.mockReset();
 });
 
 it('calls the communicator to extract patch once for each location requested', async () => {
@@ -19,7 +15,7 @@ it('calls the communicator to extract patch once for each location requested', a
     await patch.install({optionValues: {location: 'B:'}}, communicator, pluginStore);
 
     expect(lha.run).toHaveBeenCalledTimes(2);
-    expect(lha.run).toHaveBeenCalledWith('DB_TOOLS:patch-2.1.lha', 'duckbench:', 'duckbench:c/', {}, communicator);
+    expect(lha.run).toHaveBeenCalledWith('DB_HOST_CACHE:patch-2.1.lha', 'duckbench:', 'duckbench:c/', {}, communicator);
 });
 
 it('throws an error when extraction fails', async () => {
