@@ -76,7 +76,7 @@ Run the following commands from a terminal
 * Issues/bugs, and feature requests are always welcome using GitHub issues.
 
 ### Current limitations
-* Only supports Workbench 3.1 and 3.0 installs
+* Only supports Workbench 3.1, 3.0 and 2.1 installs
 * Small set of available plugins
 * Only supports FastFileSystem, with its associated limitations
 
