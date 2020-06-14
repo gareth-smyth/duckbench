@@ -60,23 +60,38 @@ class InstallWorkbench310 {
     }
 
     async install(config, communicator, pluginStore, environmentSetup) {
-        const unADF = pluginStore.getPlugin('UnADF');
         const patch = pluginStore.getPlugin('Patch');
+        const unADF = pluginStore.getPlugin('UnADF');
         const installerLg = pluginStore.getPlugin('InstallerLG');
 
-        for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
-            const fileName = workbenchDisks[diskIndex];
-            await unADF.run('DB_OS_DISKS:', fileName, 'duckbench:disks/', 'duckbench:', {}, communicator);
+        const cacheMarkerPath = path.join(global.CACHE_DIR, 'wb310_cached');
+        if (!fs.existsSync(cacheMarkerPath)) {
+            Logger.debug('Workbench 3.1 not yet cached.  Building cache.');
+
+            await communicator.delete('DB_CLIENT_CACHE:InstallWorkbench310', {'ALL': true}, undefined, /.*/);
+            await communicator.makedir('DB_CLIENT_CACHE:InstallWorkbench310');
+            await communicator.makedir('DB_CLIENT_CACHE:InstallWorkbench310/wb');
+
+            for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
+                const fileName = workbenchDisks[diskIndex];
+                await unADF.run('DB_OS_DISKS:', fileName, 'duckbench:disks/', 'duckbench:', {}, communicator);
+            }
+
+            await communicator.assign('Install3.1:', 'duckbench:disks/Install3.1');
+
+            await patch.run('Install3.1:Install/Install', 'DB_EXECUTION:wb3.1_install.patch',
+                'duckbench:c/', {}, communicator);
+
+            const installOptions = {REDIRECT_IN: 'DB_EXECUTION:install_key'};
+            await installerLg.run('Install3.1:install/install', installOptions, communicator,
+                this.handleInstallUpdates, 'The installation of Release 3.1 is now complete.');
+
+            fs.closeSync(fs.openSync(cacheMarkerPath, 'w'));
         }
 
-        await communicator.assign('Install3.1:', 'duckbench:disks/Install3.1');
-
-        await patch.run('Install3.1:Install/Install', 'DB_EXECUTION:wb3.1_install.patch',
-            'duckbench:c/', {}, communicator);
-
-        const installOptions = {REDIRECT_IN: 'DB_EXECUTION:install_key'};
-        await installerLg.run('Install3.1:install/install', installOptions, communicator,
-            this.handleInstallUpdates, 'The installation of Release 3.1 is now complete.');
+        Logger.debug('Copying workbench 3.1 files from cache.');
+        await communicator.copy('DB_CLIENT_CACHE:InstallWorkbench310/wb/', 'DH0:',
+            {'ALL': true, 'CLONE': true}, undefined, 'copied');
 
         if (!environmentSetup.floppyDrive) {
             const installedStartupSequence = 'DH0:s/startup-sequence';

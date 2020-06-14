@@ -213,7 +213,7 @@ describe('when the cache is already populated', () => {
         fs.existsSync.mockReturnValueOnce(true);
     });
 
-    it('does not deletes and recreates the wb install cache', async () => {
+    it('does not delete and recreate the wb install cache', async () => {
         const installWorkbench210 = new InstallWorkbench210();
         await installWorkbench210.install({}, communicator, pluginStore, {floppyDrive: true});
 

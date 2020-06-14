@@ -60,6 +60,8 @@ class InstallWorkbench210 {
 
     async install(config, communicator, pluginStore, environmentSetup) {
         const patch = pluginStore.getPlugin('Patch');
+        const unADF = pluginStore.getPlugin('UnADF');
+        const installerLg = pluginStore.getPlugin('InstallerLG');
 
         const cacheMarkerPath = path.join(global.CACHE_DIR, 'wb210_cached');
         if (!fs.existsSync(cacheMarkerPath)) {
@@ -69,7 +71,6 @@ class InstallWorkbench210 {
             await communicator.makedir('DB_CLIENT_CACHE:InstallWorkbench210');
             await communicator.makedir('DB_CLIENT_CACHE:InstallWorkbench210/wb');
 
-            const unADF = pluginStore.getPlugin('UnADF');
             for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
                 const fileName = workbenchDisks[diskIndex].file;
                 await unADF.run('DB_OS_DISKS:', fileName, 'duckbench:disks/', 'duckbench:', {}, communicator);
@@ -84,7 +85,6 @@ class InstallWorkbench210 {
             await patch.run('"Install2.1:Install 2.1/Install 2.1"', 'DB_EXECUTION:wb2.1_install.patch',
                 'duckbench:c/', {}, communicator);
 
-            const installerLg = pluginStore.getPlugin('InstallerLG');
             const installOptions = {REDIRECT_IN: 'DB_EXECUTION:install_key'};
             await installerLg.run('"Install2.1:Install 2.1/Install 2.1"', installOptions, communicator,
                 this.handleInstallUpdates, 'Installation complete');
@@ -92,7 +92,7 @@ class InstallWorkbench210 {
             fs.closeSync(fs.openSync(cacheMarkerPath, 'w'));
         }
 
-        Logger.debug('Copying workbench 2.1 files form cache.');
+        Logger.debug('Copying workbench 2.1 files from cache.');
         await communicator.copy('DB_CLIENT_CACHE:InstallWorkbench210/wb/', 'DH0:',
             {'ALL': true, 'CLONE': true}, undefined, 'copied');
 

@@ -10,7 +10,7 @@ const workbenchDisks = [
     {file: 'amiga-os-300-storage.adf', diskName: 'Storage3.0', assign: 'Storage3.0:'},
 ];
 
-class InstallWorkbench310 {
+class InstallWorkbench300 {
     structure() {
         return {
             name: 'InstallWorkbench300',
@@ -60,25 +60,41 @@ class InstallWorkbench310 {
     }
 
     async install(config, communicator, pluginStore, environmentSetup) {
-        const unADF = pluginStore.getPlugin('UnADF');
-        for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
-            const fileName = workbenchDisks[diskIndex].file;
-            await unADF.run('DB_OS_DISKS:', fileName, 'duckbench:disks/', 'duckbench:', {}, communicator);
-        }
-
-        for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
-            const target = `duckbench:disks/${workbenchDisks[diskIndex].diskName}`;
-            await communicator.assign(workbenchDisks[diskIndex].assign, target);
-        }
-
         const patch = pluginStore.getPlugin('Patch');
-        const patchFile = 'DB_EXECUTION:wb3.0_install.patch';
-        await patch.run('Install3.0:Install/Install', patchFile, 'duckbench:c/', {}, communicator);
-
+        const unADF = pluginStore.getPlugin('UnADF');
         const installerLg = pluginStore.getPlugin('InstallerLG');
-        const installOptions = {REDIRECT_IN: 'DB_EXECUTION:install_key'};
-        await installerLg.run('Install3.0:install/install', installOptions, communicator,
-            this.handleInstallUpdates, 'The installation of Release 3 is now complete.');
+
+        const cacheMarkerPath = path.join(global.CACHE_DIR, 'wb300_cached');
+        if (!fs.existsSync(cacheMarkerPath)) {
+            Logger.debug('Workbench 3.0 not yet cached.  Building cache.');
+
+            await communicator.delete('DB_CLIENT_CACHE:InstallWorkbench300', {'ALL': true}, undefined, /.*/);
+            await communicator.makedir('DB_CLIENT_CACHE:InstallWorkbench300');
+            await communicator.makedir('DB_CLIENT_CACHE:InstallWorkbench300/wb');
+
+            for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
+                const fileName = workbenchDisks[diskIndex].file;
+                await unADF.run('DB_OS_DISKS:', fileName, 'duckbench:disks/', 'duckbench:', {}, communicator);
+            }
+
+            for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
+                const target = `duckbench:disks/${workbenchDisks[diskIndex].diskName}`;
+                await communicator.assign(workbenchDisks[diskIndex].assign, target);
+            }
+
+            const patchFile = 'DB_EXECUTION:wb3.0_install.patch';
+            await patch.run('Install3.0:Install/Install', patchFile, 'duckbench:c/', {}, communicator);
+
+            const installOptions = {REDIRECT_IN: 'DB_EXECUTION:install_key'};
+            await installerLg.run('Install3.0:install/install', installOptions, communicator,
+                this.handleInstallUpdates, 'The installation of Release 3 is now complete.');
+
+            fs.closeSync(fs.openSync(cacheMarkerPath, 'w'));
+        }
+
+        Logger.debug('Copying workbench 3.0 files from cache.');
+        await communicator.copy('DB_CLIENT_CACHE:InstallWorkbench300/wb/', 'DH0:',
+            {'ALL': true, 'CLONE': true}, undefined, 'copied');
 
         if (!environmentSetup.floppyDrive) {
             const installedStartupSequence = 'DH0:s/startup-sequence';
@@ -102,4 +118,4 @@ class InstallWorkbench310 {
     }
 }
 
-module.exports = InstallWorkbench310;
+module.exports = InstallWorkbench300;
