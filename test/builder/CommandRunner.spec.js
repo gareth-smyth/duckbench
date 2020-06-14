@@ -92,3 +92,10 @@ it('rejects when the expected response does not match all expectations', async (
     await expect(commandRunner.run('aCommand', {}, callback, [regExpExpected, 'some other']))
         .rejects.toThrowError(expectedError);
 });
+
+it('rejects when the expected response does not match expectation of no response', async () => {
+    socketCommunicator.runCommand.mockResolvedValue(['a response', 'some other a response']);
+
+    const expectedError = 'Expected no response from "aCommand" but got "a response,some other a response"';
+    await expect(commandRunner.run('aCommand', {}, callback, undefined)).rejects.toThrowError(expectedError);
+});

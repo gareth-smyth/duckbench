@@ -59,26 +59,42 @@ class InstallWorkbench210 {
     }
 
     async install(config, communicator, pluginStore, environmentSetup) {
-        const unADF = pluginStore.getPlugin('UnADF');
-        for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
-            const fileName = workbenchDisks[diskIndex].file;
-            await unADF.run('DB_OS_DISKS:', fileName, 'duckbench:disks/', 'duckbench:', {}, communicator);
-        }
-
-        await communicator.assign('Workbench2.1:', '', {'DISMOUNT': true});
-        for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
-            const target = `duckbench:disks/${workbenchDisks[diskIndex].diskName}`;
-            await communicator.assign(workbenchDisks[diskIndex].assign, target);
-        }
-
         const patch = pluginStore.getPlugin('Patch');
-        await patch.run('"Install2.1:Install 2.1/Install 2.1"', 'DB_EXECUTION:wb2.1_install.patch',
-            'duckbench:c/', {}, communicator);
 
-        const installerLg = pluginStore.getPlugin('InstallerLG');
-        const installOptions = {REDIRECT_IN: 'DB_EXECUTION:install_key'};
-        await installerLg.run('"Install2.1:Install 2.1/Install 2.1"', installOptions, communicator,
-            this.handleInstallUpdates, 'Installation complete');
+        const cacheMarkerPath = path.join(global.CACHE_DIR, 'wb210_cached');
+        if (!fs.existsSync(cacheMarkerPath)) {
+            Logger.debug('Workbench 2.1 not yet cached.  Building cache.');
+
+            await communicator.delete('DB_CLIENT_CACHE:InstallWorkbench210', {'ALL': true}, undefined, /.*/);
+            await communicator.makedir('DB_CLIENT_CACHE:InstallWorkbench210');
+            await communicator.makedir('DB_CLIENT_CACHE:InstallWorkbench210/wb');
+
+            const unADF = pluginStore.getPlugin('UnADF');
+            for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
+                const fileName = workbenchDisks[diskIndex].file;
+                await unADF.run('DB_OS_DISKS:', fileName, 'duckbench:disks/', 'duckbench:', {}, communicator);
+            }
+
+            await communicator.assign('Workbench2.1:', '', {'DISMOUNT': true});
+            for (let diskIndex = 0; diskIndex < workbenchDisks.length; diskIndex++) {
+                const target = `duckbench:disks/${workbenchDisks[diskIndex].diskName}`;
+                await communicator.assign(workbenchDisks[diskIndex].assign, target);
+            }
+
+            await patch.run('"Install2.1:Install 2.1/Install 2.1"', 'DB_EXECUTION:wb2.1_install.patch',
+                'duckbench:c/', {}, communicator);
+
+            const installerLg = pluginStore.getPlugin('InstallerLG');
+            const installOptions = {REDIRECT_IN: 'DB_EXECUTION:install_key'};
+            await installerLg.run('"Install2.1:Install 2.1/Install 2.1"', installOptions, communicator,
+                this.handleInstallUpdates, 'Installation complete');
+
+            fs.closeSync(fs.openSync(cacheMarkerPath, 'w'));
+        }
+
+        Logger.debug('Copying workbench 2.1 files form cache.');
+        await communicator.copy('DB_CLIENT_CACHE:InstallWorkbench210/wb/', 'DH0:',
+            {'ALL': true, 'CLONE': true}, undefined, 'copied');
 
         if (!environmentSetup.floppyDrive) {
             const installedStartupSequence = 'DH0:s/startup-sequence';

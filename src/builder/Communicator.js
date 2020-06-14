@@ -25,12 +25,13 @@ class Communicator {
         return this.commandRunner.run(`cd ${folder}`, options, commandCallback);
     }
 
-    async copy(source, destination, options = {}, commandCallback = this.noCallback) {
-        return this.commandRunner.run(`copy ${source} ${destination}`, options, commandCallback);
+    async copy(source, destination, options = {},
+               commandCallback = this.noCallback, expectedResponse = undefined) {
+        return this.commandRunner.run(`copy ${source} ${destination}`, options, commandCallback, expectedResponse);
     }
 
-    async delete(filename, options = {}, commandCallback = this.noCallback) {
-        const expectedResponse = `${filename}  Deleted`;
+    async delete(filename, options = {},
+                 commandCallback = this.noCallback, expectedResponse = `${filename}  Deleted`) {
         return this.commandRunner.run(`delete ${filename}`, options, commandCallback, expectedResponse);
     }
 

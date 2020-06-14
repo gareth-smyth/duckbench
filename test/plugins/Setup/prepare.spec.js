@@ -79,13 +79,13 @@ it('creates and adds the cache partition when it does not exist', async () => {
     expect(environmentSetup.attachHDF).toHaveBeenCalledWith('DB1', path.join(global.CACHE_DIR, 'client_cache.hdf'));
 });
 
-it('does not create or add the cache partition when it already exists', async () => {
+it('does not create the cache partition when it already exists', async () => {
     fs.existsSync.mockReturnValueOnce(true);
     const setup = new Setup();
     await setup.prepare({}, environmentSetup);
 
     expect(RDBService.createRDB).toHaveBeenCalledTimes(1);
-    expect(environmentSetup.attachHDF).toHaveBeenCalledTimes(1);
+    expect(environmentSetup.attachHDF).toHaveBeenCalledTimes(2);
 });
 
 it('creates and adds the duckbench partition', async () => {

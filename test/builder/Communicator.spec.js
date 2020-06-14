@@ -43,15 +43,15 @@ it('runs the cd command with defaults', async () => {
 });
 
 it('runs the copy command', async () => {
-    await communicator.copy('filename', 'some:folder', options, callback);
+    await communicator.copy('filename', 'some:folder', options, callback, 'expect response');
     expect(commandRunner.run).toHaveBeenCalledTimes(1);
-    expect(commandRunner.run).toBeCalledWith('copy filename some:folder', options, callback);
+    expect(commandRunner.run).toBeCalledWith('copy filename some:folder', options, callback, 'expect response');
 });
 
 it('runs the copy command with defaults', async () => {
     await communicator.copy('filename', 'some:folder');
     expect(commandRunner.run).toHaveBeenCalledTimes(1);
-    expect(commandRunner.run).toBeCalledWith('copy filename some:folder', {}, expect.any(Function));
+    expect(commandRunner.run).toBeCalledWith('copy filename some:folder', {}, expect.any(Function), undefined);
 });
 
 it('runs the delete command', async () => {

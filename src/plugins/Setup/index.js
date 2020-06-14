@@ -45,10 +45,10 @@ class Setup {
         if (!fs.existsSync(cacheLocation)) {
             Logger.debug('Creating DB1: as DB_CLIENT_CACHE: as new HDF');
             RDBService.createRDB(cacheLocation, 100, 'DB1');
-            environmentSetup.attachHDF('DB1', cacheLocation);
         } else {
             Logger.debug('Using existing HDF as DB1: as DB_CLIENT_CACHE:');
         }
+        environmentSetup.attachHDF('DB1', cacheLocation);
 
         Logger.debug('Creating DB0: as DUCKBENCH: as new HDF');
         const location = path.join(environmentSetup.executionFolder, 'duckbench.hdf');

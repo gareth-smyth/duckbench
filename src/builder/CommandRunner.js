@@ -8,7 +8,11 @@ class CommandRunner {
         Logger.debug(`Running ${commandString}`);
         return this.socketCommunicator.runCommand(commandString, commandCallback).then((response) => {
             if (this.checkResponse(expectedResponse, response)) {
-                throw new Error(`Expected "${expectedResponse}" from "${commandString}" but got "${response}"`);
+                if (!expectedResponse) {
+                    throw new Error(`Expected no response from "${commandString}" but got "${response}"`);
+                } else {
+                    throw new Error(`Expected "${expectedResponse}" from "${commandString}" but got "${response}"`);
+                }
             }
             Logger.debug(`Ran ${commandString}`);
         }).catch((err) => {
