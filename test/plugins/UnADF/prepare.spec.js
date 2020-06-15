@@ -1,40 +1,12 @@
-const fs = require('fs');
-const path = require('path');
-const request = require('request-promise');
+const AminetService = require('../../../src/services/AminetService');
+jest.mock('../../../src/services/AminetService');
 
 const UnADF = require('../../../src/plugins/UnADF');
 
-jest.mock('fs');
-jest.mock('request');
-
-it('does not download the unADF file when it already exists', async () => {
-    fs.existsSync.mockReturnValueOnce(true);
-
+it('downloads the patch archive', async () => {
     const unADF = new UnADF();
-    await unADF.prepare({}, {executionFolder: 'aFolder'});
+    await unADF.prepare();
 
-    expect(fs.writeFileSync).toHaveBeenCalledTimes(0);
-});
-
-it('downloads the unADF file when it does not exist', async () => {
-    fs.existsSync.mockReturnValueOnce(false);
-    request.mockResolvedValueOnce({body: 'myfile'});
-
-    const unADF = new UnADF();
-    await unADF.prepare({}, {executionFolder: 'aFolder'});
-
-    expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(global.CACHE_DIR, 'UnADF.lha'), 'myfile');
-    expect(request).toHaveBeenCalledTimes(1);
-    const expectedURI = 'http://aminet.net/disk/misc/UnADF.lha';
-    const expectedRequest = {encoding: null, resolveWithFullResponse: true, uri: expectedURI};
-    expect(request).toHaveBeenCalledWith(expectedRequest);
-});
-
-it('throws an error when downloading fails', async () => {
-    fs.existsSync.mockReturnValueOnce(false);
-    request.mockRejectedValue('request error');
-
-    const unADF = new UnADF();
-    await expect(unADF.prepare({}, {executionFolder: 'aFolder'})).rejects.toThrowError('request error');
+    expect(AminetService.download).toHaveBeenCalledTimes(1);
+    expect(AminetService.download).toHaveBeenCalledWith('disk/misc/UnADF.lha');
 });

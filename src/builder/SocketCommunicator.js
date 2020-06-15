@@ -56,17 +56,17 @@ class SocketCommunicator {
 
     _closeEvent() {
         this.controlCallback({message: CLOSE_EVENT});
-        Logger.info('The Amiga has closed the connection');
+        Logger.debug('The Amiga has closed the connection');
     }
 
     _connectEvent() {
         this.controlCallback({message: CONNECT_EVENT});
-        Logger.info('I am connected to the Amiga');
+        Logger.debug('I am connected to the Amiga');
     }
 
     _readyEvent() {
         this.controlCallback({message: READY_EVENT});
-        Logger.info('I have opened communication with the Amiga');
+        Logger.debug('I have opened communication with the Amiga');
     }
 
     connect() {
@@ -84,7 +84,7 @@ class SocketCommunicator {
         switch (this.status) {
         case 'CONNECTING':
             if (this._responseIsPrompt(responseLine)) {
-                Logger.info('I have communication with the Amiga.');
+                Logger.debug('I have communication with the Amiga.');
                 this.status = 'CONNECTED';
                 setTimeout(this.connectedResolve, 1000);
             } else {
@@ -101,7 +101,7 @@ class SocketCommunicator {
             if (responseLine.replace('\\', '').match(this.commandRunning.replace('\\', ''))) {
                 this.status = 'COMMAND_RUNNING';
                 this.commandCallback({message: COMMAND_RECEIVED, data: responseLine});
-                Logger.info(`The Amiga is executing the command "${this.commandRunning.trim()}"` +
+                Logger.debug(`The Amiga is executing the command "${this.commandRunning.trim()}"` +
                     ' and I am waiting for the response.');
             } else {
                 this.controlCallback({message: DATA_EVENT, data: responseLine});
@@ -113,7 +113,7 @@ class SocketCommunicator {
             if (this._responseIsPrompt(responseLine)) {
                 Logger.debug(`I ran the command "${this.commandRunning.trim()}" and it has returned the values ` +
                     `\r\n---\r\n${this.runningCommandData.join('\r\n')}\r\n---`);
-                Logger.info(`I ran the command ${this.commandRunning.trim()} and it completed.`);
+                Logger.debug(`I ran the command ${this.commandRunning.trim()} and it completed.`);
                 this.status = 'CONNECTED';
                 setTimeout(() => {
                     this.runningCommandResolve(this.runningCommandData);

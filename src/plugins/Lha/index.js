@@ -1,6 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-const request = require('request-promise');
+const AminetService = require('../../services/AminetService');
 
 class Lha {
     constructor() {
@@ -25,19 +23,7 @@ class Lha {
     }
 
     async prepare() {
-        if (!fs.existsSync(path.join(global.CACHE_DIR, 'lha.run'))) {
-            Logger.debug('Downloading lha.run from http://aminet.net/util/arc/lha.run');
-            const response = await request({
-                uri: 'http://aminet.net/util/arc/lha.run',
-                resolveWithFullResponse: true,
-                encoding: null,
-            }).catch((err) => {
-                throw new Error(err);
-            });
-            fs.writeFileSync(path.join(global.CACHE_DIR, 'lha.run'), response.body);
-        } else {
-            Logger.debug('Using cached version of lha.run');
-        }
+        await AminetService.download('util/arc/lha.run');
     }
 
     async install(config, communicator) {

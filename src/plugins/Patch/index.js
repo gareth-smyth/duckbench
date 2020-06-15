@@ -1,6 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-const request = require('request-promise');
+const AminetService = require('../../services/AminetService');
 
 class Patch {
     constructor() {
@@ -34,19 +32,7 @@ class Patch {
     }
 
     async prepare() {
-        if (!fs.existsSync(path.join(global.CACHE_DIR, 'patch-2.1.lha'))) {
-            Logger.debug('Downloading patch from http://aminet.net/dev/misc/patch-2.1.lha');
-            const response = await request({
-                uri: 'http://aminet.net/dev/misc/patch-2.1.lha',
-                resolveWithFullResponse: true,
-                encoding: null,
-            }).catch((err) => {
-                throw new Error(err);
-            });
-            fs.writeFileSync(path.join(global.CACHE_DIR, 'patch-2.1.lha'), response.body);
-        } else {
-            Logger.debug('Using cached version of patch');
-        }
+        await AminetService.download('dev/misc/patch-2.1.lha');
     }
 
     async install(config, communicator, pluginStore) {

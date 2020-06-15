@@ -1,6 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-const request = require('request-promise');
+const AminetService = require('../../services/AminetService');
 
 class UnADF {
     constructor() {
@@ -34,19 +32,7 @@ class UnADF {
     }
 
     async prepare() {
-        if (!fs.existsSync(path.join(global.CACHE_DIR, 'UnADF.lha'))) {
-            Logger.debug('Downloading UnADF from http://aminet.net/disk/misc/UnADF.lha');
-            const response = await request({
-                uri: 'http://aminet.net/disk/misc/UnADF.lha',
-                resolveWithFullResponse: true,
-                encoding: null,
-            }).catch((err) => {
-                throw new Error(err);
-            });
-            fs.writeFileSync(path.join(global.CACHE_DIR, 'UnADF.lha'), response.body);
-        } else {
-            Logger.debug('Using cached version of UnADF');
-        }
+        await AminetService.download('disk/misc/UnADF.lha');
     }
 
     async install(config, communicator, pluginStore) {
