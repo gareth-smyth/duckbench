@@ -2,9 +2,9 @@ const path = require('path');
 
 const SinglePartition = require('../../../src/plugins/SinglePartition');
 
-jest.mock('../../../src/services/RDBService');
+jest.mock('../../../src/services/HardDriveService');
 
-const RDBService = require('../../../src/services/RDBService');
+const HardDriveService = require('../../../src/services/HardDriveService');
 
 it('creates an RDB and attaches it to the environment', () => {
     const environmentSetup = {
@@ -14,9 +14,9 @@ it('creates an RDB and attaches it to the environment', () => {
     const partition = new SinglePartition();
     partition.prepare({optionValues: {device: 'A', size: 100}}, environmentSetup);
 
-    expect(RDBService.createRDB).toHaveBeenCalledTimes(1);
+    expect(HardDriveService.createRDB).toHaveBeenCalledTimes(1);
     const expectedLocation = path.join('some folder', 'A.hdf');
-    expect(RDBService.createRDB).toHaveBeenCalledWith(expectedLocation, 100, 'A');
+    expect(HardDriveService.createRDB).toHaveBeenCalledWith(expectedLocation, 100, [{'driveName': 'A'}]);
     expect(environmentSetup.attachHDF).toHaveBeenCalledTimes(1);
     expect(environmentSetup.attachHDF).toHaveBeenCalledWith('A', expectedLocation);
 });

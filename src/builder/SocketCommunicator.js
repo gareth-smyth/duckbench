@@ -18,14 +18,13 @@ class SocketCommunicator {
         this.client.on('ready', this._readyEvent.bind(this));
     }
 
-    /* Istanbul ignore function */
     noCallback() { }
 
     async runCommand(commandString, commandCallback = this.noCallback) {
         this.commandRunning = `${commandString}`;
         this.commandCallback = commandCallback;
         this.status = 'SEND_COMMAND';
-        Logger.info(`I am running the command "${commandString.trim()}" on the Amiga`);
+        Logger.debug(`I am running the command "${commandString.trim()}" on the Amiga`);
         this.client.write(`${commandString}\r`);
         this.runningCommandData = [];
         return new Promise((resolve) => {

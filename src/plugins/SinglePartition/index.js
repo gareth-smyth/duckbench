@@ -1,5 +1,5 @@
 const path = require('path');
-const RDBService = require('../../services/RDBService');
+const HardDriveService = require('../../services/HardDriveService');
 
 class SinglePartition {
     structure() {
@@ -15,7 +15,6 @@ class SinglePartition {
                     description: 'The drive to install workbench on e.g. "DH0"',
                     type: 'text',
                     default: 'DH0',
-                    hide: true,
                 },
                 volumeName: {
                     name: 'volumeName',
@@ -44,15 +43,16 @@ class SinglePartition {
 
     prepare(config, environmentSetup) {
         const location = path.join(environmentSetup.executionFolder, `${config.optionValues.device}.hdf`);
-        RDBService.createRDB(location, config.optionValues.size, config.optionValues.device);
+        HardDriveService.createRDB(location, config.optionValues.size, [{driveName: config.optionValues.device}]);
         environmentSetup.attachHDF(config.optionValues.device, location);
     }
 
     async install(config, communicator, pluginStore) {
         const enterFile = pluginStore.getPlugin('HitEnterFile').getFile();
-        return communicator.format(config.optionValues.device, config.optionValues.volumeName, {
+        await communicator.format(config.optionValues.device, config.optionValues.volumeName, {
             ffs: true, quick: true, intl: true, noicons: true, REDIRECT_IN: enterFile,
         });
+        await communicator.assign('NEW_WORKBENCH:', `${config.optionValues.volumeName}:`);
     }
 }
 

@@ -15,6 +15,15 @@ class InstallWorkbench210 {
             name: 'InstallWorkbench210',
             label: 'Workbench 2.1',
             type: 'workbench',
+            options: {
+                device: {
+                    name: 'device',
+                    label: 'On drive',
+                    description: 'The drive to install workbench on e.g. "WORKBENCH"',
+                    type: 'partition',
+                    primary: true,
+                },
+            },
         };
     }
 
@@ -93,11 +102,11 @@ class InstallWorkbench210 {
         }
 
         Logger.debug('Copying workbench 2.1 files from cache.');
-        await communicator.copy('DB_CLIENT_CACHE:InstallWorkbench210/wb/', 'DH0:',
+        await communicator.copy('DB_CLIENT_CACHE:InstallWorkbench210/wb/', `${config.optionValues.device}:`,
             {'ALL': true, 'CLONE': true}, undefined, 'copied');
 
         if (!environmentSetup.floppyDrive) {
-            const installedStartupSequence = 'DH0:s/startup-sequence';
+            const installedStartupSequence = `${config.optionValues.device}:s/startup-sequence`;
             const startupSequencePatch = 'DB_EXECUTION:wb2.1_no_floppy_startup.patch';
             await patch.run(installedStartupSequence, startupSequencePatch, 'duckbench:c/', {}, communicator);
         }
@@ -112,7 +121,7 @@ class InstallWorkbench210 {
     }
 
     finalise(config, environmentSetup) {
-        const runningLocation = path.join(environmentSetup.executionFolder, 'DH0.hdf');
+        const runningLocation = path.join(environmentSetup.executionFolder, `${config.optionValues.device}.hdf`);
         const saveLocation = path.join(process.cwd(), `Workbench210_${environmentSetup.systemName}.hdf`);
         fs.copyFileSync(runningLocation, saveLocation);
     }

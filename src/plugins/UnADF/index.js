@@ -14,9 +14,9 @@ class UnADF {
                 location: {
                     name: 'location',
                     label: 'Install to',
-                    description: 'e.g. "WORKBENCH:"',
+                    description: 'e.g. "NEW_WORKBENCH:"',
                     type: 'text',
-                    default: 'WORKBENCH:',
+                    default: 'NEW_WORKBENCH:',
                 },
             },
         };

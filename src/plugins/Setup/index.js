@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const ADFService = require('../../services/ADFService');
 const HitEnterFile = require('../HitEnterFile');
-const RDBService = require('../../services/RDBService');
+const HardDriveService = require('../../services/HardDriveService');
 
 class Setup {
     structure() {
@@ -44,7 +44,7 @@ class Setup {
         const cacheLocation = path.join(global.CACHE_DIR, 'client_cache.hdf');
         if (!fs.existsSync(cacheLocation)) {
             Logger.debug('Creating DB1: as DB_CLIENT_CACHE: as new HDF');
-            RDBService.createRDB(cacheLocation, 100, 'DB1');
+            HardDriveService.createRDB(cacheLocation, 100, 'DB1');
         } else {
             Logger.debug('Using existing HDF as DB1: as DB_CLIENT_CACHE:');
         }
@@ -52,7 +52,7 @@ class Setup {
 
         Logger.debug('Creating DB0: as DUCKBENCH: as new HDF');
         const location = path.join(environmentSetup.executionFolder, 'duckbench.hdf');
-        RDBService.createRDB(location, 100, 'DB0');
+        HardDriveService.createRDB(location, 100, [{driveName: 'DB0'}]);
         environmentSetup.attachHDF('DB0', location);
     }
 
