@@ -84,14 +84,14 @@ it('runs the format command', async () => {
     await communicator.format('drive', 'volume', options, callback);
     expect(commandRunner.run).toHaveBeenCalledTimes(1);
     expect(commandRunner.run)
-        .toBeCalledWith('format drive drive name volume', options, callback, 'Initializing disk...');
+        .toBeCalledWith('format drive drive name volume', options, callback, /^((?!Format Failure).)*$/);
 });
 
 it('runs the format command with defaults', async () => {
     await communicator.format('drive', 'volume');
     expect(commandRunner.run).toHaveBeenCalledTimes(1);
     expect(commandRunner.run)
-        .toBeCalledWith('format drive drive name volume', {}, expect.any(Function), 'Initializing disk...');
+        .toBeCalledWith('format drive drive name volume', {}, expect.any(Function), /^((?!Format Failure).)*$/);
 });
 
 it('runs the makedir command', async () => {

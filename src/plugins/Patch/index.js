@@ -14,9 +14,9 @@ class Patch {
                 location: {
                     name: 'location',
                     label: 'Install to',
-                    description: 'e.g. "WORKBENCH:c/"',
+                    description: 'e.g. "NEW_WORKBENCH:c/"',
                     type: 'text',
-                    default: 'WORKBENCH:C/',
+                    default: 'NEW_WORKBENCH:C/',
                 },
             },
         };

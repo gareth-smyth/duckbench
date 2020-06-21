@@ -9,7 +9,7 @@ export default class Option {
             if(node.attrs.inline) {
                 return [
                     m('.btn.pt-0.pb-0', option.label),
-                    m('.btn.col-sm-6.pt-0.pb-0', [ this.option(selectedPlugin, option, optionValue, configuration) ]),
+                    m('.btn.col-sm-6.pt-0.pb-0.text-left', [ this.option(selectedPlugin, option, optionValue, configuration) ]),
                 ];
             } else {
                 return m('.form-group row', {title: option.description}, [
@@ -29,22 +29,34 @@ export default class Option {
                 onchange: (event) => { this.optionChanged(event, configuration) },
             });
         } else if(option.type === 'list'){
-            return m('select.btn.btn-info.dropdown-toggle', {
-                    selectedPluginId: selectedPlugin.id,
-                    name: option.name,
-                    value: optionValue,
-                    key: optionValue,
-                    onchange: (event) => { this.optionChanged(event, configuration) }
-                },
-                option.items.map(item => {
-                    if(typeof item === 'string') {
-                        return m('option', { key: item, value: item }, item)
-                    } else {
-                        return m('option', { key: item.value, value: item.value }, item.label)
-                    }
-                }),
-            );
+            return this.selectList(selectedPlugin, option, option.items, optionValue, configuration);
+        } else if(option.type === 'partition'){
+            const partitionSelectedPlugin = configuration.getPartitionSelectedPlugin();
+            const device = partitionSelectedPlugin.optionValues.device;
+            const volumeName = partitionSelectedPlugin.optionValues.volumeName;
+            const optionItems = [{key: 1, value: device, label: `${volumeName} (${device})`}];
+            return this.selectList(selectedPlugin, option, optionItems, optionValue, configuration);
         }
+    }
+
+    selectList(selectedPlugin, option, optionItems, optionValue, configuration) {
+        return m(`select.btn.btn-info.dropdown-toggle`, {
+                selectedPluginId: selectedPlugin.id,
+                name: option.name,
+                value: optionValue,
+                key: optionValue,
+                onchange: (event) => {
+                    this.optionChanged(event, configuration);
+                },
+            },
+            optionItems.map(item => {
+                if (typeof item === 'string') {
+                    return m('option', {key: item, value: item}, item);
+                } else {
+                    return m('option', {key: item.key || item.value, value: item.value}, item.label);
+                }
+            }),
+        );
     }
 
     optionChanged(event, configuration) {

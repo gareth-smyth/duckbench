@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "lint": "eslint ./src ./test"
+    "lint": "eslint ./src ./test",
+    "lintfix": "eslint ./src ./test --fix"
   },
   "bin": {
     "convertrom": "src/tools/convertrom",
@@ -105,6 +106,7 @@
       "no-use-before-define": [
         "error"
       ],
+      "no-console": "error",
       "no-unused-vars": [
         "error",
         {

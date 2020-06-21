@@ -41,7 +41,7 @@ class Communicator {
 
     async format(drive, volumeName, options = {}, commandCallback = this.noCallback) {
         const commandString = `format drive ${drive} name ${volumeName}`;
-        const expectedResponse = 'Initializing disk...';
+        const expectedResponse = /^((?!Format Failure).)*$/;
         return this.commandRunner.run(commandString, options, commandCallback, expectedResponse);
     }
 

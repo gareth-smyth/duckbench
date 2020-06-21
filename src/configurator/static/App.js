@@ -15,7 +15,7 @@ export default class App {
     view() {
         if(this.configuration.plugins) {
             return [
-                // m('pre', {style: 'position:absolute', 'overflow-y': 'scroll'}, JSON.stringify(this.configuration.selectedPlugins, null, 2)), // DEBUG ONLY
+                m('pre', {style: 'position:absolute', 'overflow-y': 'scroll'}, JSON.stringify(this.configuration.selectedPlugins, null, 2)), // DEBUG ONLY
                 m('nav.navbar.navbar-default.fixed-top.navbar-inverse.bg-primary', [
                     m('.container',
                         m('.container', [

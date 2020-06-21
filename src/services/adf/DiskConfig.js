@@ -7,6 +7,7 @@ class DiskConfig {
         this.BOOT_BLOCKS_RESERVED = bootBlocksReserved;
         this.DISK_BLOCKS = this.CYLINDERS * this.HEADS * this.SECTORS;
         this.DISK_SIZE_BYTES = this.DISK_BLOCKS * this.BLOCK_SIZE;
+        this.BLOCKS_PER_CYLINDER = heads * sectors;
         this.ROOT_BLOCK = this.DISK_BLOCKS / 2;
         this.ROOT_BLOCK_ADDRESS = this.ROOT_BLOCK * this.BLOCK_SIZE;
         this.BITMAP_BLOCK = this.ROOT_BLOCK + 1;

@@ -18,6 +18,7 @@ class AminetService {
         } else {
             Logger.debug(`Using cached version of ${filename}`);
         }
+        return fullSavePath;
     }
 }
 

@@ -3,12 +3,12 @@ const path = require('path');
 
 const EnvironmentSetup = require('../../../src/builder/EnvironmentSetup');
 const ADFService = require('../../../src/services/ADFService');
-const RDBService = require('../../../src/services/RDBService');
+const HardDriveService = require('../../../src/services/HardDriveService');
 
 jest.mock('fs');
 jest.mock('../../../src/builder/EnvironmentSetup');
 jest.mock('../../../src/services/ADFService');
-jest.mock('../../../src/services/RDBService');
+jest.mock('../../../src/services/HardDriveService');
 
 const Setup = require('../../../src/plugins/Setup');
 
@@ -73,10 +73,13 @@ it('creates and adds the cache partition when it does not exist', async () => {
     const setup = new Setup();
     await setup.prepare({}, environmentSetup);
 
-    expect(RDBService.createRDB).toHaveBeenCalledTimes(2);
+    expect(HardDriveService.createRDB).toHaveBeenCalledTimes(2);
     expect(environmentSetup.attachHDF).toHaveBeenCalledTimes(2);
-    expect(RDBService.createRDB).toHaveBeenCalledWith(path.join(global.CACHE_DIR, 'client_cache.hdf'), 100, 'DB1');
-    expect(environmentSetup.attachHDF).toHaveBeenCalledWith('DB1', path.join(global.CACHE_DIR, 'client_cache.hdf'));
+
+    const clientCacheLocation = path.join(global.CACHE_DIR, 'client_cache.hdf');
+    expect(HardDriveService.createRDB)
+        .toHaveBeenCalledWith(clientCacheLocation, 100, [{'driveName': 'DB1', 'fileSystem': 'ffs'}]);
+    expect(environmentSetup.attachHDF).toHaveBeenCalledWith('DB1', clientCacheLocation);
 });
 
 it('does not create the cache partition when it already exists', async () => {
@@ -84,7 +87,7 @@ it('does not create the cache partition when it already exists', async () => {
     const setup = new Setup();
     await setup.prepare({}, environmentSetup);
 
-    expect(RDBService.createRDB).toHaveBeenCalledTimes(1);
+    expect(HardDriveService.createRDB).toHaveBeenCalledTimes(1);
     expect(environmentSetup.attachHDF).toHaveBeenCalledTimes(2);
 });
 
@@ -92,8 +95,10 @@ it('creates and adds the duckbench partition', async () => {
     const setup = new Setup();
     await setup.prepare({}, environmentSetup);
 
-    expect(RDBService.createRDB).toHaveBeenCalledWith(path.join('some folder', 'duckbench.hdf'), 100, 'DB0');
-    expect(environmentSetup.attachHDF).toHaveBeenCalledWith('DB0', path.join('some folder', 'duckbench.hdf'));
+    const expectedHDFLocation = path.join('some folder', 'duckbench.hdf');
+    expect(HardDriveService.createRDB)
+        .toHaveBeenCalledWith(expectedHDFLocation, 100, [{'driveName': 'DB0', 'fileSystem': 'ffs'}]);
+    expect(environmentSetup.attachHDF).toHaveBeenCalledWith('DB0', expectedHDFLocation);
 });
 
 it('creates the boot ADF with the required setup files', async () => {

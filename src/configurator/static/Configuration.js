@@ -40,7 +40,24 @@ export default class Configuration {
     }
 
     setSelectedPluginOptionValue(pluginId, optionName, value) {
-        this.getSelectedPlugin(pluginId).optionValues[optionName] = value;
+        const selectedPlugin = this.getSelectedPlugin(pluginId);
+        selectedPlugin.optionValues[optionName] = value;
+        if(selectedPlugin.type === 'partition' && (optionName === 'device')) {
+            this.clearPartitionSelections();
+        }
+    }
+
+    clearPartitionSelections() {
+        this.selectedPlugins.forEach(selectedPlugin => {
+            selectedPlugin.optionValues && Object.keys(selectedPlugin.optionValues).forEach(optionKey => {
+                const plugin = this.getPlugin(selectedPlugin.name);
+                if(plugin.options && plugin.options[optionKey] && plugin.options[optionKey].type === 'partition') {
+                    if(selectedPlugin.optionValues[optionKey]) {
+                        delete selectedPlugin.optionValues[optionKey];
+                    }
+                }
+            })
+        });
     }
 
     addSelectedPlugin(type) {
