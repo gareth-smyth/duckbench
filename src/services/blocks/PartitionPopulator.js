@@ -1,3 +1,8 @@
+const FileSystemDosTypeMap = {
+    ffs: '0x444F5303',
+    pfs: '0x50445303',
+};
+
 class PartitionPopulator {
     static populate(partitions, hardDriveConfig) {
         const reservedCylinders = hardDriveConfig.reservedCylinders;
@@ -12,7 +17,12 @@ class PartitionPopulator {
             partition.startCylinder = partitionStart;
 
             const availableHardDriveCylinders = hardDriveConfig.cylinders - reservedCylinders;
-            partition.endCylinder = partitionStart + Math.floor(availableHardDriveCylinders / partitions.length);
+            partition.endCylinder = Math.min(
+                partitionStart + Math.floor(availableHardDriveCylinders / partitions.length),
+                hardDriveConfig.cylinders - 1,
+            );
+
+            partition.dosType = FileSystemDosTypeMap[partition.fileSystem];
 
             partitionStart = partition.endCylinder + 1;
             return partition;

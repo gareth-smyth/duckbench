@@ -1,4 +1,6 @@
 const fs = require('fs');
+const FileSystem = require('./FileSystem');
+const FileSystemSegList = require('./FileSystemSegList');
 const HardDriveConfig = require('./HardDriveConfig');
 const Partition = require('./Partition');
 const RigidDiskBlock = require('./RigidDiskBlock');
@@ -17,10 +19,12 @@ class HardDrive {
             this.rigidDiskBlock.getRDBHighBlock());
     }
 
-    create(hardDriveConfig) {
+    create(hardDriveConfig, fileSystemConfigs, populatedFileSystems) {
         this.rigidDiskBlock = new RigidDiskBlock();
-        this.rigidDiskBlock.initialise(hardDriveConfig);
+        this.rigidDiskBlock.initialise(hardDriveConfig, fileSystemConfigs, populatedFileSystems);
         this.partitions = [];
+        this.fileSystems = [];
+        this.fileSystemSegLists = [];
     }
 
     partition(hardDriveConfig, partitionDefinitions) {
@@ -28,6 +32,22 @@ class HardDrive {
             const newPartition = new Partition();
             newPartition.create(hardDriveConfig, partitionDefinition);
             this.partitions.push(newPartition);
+        });
+    }
+
+    addFileSystems(hardDriveConfig, fileSystemConfigs) {
+        fileSystemConfigs.forEach((fileSystemConfig) => {
+            const newFileSystem = new FileSystem();
+            newFileSystem.create(hardDriveConfig, fileSystemConfig);
+            this.fileSystems.push(newFileSystem);
+        });
+    }
+
+    addFileSystemSegLists(hardDriveConfig, fileSystemConfigs) {
+        fileSystemConfigs.forEach((fileSystemConfig) => {
+            const newFileSystemSegList = new FileSystemSegList();
+            newFileSystemSegList.create(hardDriveConfig, fileSystemConfig);
+            this.fileSystemSegLists.push(newFileSystemSegList);
         });
     }
 
@@ -39,6 +59,12 @@ class HardDrive {
         this.partitions.forEach((partition) => {
             partition.write(hardDriveConfig, fileDescriptor);
         });
+        this.fileSystems.forEach((fileSystem) => {
+            fileSystem.write(hardDriveConfig, fileDescriptor);
+        });
+        this.fileSystemSegLists.forEach((fileSystemLoadSegList) => {
+            fileSystemLoadSegList.write(hardDriveConfig, fileDescriptor);
+        });
         fs.closeSync(fileDescriptor);
     }
 
@@ -49,9 +75,29 @@ class HardDrive {
             const partition = new Partition();
             partition.read(this.fileDescriptor, partitionPointer, this.diskConfig);
             partitions.push(partition);
-            partitionPointer = partition.getNext();
+            partitionPointer = partition.getNextPartitionBlock();
         }
         return partitions;
+    }
+
+    getFileSystems() {
+        const fileSystems = [];
+        let fileSystemPointer = this.rigidDiskBlock.getFirstFileSystemPointer();
+        while (fileSystemPointer > 0) {
+            const fileSystem = new FileSystem();
+            fileSystem.read(this.fileDescriptor, fileSystemPointer, this.diskConfig);
+
+            const firstSegListBlock = fileSystem.getFirstSegListBlock();
+
+            const segList = new FileSystemSegList();
+            segList.read(this.fileDescriptor, firstSegListBlock, this.diskConfig);
+            fileSystem.numberOfLoadSegs = segList.buffers.length;
+
+            fileSystems.push(fileSystem);
+
+            fileSystemPointer = fileSystem.getNextFileSystemBlock();
+        }
+        return fileSystems;
     }
 
     info() {
@@ -76,6 +122,16 @@ class HardDrive {
                 'Start Cylinder': partition.getStartCylinder(),
                 'End Cylinder': partition.getEndCylinder(),
                 'Size': `${partition.getSize() / 1024 / 1024} MB`,
+            };
+        });
+    }
+
+    fileSystemInfo() {
+        return this.getFileSystems().map((fileSystem) => {
+            return {
+                'File system': fileSystem.getDosType(),
+                'Version': fileSystem.getVersion(),
+                'Number of LoadSegs': fileSystem.numberOfLoadSegs,
             };
         });
     }

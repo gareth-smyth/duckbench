@@ -14,15 +14,21 @@ class RigidDiskBlock {
         fs.writeSync(file, this.buffer, 0, this.buffer.length, 0);
     }
 
-    initialise(config) {
+    initialise(config, partitionConfig, fileSystemConfigs) {
         this.buffer.write('RDSK', 0);
         this.setRigidDiskBlockSize();
         this.setHostId();
         this.setBlockSize(config.blockSize);
-        this.setFlags(7);
+        this.setFlags(18);
         this.setFirstBadBlockPointer(-1);
         this.setFirstPartitionPointer(1);
-        this.setFirstFileSystemPointer(-1); // TODO filesystems
+        this.setFirstFileSystemPointer(fileSystemConfigs.length ? partitionConfig.length + 1 : -1);
+        this.buffer.writeUInt32BE(0xFFFFFFFF, 40);
+        this.buffer.writeUInt32BE(0xFFFFFFFF, 44);
+        this.buffer.writeUInt32BE(0xFFFFFFFF, 48);
+        this.buffer.writeUInt32BE(0xFFFFFFFF, 52);
+        this.buffer.writeUInt32BE(0xFFFFFFFF, 56);
+        this.buffer.writeUInt32BE(0xFFFFFFFF, 60);
         this.setDriveInitCode(-1);
         this.setCylinders(config.cylinders);
         this.setSectors(config.sectors);
@@ -33,7 +39,7 @@ class RigidDiskBlock {
         this.setReducedWriteCylinder(config.cylinders);
         this.setStepRate(3);
         this.setLowBlockRange(0);
-        this.setHighBlockRange(31);
+        this.setHighBlockRange(config.blocksPerCylinder * config.reservedCylinders - 1);
         this.setPartitionableLowCylinder(config.reservedCylinders);
         this.setPartitionableHighCylinder(config.cylinders - 1);
         this.setBlocksPerCylinder(config.blocksPerCylinder);
@@ -90,6 +96,10 @@ class RigidDiskBlock {
 
     setFirstBadBlockPointer(block) {
         this.buffer.writeInt32BE(block, 24);
+    }
+
+    getFirstFileSystemPointer() {
+        return this.buffer.readInt32BE(32);
     }
 
     setFirstFileSystemPointer(block) {

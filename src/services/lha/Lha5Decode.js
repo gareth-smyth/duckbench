@@ -112,7 +112,6 @@ class Lha5Decode {
 
     readTempCodeLengths(numCodes) {
         const codeLengths = [];
-        // TODO turn this into a map - maybe not possible with the funky skip code - maybe a forEach
         for (let codeIndex = 0; codeIndex < numCodes; codeIndex++) {
             const codeLength = this.readLengthValue();
 
@@ -123,7 +122,6 @@ class Lha5Decode {
             if (codeIndex === 2) {
                 const skipLength = this.bitReader.read(2);
 
-                // TODO forEach
                 for (let skipCodeIndex = 0; skipCodeIndex < skipLength; skipCodeIndex++) {
                     codeIndex++;
                     codeLengths.push(0);
@@ -136,14 +134,12 @@ class Lha5Decode {
 
     readCodeCodeLengths(numCodes, tempTree) {
         const codeLengths = [];
-        // TODO turn this into a map - maybe not possible with the funky skip code - maybe a forEach
         for (let codeIndex = 0; codeIndex < Math.min(numCodes, NUM_CODES); codeIndex++) {
             const code = tempTree.readCode(this.bitReader);
 
             if (code <= 2) {
                 const skipLength = this.readSkipCount(code);
 
-                // TODO forEach
                 for (let skipCodeIndex = 0; skipCodeIndex < skipLength; skipCodeIndex++) {
                     codeIndex++;
                     codeLengths.push(0);
@@ -159,7 +155,6 @@ class Lha5Decode {
 
     readOffsetCodeLengths(numCodes) {
         const codeLengths = [];
-        // TODO turn this into a map
         for (let codeIndex = 0; codeIndex < numCodes; codeIndex++) {
             const codeLength = this.readLengthValue();
             codeLengths.push(codeLength);

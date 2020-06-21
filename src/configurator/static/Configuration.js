@@ -42,7 +42,7 @@ export default class Configuration {
     setSelectedPluginOptionValue(pluginId, optionName, value) {
         const selectedPlugin = this.getSelectedPlugin(pluginId);
         selectedPlugin.optionValues[optionName] = value;
-        if(selectedPlugin.type === 'partition') {
+        if(selectedPlugin.type === 'partition' && (optionName === 'device')) {
             this.clearPartitionSelections();
         }
     }

@@ -31,6 +31,17 @@ class SinglePartition {
                     default: '100',
                     primary: true,
                 },
+                fileSystem: {
+                    name: 'fileSystem',
+                    label: 'FileSystem',
+                    description: 'The file system for the partition',
+                    type: 'list',
+                    items: [
+                        {label: 'Fast File System (FFS)', value: 'ffs'},
+                        {label: 'Professional File System (PFS)', value: 'pfs'},
+                    ],
+                    default: 'ffs',
+                },
             },
         };
     }
@@ -41,9 +52,11 @@ class SinglePartition {
         }];
     }
 
-    prepare(config, environmentSetup) {
+    async prepare(config, environmentSetup) {
         const location = path.join(environmentSetup.executionFolder, `${config.optionValues.device}.hdf`);
-        HardDriveService.createRDB(location, config.optionValues.size, [{driveName: config.optionValues.device}]);
+        await HardDriveService.createRDB(location, config.optionValues.size, [
+            {driveName: config.optionValues.device, fileSystem: config.optionValues.fileSystem},
+        ]);
         environmentSetup.attachHDF(config.optionValues.device, location);
     }
 

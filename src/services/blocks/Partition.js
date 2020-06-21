@@ -1,8 +1,8 @@
 const fs = require('fs');
 
 class Partition {
-    read(file, blockPointer, hardDrvieConfig) {
-        this.hardDriveConfig = hardDrvieConfig;
+    read(file, blockPointer, hardDriveConfig) {
+        this.hardDriveConfig = hardDriveConfig;
         this.buffer = Buffer.alloc(256, 0);
         this.blockPointer = blockPointer;
         fs.readSync(file, this.buffer, 0, this.buffer.length, blockPointer * this.hardDriveConfig.blockSize);
@@ -16,7 +16,7 @@ class Partition {
         this.buffer = Buffer.alloc(256, 0);
         this.blockPointer = partitionDefinition.blockPtr;
         this.setId('PART');
-        this.setStructureSize(hardDriveConfig.blockSize / 4);
+        this.setStructureSize(64);
         this.setHostId(7);
         this.setNextPartitionBlock(partitionDefinition.nextPartitionBlockPtr);
         this.setFlags(1);
@@ -25,14 +25,14 @@ class Partition {
         this.setBlockSizeLongs(hardDriveConfig.blockSize / 4);
         this.setHeads(hardDriveConfig.heads);
         this.setSectorsPerBlock(1);
-        this.setBlocksPerTrack(hardDriveConfig.blocksPerCylinder);
+        this.setBlocksPerTrack(hardDriveConfig.blocksPerCylinder / hardDriveConfig.heads);
         this.setDosReservedBlocks(2);
         this.setStartCylinder(partitionDefinition.startCylinder);
         this.setEndCylinder(partitionDefinition.endCylinder);
         this.setBuffers(30);
         this.setMaxTransfer(0x1FE00);
-        this.setMask(0x7FFFFE);
-        this.setDosType(partitionDefinition.dosType || 0x444F5303);
+        this.setMask(0x7FFFFFFE);
+        this.setDosType(partitionDefinition.dosType);
         this.setCheckSum();
     }
 
@@ -105,7 +105,7 @@ class Partition {
         this.buffer.writeUInt32BE(nextPartitionBlock, 16);
     }
 
-    getNext() {
+    getNextPartitionBlock() {
         return this.buffer.readInt32BE(16);
     }
 

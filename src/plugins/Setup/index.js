@@ -12,7 +12,7 @@ class Setup {
         };
     }
 
-    prepare(config, environmentSetup) {
+    async prepare(config, environmentSetup) {
         const bootDiskFileName = path.join(environmentSetup.executionFolder, 'boot.adf');
         Logger.info(`Creating boot disk at ${bootDiskFileName}`);
         ADFService.createBootableADF(bootDiskFileName, 'DuckBoot');
@@ -44,7 +44,7 @@ class Setup {
         const cacheLocation = path.join(global.CACHE_DIR, 'client_cache.hdf');
         if (!fs.existsSync(cacheLocation)) {
             Logger.debug('Creating DB1: as DB_CLIENT_CACHE: as new HDF');
-            HardDriveService.createRDB(cacheLocation, 100, 'DB1');
+            await HardDriveService.createRDB(cacheLocation, 100, [{driveName: 'DB1', fileSystem: 'ffs'}]);
         } else {
             Logger.debug('Using existing HDF as DB1: as DB_CLIENT_CACHE:');
         }
@@ -52,7 +52,7 @@ class Setup {
 
         Logger.debug('Creating DB0: as DUCKBENCH: as new HDF');
         const location = path.join(environmentSetup.executionFolder, 'duckbench.hdf');
-        HardDriveService.createRDB(location, 100, [{driveName: 'DB0'}]);
+        await HardDriveService.createRDB(location, 100, [{driveName: 'DB0', fileSystem: 'ffs'}]);
         environmentSetup.attachHDF('DB0', location);
     }
 
