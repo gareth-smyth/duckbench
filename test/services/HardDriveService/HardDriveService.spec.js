@@ -1,8 +1,12 @@
 /* TODO These tests are not really testing the disk being built correctly as they use the same code to test as to run */
 
-const HardDriveService = require('../../../src/services/HardDriveService');
 const fs = require('fs');
 const path = require('path');
+
+const HardDriveService = require('../../../src/services/HardDriveService');
+
+jest.mock('../../../src/services/AminetService');
+jest.mock('../../../src/services/LhaService');
 
 const TEMP_FILE_PATH = __dirname;
 
@@ -16,10 +20,13 @@ function cleanTemp() {
 }
 
 beforeEach(() => {
+    global.OLD_CACHE_DIR = global.CACHE_DIR;
+    global.CACHE_DIR = __dirname;
     cleanTemp();
 });
 
 afterEach(() => {
+    global.CACHE_DIR = global.OLD_CACHE_DIR;
     cleanTemp();
 });
 
@@ -55,7 +62,7 @@ it('creates the filesystems', async () => {
     ]);
     const info = HardDriveService.info(path.join(TEMP_FILE_PATH, 'test3.hdf'));
 
-    expect(info.fileSystemInfo).toEqual( [{'File system': 'PDS3', 'Version': '19.2', 'Number of LoadSegs': 121}]);
+    expect(info.fileSystemInfo).toEqual( [{'File system': 'PDS3', 'Version': '19.2', 'Number of LoadSegs': 2}]);
 });
 
 it('throws an error when the filesystem does not exist', async () => {
