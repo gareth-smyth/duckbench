@@ -80,8 +80,10 @@ class Setup {
         await communicator.makedir('duckbench:c');
         await communicator.path('duckbench:c', {ADD: true});
         await communicator.makedir('duckbench:t');
+        await communicator.makedir('duckbench:envarc');
         await communicator.makedir('duckbench:disks');
         await communicator.assign('t:', 'duckbench:t');
+        await communicator.assign('envarc:', 'duckbench:envarc');
     }
 }
 

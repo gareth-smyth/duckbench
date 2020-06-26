@@ -119,15 +119,15 @@ it('runs the path command with defaults', async () => {
 });
 
 it('runs the protect command', async () => {
-    await communicator.protect('DB0:folder', options, callback);
+    await communicator.protect('DB0:folder', options, callback, 'expect response');
     expect(commandRunner.run).toHaveBeenCalledTimes(1);
-    expect(commandRunner.run).toBeCalledWith('protect DB0:folder', options, callback);
+    expect(commandRunner.run).toBeCalledWith('protect DB0:folder', options, callback, 'expect response');
 });
 
 it('runs the protect command with defaults', async () => {
     await communicator.protect('DB0:folder');
     expect(commandRunner.run).toHaveBeenCalledTimes(1);
-    expect(commandRunner.run).toBeCalledWith('protect DB0:folder', {}, expect.any(Function));
+    expect(commandRunner.run).toBeCalledWith('protect DB0:folder', {}, expect.any(Function), undefined);
 });
 
 it('closes the socket communicator', async () => {

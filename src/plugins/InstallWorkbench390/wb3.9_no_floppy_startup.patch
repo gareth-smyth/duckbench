@@ -1,0 +1,12 @@
+--- startup-sequence	2020-06-24 17:11:10.971027000 +0100
++++ startup-sequence-no	2020-06-24 17:10:01.891000000 +0100
+@@ -24,7 +24,8 @@
+ Unset SCSIUpdate
+ 
+ C:Version >NIL:
+-C:AddBuffers >NIL: DF0: 15
++; REMOVED BY DUCKBENCH
++; C:AddBuffers >NIL: DF0: 15
+ FailAt 21
+ 
+ C:MakeDir RAM:T RAM:Clipboards RAM:ENV RAM:ENV/Sys

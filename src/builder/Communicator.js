@@ -53,8 +53,8 @@ class Communicator {
         return this.commandRunner.run(`path ${folder}`, options, commandCallback);
     }
 
-    async protect(filename, options = {}, commandCallback = this.noCallback) {
-        return this.commandRunner.run(`protect ${filename}`, options, commandCallback);
+    async protect(filename, options = {}, commandCallback = this.noCallback, expectedResponse = undefined) {
+        return this.commandRunner.run(`protect ${filename}`, options, commandCallback, expectedResponse);
     }
 
     close() {

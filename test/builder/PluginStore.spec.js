@@ -47,8 +47,8 @@ it('creates new plugins', () => {
     expect(newPlugin).toBeInstanceOf(MockPlugin);
 });
 
-it('gets all plugin structures', () => {
-    const structures = PluginStore.getStructures().sort((a, b) => a.name.localeCompare(b.name));
+it('gets all plugin structures', async () => {
+    const structures = (await PluginStore.getStructures()).sort((a, b) => a.name.localeCompare(b.name));
     expect(structures.length).toBeGreaterThan(1);
     expect(structures[0].name).toEqual('Amiga1200');
     expect(structures[0].label).toEqual('Amiga 1200');

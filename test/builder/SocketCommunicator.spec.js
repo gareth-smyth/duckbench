@@ -129,7 +129,9 @@ it('calls the control callback when output is received without sending a command
     mockSocket.eventFunctions.data('2.A Prompt>');
     await flushTimeoutsAndPromises();
 
-    mockSocket.eventFunctions.data('This is the sent line\n\r');
+    expect(() => mockSocket.eventFunctions.data('This is the sent line\n\r'))
+        .toThrowError('While connected but not waiting on a command to finish I got this message: ' +
+            '"This is the sent line"');
     await flushTimeoutsAndPromises();
     expect(dataEvent.message).toEqual('DATA_EVENT');
     expect(dataEvent.data).toEqual('This is the sent line');
@@ -148,7 +150,9 @@ it('calls the control callback when a command has been sent but not yet received
     communicator.runCommand('copy afile adir');
     await flushTimeoutsAndPromises();
 
-    mockSocket.eventFunctions.data('This is the sent line\n\r');
+    expect(() => mockSocket.eventFunctions.data('This is the sent line\n\r'))
+        .toThrowError('I ran the command "copy afile adir" and have received the response "This is the sent line" ' +
+            'but I expected an echo');
     await flushTimeoutsAndPromises();
     expect(dataEvent.message).toEqual('DATA_EVENT');
     expect(dataEvent.data).toEqual('This is the sent line');
@@ -167,7 +171,9 @@ it('calls the control callback when a command has been sent but not yet received
     communicator.runCommand('copy afile adir');
     await flushTimeoutsAndPromises();
 
-    mockSocket.eventFunctions.data('This is the sent line\n\r');
+    expect(() => mockSocket.eventFunctions.data('This is the sent line\n\r'))
+        .toThrowError('I ran the command "copy afile adir" and have received the response "This is the sent line" ' +
+            'but I expected an echo');
     await flushTimeoutsAndPromises();
     expect(dataEvent.message).toEqual('DATA_EVENT');
     expect(dataEvent.data).toEqual('This is the sent line');
