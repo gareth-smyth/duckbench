@@ -59,10 +59,10 @@ it('writes the non-configurable parts of the config', () => {
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'win32.serial_port=TCP://0.0.0.0:1234\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'serial_direct=true\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'serial_translate=disabled\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'floppy_speed=800\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'floppy_speed=0\n');
 });
 
-it('writes the non-disk related parts of the config', () => {
+it('writes the non-disk or cpu related parts of the config', () => {
     const someFile = 'someFile';
     fs.openSync.mockReturnValueOnce(someFile);
     new WinUAEEnvironment(
@@ -76,10 +76,38 @@ it('writes the non-disk related parts of the config', () => {
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
     const expectedRomPath = `${path.join('path/to/rom/folder/', 'aRomFile')}`;
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, `kickstart_rom_file=${expectedRomPath}\n`);
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_type=68020\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'chipmem_size=8\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'z3mem_size=someMem\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'rom_path=path/to/rom/folder\n');
+});
+
+it('writes the cpu related parts of the config for a non-68030', () => {
+    const someFile = 'someFile';
+    fs.openSync.mockReturnValueOnce(someFile);
+    new WinUAEEnvironment(
+        {emuRoot: '/path/to/winuae/', romFolder: 'path/to/rom/folder'},
+        {
+            executionFolder: '/some/folder', disks: {}, rom: 'arom', cpu: '68000',
+            chipMem: '4', fastMem: 'someMem',
+            getRomFileName: () => 'aRomFile', getCPU: () => '68020',
+        },
+    );
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_type=68020\n');
+});
+
+it('writes the cpu related parts of the config for a 68030', () => {
+    const someFile = 'someFile';
+    fs.openSync.mockReturnValueOnce(someFile);
+    new WinUAEEnvironment(
+        {emuRoot: '/path/to/winuae/', romFolder: 'path/to/rom/folder'},
+        {
+            executionFolder: '/some/folder', disks: {}, rom: 'arom', cpu: '68000',
+            chipMem: '4', fastMem: 'someMem',
+            getRomFileName: () => 'aRomFile', getCPU: () => '68030',
+        },
+    );
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_type=68020\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_model=68030\n');
 });
 
 it('writes the floppy related parts of the config', () => {

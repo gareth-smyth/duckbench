@@ -32,6 +32,7 @@ export default class Configuration {
 
     setDefaultValues(selectedPlugin, pluginName) {
         const plugin = this.plugins.find(plugin => plugin.name === pluginName);
+        selectedPlugin.showConfig = plugin.showConfig;
         if(plugin.options) {
             Object.keys(plugin.options).forEach(optionName => {
                 selectedPlugin.optionValues[optionName] = plugin.options[optionName].default;

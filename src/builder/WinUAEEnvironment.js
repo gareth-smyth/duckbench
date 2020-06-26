@@ -18,11 +18,15 @@ class WinUAEEnvironment {
 
         fs.writeSync(configFile, `kickstart_rom_file=${path.join(config.romFolder, environment.getRomFileName())}\n`);
         fs.writeSync(configFile, `rom_path=${config.romFolder}\n`);
-        fs.writeSync(configFile, `cpu_type=${environment.getCPU()}\n`);
+        fs.writeSync(configFile, `cpu_type=${this.getCPUType(environment.getCPU())}\n`);
+        const cpuModel = this.getCPUModel(environment.getCPU());
+        if (cpuModel) {
+            fs.writeSync(configFile, `cpu_model=${cpuModel}\n`);
+        }
 
         fs.writeSync(configFile, `chipmem_size=${Number(environment.chipMem) * 2}\n`);
         fs.writeSync(configFile, `z3mem_size=${environment.fastMem}\n`);
-        fs.writeSync(configFile, 'floppy_speed=800\n');
+        fs.writeSync(configFile, 'floppy_speed=0\n');
 
         this.writeDiskConfig(configFile, environment.disks);
 
@@ -54,6 +58,20 @@ class WinUAEEnvironment {
                 fs.writeSync(configFile, `uaehf${diskIdx}=dir,ro,${disk.drive}:${disk.name}:${disk.location},-128\n`);
                 diskIdx += 1;
             });
+        }
+    }
+
+    getCPUType(cpu) {
+        if (cpu === '68030') {
+            return '68020';
+        } else {
+            return cpu;
+        }
+    }
+
+    getCPUModel(cpu) {
+        if (cpu === '68030') {
+            return '68030';
         }
     }
 

@@ -93,18 +93,17 @@ class SocketCommunicator {
             break;
         case 'CONNECTED':
             this.controlCallback({message: DATA_EVENT, data: responseLine});
-            Logger.error('While connected but not waiting on a command to finish I got this ' +
+            throw Error('While connected but not waiting on a command to finish I got this ' +
                 `message: ${JSON.stringify(responseLine)}`);
-            break;
         case 'SEND_COMMAND':
-            if (responseLine.replace('\\', '').match(this.commandRunning.replace('\\', ''))) {
+            if (responseLine.match(this._escapeRegex(this.commandRunning))) {
                 this.status = 'COMMAND_RUNNING';
                 this.commandCallback({message: COMMAND_RECEIVED, data: responseLine});
                 Logger.debug(`The Amiga is executing the command "${this.commandRunning.trim()}"` +
                     ' and I am waiting for the response.');
             } else {
                 this.controlCallback({message: DATA_EVENT, data: responseLine});
-                Logger.error(`I ran the command "${this.commandRunning.trim()}" and have received the response ` +
+                throw Error(`I ran the command "${this.commandRunning.trim()}" and have received the response ` +
                     `${JSON.stringify(responseLine)} but I expected an echo`);
             }
             break;
@@ -130,6 +129,10 @@ class SocketCommunicator {
 
     _responseIsPrompt(responseLine) {
         return responseLine.match('2..*>');
+    }
+
+    _escapeRegex(string) {
+        return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     }
 }
 

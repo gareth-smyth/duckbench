@@ -3,6 +3,8 @@
 **/wb2.1_install.patch text eol=lf
 **/wb3.0_install.patch text eol=lf
 **/wb3.1_install.patch text eol=lf
+**/wb3.9_install.patch text eol=lf
 **/wb2.1_no_floppy_startup.patch text eol=lf
 **/wb3.0_no_floppy_startup.patch text eol=lf
 **/wb3.1_no_floppy_startup.patch text eol=lf
+**/wb3.9_no_floppy_startup.patch text eol=lf

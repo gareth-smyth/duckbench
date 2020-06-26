@@ -63,8 +63,16 @@ it('makes duckbench:c folder', async () => {
     const setup = new Setup();
     await setup.install({}, communicator, pluginStore);
 
-    expect(communicator.makedir).toHaveBeenCalledTimes(3);
+    expect(communicator.makedir).toHaveBeenCalledTimes(4);
     expect(communicator.makedir).toHaveBeenCalledWith('duckbench:c');
+});
+
+it('makes duckbench:envarc folder', async () => {
+    const setup = new Setup();
+    await setup.install({}, communicator, pluginStore);
+
+    expect(communicator.makedir).toHaveBeenCalledTimes(4);
+    expect(communicator.makedir).toHaveBeenCalledWith('duckbench:envarc');
 });
 
 it('adds duckbench:c to the path', async () => {
@@ -79,7 +87,7 @@ it('makes duckbench:t folder', async () => {
     const setup = new Setup();
     await setup.install({}, communicator, pluginStore);
 
-    expect(communicator.makedir).toHaveBeenCalledTimes(3);
+    expect(communicator.makedir).toHaveBeenCalledTimes(4);
     expect(communicator.makedir).toHaveBeenCalledWith('duckbench:t');
 });
 
@@ -90,10 +98,17 @@ it('assigns t: to the duckbench:t folder', async () => {
     expect(communicator.assign).toHaveBeenCalledWith('t:', 'duckbench:t');
 });
 
+it('assigns envarc: to the duckbench:envarc folder', async () => {
+    const setup = new Setup();
+    await setup.install({}, communicator, pluginStore);
+
+    expect(communicator.assign).toHaveBeenCalledWith('envarc:', 'duckbench:envarc');
+});
+
 it('makes duckbench:disks folder', async () => {
     const setup = new Setup();
     await setup.install({}, communicator, pluginStore);
 
-    expect(communicator.makedir).toHaveBeenCalledTimes(3);
+    expect(communicator.makedir).toHaveBeenCalledTimes(4);
     expect(communicator.makedir).toHaveBeenCalledWith('duckbench:disks');
 });

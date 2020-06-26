@@ -6,7 +6,7 @@ class PluginStore {
         this.plugins = {};
     }
 
-    static getStructures() {
+    static async getStructures() {
         const pluginPath = path.join(__dirname, '../', 'plugins');
         const pluginsDir = fs.opendirSync(pluginPath);
         const plugins = [];
@@ -15,12 +15,12 @@ class PluginStore {
             plugins.push(directoryEntry);
         }
         plugins.sort();
-        pluginsDir.close();
-        return plugins.filter((pluginDir) => pluginDir.isDirectory()).map((pluginDir) => {
+        await pluginsDir.close();
+        return Promise.all(plugins.filter((pluginDir) => pluginDir.isDirectory()).map(async (pluginDir) => {
             const Plugin = require(path.join(pluginPath, pluginDir.name));
             const plugin = new Plugin();
-            return plugin.structure();
-        });
+            return await plugin.structure();
+        }));
     }
 
     create(pluginName) {

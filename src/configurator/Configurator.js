@@ -8,11 +8,12 @@ const WinUAEEnvironment = require('../builder/WinUAEEnvironment');
 
 class Configurator {
     start() {
-        http.createServer(function (request, response) {
+        const server = http.createServer();
+        server.on('request', async (request, response) => {
             Logger.debug(`Request for ${request.url}`);
             if(request.url === '/plugins.json') {
                 Logger.trace('Getting plugins');
-                const plugins = PluginStore.getStructures();
+                const plugins = await PluginStore.getStructures();
                 response.writeHead(200, {'Content-Type': 'application/json'});
                 response.end(JSON.stringify(plugins), 'utf-8');
                 return;
@@ -69,7 +70,8 @@ class Configurator {
                 }
             });
 
-        }).listen(8552);
+        });
+        server.listen(8552);
         Logger.info('Open a browser at http://127.0.0.1:8552/index.html');
     }
 }
