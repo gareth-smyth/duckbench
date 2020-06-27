@@ -78,7 +78,7 @@ it('creates and adds the cache partition when it does not exist', async () => {
 
     const clientCacheLocation = path.join(global.CACHE_DIR, 'client_cache.hdf');
     expect(HardDriveService.createRDB)
-        .toHaveBeenCalledWith(clientCacheLocation, 100, [{'driveName': 'DB1', 'fileSystem': 'ffs'}]);
+        .toHaveBeenCalledWith(clientCacheLocation, 100, [{'driveName': 'DB1', 'fileSystem': 'pfs'}]);
     expect(environmentSetup.attachHDF).toHaveBeenCalledWith('DB1', clientCacheLocation);
 });
 
@@ -97,7 +97,7 @@ it('creates and adds the duckbench partition', async () => {
 
     const expectedHDFLocation = path.join('some folder', 'duckbench.hdf');
     expect(HardDriveService.createRDB)
-        .toHaveBeenCalledWith(expectedHDFLocation, 100, [{'driveName': 'DB0', 'fileSystem': 'ffs'}]);
+        .toHaveBeenCalledWith(expectedHDFLocation, 100, [{'driveName': 'DB0', 'fileSystem': 'pfs'}]);
     expect(environmentSetup.attachHDF).toHaveBeenCalledWith('DB0', expectedHDFLocation);
 });
 

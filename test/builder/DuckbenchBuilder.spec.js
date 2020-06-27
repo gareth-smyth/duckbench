@@ -32,6 +32,8 @@ const mockCommunicatorInstance = {
     close: jest.fn(),
 };
 
+let duckbenchBuilder;
+
 beforeEach(() => {
     jest.resetAllMocks();
     MockEnvironment.mockImplementation(() => mockEnvironmentInstance);
@@ -40,11 +42,11 @@ beforeEach(() => {
     MockRunner.mockImplementation(() => mockRunnerInstance);
     mockRunnerInstance.prepare.mockResolvedValue({});
     mockRunnerInstance.finalise.mockResolvedValue({});
+    duckbenchBuilder = new DuckbenchBuilder();
+    duckbenchBuilder.sleep = () => Promise.resolve();
 });
 
 it('creates and destroys an environment setup .', async () => {
-    const duckbenchBuilder = new DuckbenchBuilder();
-
     await duckbenchBuilder.build([], MockEnvironment, MockCommunicator);
 
     expect(MockEnvironmentSetup).toHaveBeenCalledTimes(1);
@@ -54,8 +56,6 @@ it('creates and destroys an environment setup .', async () => {
 });
 
 it('creates an environment with the proper config, starts it, and stops it.', async () => {
-    const duckbenchBuilder = new DuckbenchBuilder();
-
     await duckbenchBuilder.build([], MockEnvironment, MockCommunicator);
 
     expect(MockEnvironment).toHaveBeenCalledTimes(1);
@@ -67,8 +67,6 @@ it('creates an environment with the proper config, starts it, and stops it.', as
 });
 
 it('creates a communicator, connects to it and closes it', async () => {
-    const duckbenchBuilder = new DuckbenchBuilder();
-
     await duckbenchBuilder.build([], MockEnvironment, MockCommunicator);
 
     expect(mockCommunicatorInstance.connect).toHaveBeenCalledTimes(1);
@@ -78,8 +76,6 @@ it('creates a communicator, connects to it and closes it', async () => {
 });
 
 it('creates a runner, configures, prepares, installs and finalises', async () => {
-    const duckbenchBuilder = new DuckbenchBuilder();
-
     await duckbenchBuilder.build(['plugin_config1', 'plugin_config2'], MockEnvironment, MockCommunicator);
 
     expect(MockRunner).toHaveBeenCalledTimes(1);
@@ -97,7 +93,6 @@ it('creates a runner, configures, prepares, installs and finalises', async () =>
 });
 
 it('throws an exception when finalising the environment fails', async () => {
-    const duckbenchBuilder = new DuckbenchBuilder();
     mockRunnerInstance.finalise.mockImplementation(async () => {
         throw new Error('Some error');
     });
@@ -120,7 +115,6 @@ it('throws an exception when finalising the environment fails', async () => {
 });
 
 it('throws an exception when starting the environment fails', async () => {
-    const duckbenchBuilder = new DuckbenchBuilder();
     mockEnvironmentInstance.start.mockImplementation(() => {
         throw new Error('Some error');
     });
@@ -140,7 +134,6 @@ it('throws an exception when starting the environment fails', async () => {
 });
 
 it('throws an exception when creating the environment fails', async () => {
-    const duckbenchBuilder = new DuckbenchBuilder();
     MockEnvironment.mockImplementation(() => {
         throw new Error('Some error');
     });

@@ -134,17 +134,39 @@ describe('when the cache does not exist', () => {
         expect(Logger.trace).toHaveBeenCalledWith(JSON.stringify(event));
     });
 
+    it('calls patch for the install script', async () => {
+        const installWorkbench390 = new InstallWorkbench390();
+        await installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: false});
+
+        expect(patch.run).toHaveBeenCalledTimes(2);
+        expect(patch.run).toHaveBeenCalledWith('AA1:s/startup-sequence', 'DB_EXECUTION:wb3.9_no_floppy_startup.patch',
+            'duckbench:c/', {}, communicator);
+    });
+
+    it('throws an error if patching install script fails', async () => {
+        patch.run.mockImplementation(() => {
+            throw new Error('patch install error');
+        });
+
+        const installWorkbench390 = new InstallWorkbench390();
+        await expect(installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: false}))
+            .rejects.toThrowError('patch install error');
+
+        expect(patch.run).toHaveBeenCalledTimes(1);
+        expect(installerLG.run).toHaveBeenCalledTimes(0);
+    });
+
     it('calls patch for the startup sequence if there is no floppy', async () => {
         const installWorkbench390 = new InstallWorkbench390();
         await installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: false});
 
-        expect(patch.run).toHaveBeenCalledTimes(1);
+        expect(patch.run).toHaveBeenCalledTimes(2);
         expect(patch.run).toHaveBeenCalledWith('AA1:s/startup-sequence', 'DB_EXECUTION:wb3.9_no_floppy_startup.patch',
             'duckbench:c/', {}, communicator);
     });
 
     it('throws an error if patching startup sequence fails', async () => {
-        patch.run.mockImplementation(() => {
+        patch.run.mockResolvedValueOnce({}).mockImplementation(() => {
             throw new Error('patch startup error');
         });
 
@@ -152,7 +174,7 @@ describe('when the cache does not exist', () => {
         await expect(installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: false}))
             .rejects.toThrowError('patch startup error');
 
-        expect(patch.run).toHaveBeenCalledTimes(1);
+        expect(patch.run).toHaveBeenCalledTimes(2);
         expect(installerLG.run).toHaveBeenCalledTimes(1);
     });
 });

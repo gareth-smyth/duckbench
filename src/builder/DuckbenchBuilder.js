@@ -21,16 +21,15 @@ class DuckbenchBuilder {
             await runner.install(communicator, environmentSetup);
 
             communicator.close();
+
+            Logger.info('Pausing before shutting down the emulator.');
+            await this.sleep(5000);
             environment.stop();
-            return new Promise((resolve, reject) => setTimeout(() => {
-                runner.finalise(environmentSetup).then(() => {
-                    environmentSetup.destroy();
-                    resolve();
-                }).catch((err) => {
-                    Logger.error('Could not shut down properly');
-                    reject(err);
-                });
-            }, 1000));
+
+            Logger.info('Pausing to let the emulator shutdown.');
+            await this.sleep(1000);
+
+            await runner.finalise(environmentSetup);
         }).catch((err) => {
             Logger.trace(err);
             throw err;
@@ -41,7 +40,14 @@ class DuckbenchBuilder {
             if (environment) {
                 environment.stop();
             }
+            environmentSetup.destroy();
+            Logger.info('Build complete.');
         });
+    }
+
+    /* istanbul ignore next */
+    async sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 }
 
