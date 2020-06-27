@@ -49,6 +49,11 @@ class InstallWorkbench390 {
     }
 
     prepare(config, environmentSetup) {
+        const patchSource = path.join(__dirname, 'wb3.9_install.patch');
+        const patchDestination = path.join(environmentSetup.executionFolder, 'wb3.9_install.patch');
+        Logger.debug(`Copying workbench 3.9 install script patch file from "${patchSource}" to "${patchDestination}".`);
+        fs.copyFileSync(patchSource, patchDestination);
+
         const installKeySource = path.join(__dirname, 'install_key');
         const installKeyDestination = path.join(environmentSetup.executionFolder, 'wb390_install_key');
         Logger.debug(`Copying workbench 3.9 install script redirected input file from "${installKeySource}" ` +
@@ -93,6 +98,9 @@ class InstallWorkbench390 {
                 {'ALL': true, 'CLONE': true}, undefined, '..copied');
             await communicator.protect('DB_CLIENT_CACHE:InstallWorkbench390/installcd',
                 {'+wd': true, 'all': true}, undefined, '..done');
+
+            await patch.run('DB_CLIENT_CACHE:InstallWorkbench390/installcd/OS3.9Install-Emu',
+                'DB_EXECUTION:wb3.9_install.patch', 'duckbench:c/', {}, communicator);
 
             const installOptions = {REDIRECT_IN: 'DB_EXECUTION:wb390_install_key'};
             await installerLg.run('DB_CLIENT_CACHE:InstallWorkbench390/installcd/OS3.9Install-Emu', installOptions,

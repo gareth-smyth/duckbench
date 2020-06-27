@@ -1,21 +1,38 @@
---- ./install_original	2020-01-25 16:34:52.050000000 +0000
-+++ ./install_fixed	2020-01-26 12:42:41.125955300 +0000
-@@ -3,6 +3,10 @@
-
+--- install	2020-06-27 14:54:37.881002900 +0100
++++ install2	2020-06-27 14:58:46.724416000 +0100
+@@ -2,6 +2,9 @@
+ ; Script to install Workbench 3.0
+ 
  (complete 0)
-
 +; ADDED BY DUCKBENCH
 +(set TRUE 1)
 +(set FALSE 0)
-+
+ 
  ;=============================================================================
  ; English strings
-
-@@ -3387,7 +3391,7 @@
+@@ -3387,7 +3390,7 @@
  ;=============================================================================
  ; say hi!
-
+ 
 -(user 0)
-+; REMOVED BY DUCKBENCH (user 0)
++; (user 0) REMOVED BY DUCKBENCH
  (welcome)
  (set old_level @user-level)
+ 
+@@ -4421,7 +4424,7 @@
+ 
+ (user 2)
+ (message #reboot)
+-(run "Reboot")
++; (run "Reboot") NO REBOOT FOR DUCKBENCH
+ 
+ )
+ (
+@@ -4478,6 +4481,6 @@
+ ; "Say goodnight Gracy."
+ ;
+ (message #reboot-lang)
+-(run "Reboot")
++; (run "Reboot") NO REBOOT FOR DUCKBENCH
+ 
+ ))

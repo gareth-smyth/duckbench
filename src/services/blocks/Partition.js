@@ -29,7 +29,7 @@ class Partition {
         this.setDosReservedBlocks(2);
         this.setStartCylinder(partitionDefinition.startCylinder);
         this.setEndCylinder(partitionDefinition.endCylinder);
-        this.setBuffers(30);
+        this.setBuffers(100);
         this.setMaxTransfer(0x1FE00);
         this.setMask(0x7FFFFFFE);
         this.setDosType(partitionDefinition.dosType);

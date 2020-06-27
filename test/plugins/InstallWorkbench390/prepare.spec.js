@@ -10,6 +10,18 @@ beforeEach(() => {
     global.Logger = {info: jest.fn(), trace: jest.fn(), debug: jest.fn()};
 });
 
+it('copies the installer patch', async () => {
+    const installWorkbench390 = new InstallWorkbench390();
+    await installWorkbench390.prepare(
+        {optionValues: {iso390: 'a_folder'}},
+        {floppyDrive: true, executionFolder: 'aFolder'},
+    );
+
+    const expectedCopyFrom = path.join(__dirname, pluginBasePath, 'wb3.9_install.patch');
+    const expectedCopyTo = path.join('aFolder', 'wb3.9_install.patch');
+    expect(fs.copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
+});
+
 it('copies the install key', async () => {
     const installWorkbench390 = new InstallWorkbench390();
     await installWorkbench390.prepare(

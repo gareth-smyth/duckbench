@@ -1,31 +1,48 @@
---- ./install_original	2020-01-25 16:34:52.050000000 +0000
-+++ ./install_fixed	2020-01-26 12:42:41.125955300 +0000
-@@ -3,6 +3,10 @@
-
+--- install	2020-06-26 22:27:38.930917500 +0100
++++ install2	2020-06-26 23:28:15.971070200 +0100
+@@ -2,6 +2,8 @@
+ ; Script to install Release 3.1 Workbench
+ 
  (complete 0)
-
-+; ADDED BY DUCKBENCH
 +(set TRUE 1)
 +(set FALSE 0)
-+
+ 
  ;=============================================================================
  ; English strings
-
-@@ -3438,7 +3442,7 @@
+@@ -3438,7 +3440,7 @@
  ;=============================================================================
  ; say hi!
-
+ 
 -(user 0)
 +; REMOVED BY DUCKBENCH (user 0)
  (welcome)
  (set old_level @user-level)
-
-@@ -3613,7 +3617,7 @@
-
+ 
+@@ -3613,7 +3615,7 @@
+ 
  (if (exists cli-startup)
  (
 -    (set oldfiles (cat oldfiles s/cli-startup "         \n"))   ; these are hard spaces
 +    (set oldfiles (cat oldfiles cli-startup "         \n"))   ; these are hard spaces - FIXED BY DUCKBENCH
  ))
-
+ 
  (if (exists cd0)
+@@ -4516,8 +4518,8 @@
+ 
+ (user 2)
+ (message #reboot)
+-(run "Reboot")
+-
++; (run "Reboot") NO REBOOT FOR DUCKBENCH
++ 
+ )
+ (
+ 
+@@ -4572,6 +4574,6 @@
+ ; "Say goodnight Gracy."
+ ;
+ (message #reboot-lang)
+-(run "Reboot")
++;REMOVED BY DUCKBENCH (run "Reboot")
+ 
+ ))
