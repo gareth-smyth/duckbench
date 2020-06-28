@@ -44,7 +44,7 @@ class Setup {
         const cacheLocation = path.join(global.CACHE_DIR, 'client_cache.hdf');
         if (!fs.existsSync(cacheLocation)) {
             Logger.debug('Creating DB1: as DB_CLIENT_CACHE: as new HDF');
-            await HardDriveService.createRDB(cacheLocation, 100, [{driveName: 'DB1', fileSystem: 'pfs'}]);
+            await HardDriveService.createRDB(cacheLocation, 100, [{driveName: 'DB1', fileSystem: 'pfs', size: 250}]);
         } else {
             Logger.debug('Using existing HDF as DB1: as DB_CLIENT_CACHE:');
         }
@@ -52,7 +52,7 @@ class Setup {
 
         Logger.debug('Creating DB0: as DUCKBENCH: as new HDF');
         const location = path.join(environmentSetup.executionFolder, 'duckbench.hdf');
-        await HardDriveService.createRDB(location, 100, [{driveName: 'DB0', fileSystem: 'pfs'}]);
+        await HardDriveService.createRDB(location, 100, [{driveName: 'DB0', fileSystem: 'pfs', size: 100}]);
         environmentSetup.attachHDF('DB0', location);
     }
 

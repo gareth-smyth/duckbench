@@ -27,8 +27,6 @@ beforeEach(() => {
     global.Logger = {info: jest.fn(), trace: jest.fn(), debug: jest.fn()};
 });
 
-const defaultOptions = {optionValues: {device: 'AA1'}};
-
 describe('when the cache does not exist', () => {
     beforeEach(() => {
         fs.existsSync.mockReturnValueOnce(false);
@@ -36,7 +34,7 @@ describe('when the cache does not exist', () => {
 
     it('deletes and recreates the wb install cache', async () => {
         const installWorkbench390 = new InstallWorkbench390();
-        await installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
 
         expect(communicator.delete)
             .toHaveBeenCalledWith('DB_CLIENT_CACHE:InstallWorkbench390', {'ALL': true}, undefined, /.*/);
@@ -47,7 +45,7 @@ describe('when the cache does not exist', () => {
 
     it('calls copy to copy the host cached files to client cache and unprotects them', async () => {
         const installWorkbench390 = new InstallWorkbench390();
-        await installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
 
         expect(communicator.copy).toHaveBeenCalledTimes(2);
         expect(communicator.copy).toHaveBeenCalledWith('DB_HOST_CACHE:OS-Version3.9',
@@ -63,7 +61,7 @@ describe('when the cache does not exist', () => {
             throw new Error('copy error');
         });
         const installWorkbench390 = new InstallWorkbench390();
-        await expect(installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: true}))
+        await expect(installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true}))
             .rejects.toThrowError('copy error');
 
         expect(installerLG.run).toHaveBeenCalledTimes(0);
@@ -75,7 +73,7 @@ describe('when the cache does not exist', () => {
             throw new Error('protect error');
         });
         const installWorkbench390 = new InstallWorkbench390();
-        await expect(installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: true}))
+        await expect(installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true}))
             .rejects.toThrowError('protect error');
 
         expect(installerLG.run).toHaveBeenCalledTimes(0);
@@ -84,7 +82,7 @@ describe('when the cache does not exist', () => {
 
     it('calls installerLG to install workbench', async () => {
         const installWorkbench390 = new InstallWorkbench390();
-        await installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
 
         expect(installerLG.run).toHaveBeenCalledTimes(1);
         expect(installerLG.run).toHaveBeenCalledWith('DB_CLIENT_CACHE:InstallWorkbench390/installcd/OS3.9Install-Emu',
@@ -98,7 +96,7 @@ describe('when the cache does not exist', () => {
         });
 
         const installWorkbench390 = new InstallWorkbench390();
-        await expect(installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: true}))
+        await expect(installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true}))
             .rejects.toThrowError('installerLG error');
 
         expect(communicator.copy).toHaveBeenCalledTimes(1);
@@ -114,7 +112,7 @@ describe('when the cache does not exist', () => {
         });
 
         const installWorkbench390 = new InstallWorkbench390();
-        await installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
 
         expect(Logger.info).toHaveBeenCalledWith('10%');
     });
@@ -129,17 +127,17 @@ describe('when the cache does not exist', () => {
         });
 
         const installWorkbench390 = new InstallWorkbench390();
-        await installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
 
         expect(Logger.trace).toHaveBeenCalledWith(JSON.stringify(event));
     });
 
     it('calls patch for the install script', async () => {
         const installWorkbench390 = new InstallWorkbench390();
-        await installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: false});
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: false});
 
         expect(patch.run).toHaveBeenCalledTimes(2);
-        expect(patch.run).toHaveBeenCalledWith('AA1:s/startup-sequence', 'DB_EXECUTION:wb3.9_no_floppy_startup.patch',
+        expect(patch.run).toHaveBeenCalledWith('DH0:s/startup-sequence', 'DB_EXECUTION:wb3.9_no_floppy_startup.patch',
             'duckbench:c/', {}, communicator);
     });
 
@@ -149,7 +147,7 @@ describe('when the cache does not exist', () => {
         });
 
         const installWorkbench390 = new InstallWorkbench390();
-        await expect(installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: false}))
+        await expect(installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: false}))
             .rejects.toThrowError('patch install error');
 
         expect(patch.run).toHaveBeenCalledTimes(1);
@@ -158,10 +156,10 @@ describe('when the cache does not exist', () => {
 
     it('calls patch for the startup sequence if there is no floppy', async () => {
         const installWorkbench390 = new InstallWorkbench390();
-        await installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: false});
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: false});
 
         expect(patch.run).toHaveBeenCalledTimes(2);
-        expect(patch.run).toHaveBeenCalledWith('AA1:s/startup-sequence', 'DB_EXECUTION:wb3.9_no_floppy_startup.patch',
+        expect(patch.run).toHaveBeenCalledWith('DH0:s/startup-sequence', 'DB_EXECUTION:wb3.9_no_floppy_startup.patch',
             'duckbench:c/', {}, communicator);
     });
 
@@ -171,7 +169,7 @@ describe('when the cache does not exist', () => {
         });
 
         const installWorkbench390 = new InstallWorkbench390();
-        await expect(installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: false}))
+        await expect(installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: false}))
             .rejects.toThrowError('patch startup error');
 
         expect(patch.run).toHaveBeenCalledTimes(2);
@@ -186,7 +184,7 @@ describe('when the cache is already populated', () => {
 
     it('does not delete and recreate the wb install cache', async () => {
         const installWorkbench390 = new InstallWorkbench390();
-        await installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
 
         expect(communicator.delete).toHaveBeenCalledTimes(0);
         expect(communicator.makedir).toHaveBeenCalledTimes(0);
@@ -194,27 +192,27 @@ describe('when the cache is already populated', () => {
 
     it('does not call copy to copy the host cached files to client cache and unprotect them', async () => {
         const installWorkbench390 = new InstallWorkbench390();
-        await installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
 
         expect(communicator.copy).toHaveBeenCalledTimes(1);
         expect(communicator.copy).toHaveBeenCalledWith('DB_CLIENT_CACHE:InstallWorkbench390/wb',
-            'AA1:', {'ALL': true, 'CLONE': true}, undefined, 'copied');
+            'DH0:', {'ALL': true, 'CLONE': true}, undefined, 'copied');
         expect(communicator.protect).toHaveBeenCalledTimes(0);
     });
 
     it('does not call installerLG to install workbench', async () => {
         const installWorkbench390 = new InstallWorkbench390();
-        await installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
 
         expect(installerLG.run).toHaveBeenCalledTimes(0);
     });
 
     it('calls patch for the startup sequence if there is no floppy', async () => {
         const installWorkbench390 = new InstallWorkbench390();
-        await installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: false});
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: false});
 
         expect(patch.run).toHaveBeenCalledTimes(1);
-        expect(patch.run).toHaveBeenCalledWith('AA1:s/startup-sequence', 'DB_EXECUTION:wb3.9_no_floppy_startup.patch',
+        expect(patch.run).toHaveBeenCalledWith('DH0:s/startup-sequence', 'DB_EXECUTION:wb3.9_no_floppy_startup.patch',
             'duckbench:c/', {}, communicator);
     });
 
@@ -224,7 +222,7 @@ describe('when the cache is already populated', () => {
         });
 
         const installWorkbench390 = new InstallWorkbench390();
-        await expect(installWorkbench390.install(defaultOptions, communicator, pluginStore, {floppyDrive: false}))
+        await expect(installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: false}))
             .rejects.toThrowError('patch startup error');
 
         expect(patch.run).toHaveBeenCalledTimes(1);

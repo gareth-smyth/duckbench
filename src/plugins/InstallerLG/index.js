@@ -12,9 +12,10 @@ class InstallerLG {
                 location: {
                     name: 'location',
                     label: 'Install to',
-                    description: 'e.g. "NEW_WORKBENCH:c/"',
+                    description: 'e.g. "DH0:c/"',
                     type: 'text',
-                    default: 'NEW_WORKBENCH:C/',
+                    default: 'DH0:C/',
+                    hide: true,
                 },
             },
         };

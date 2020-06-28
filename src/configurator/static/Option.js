@@ -30,12 +30,6 @@ export default class Option {
             });
         } else if(option.type === 'list'){
             return this.selectList(selectedPlugin, option, option.items, optionValue, configuration);
-        } else if(option.type === 'partition'){
-            const partitionSelectedPlugin = configuration.getPartitionSelectedPlugin();
-            const device = partitionSelectedPlugin.optionValues.device;
-            const volumeName = partitionSelectedPlugin.optionValues.volumeName;
-            const optionItems = [{key: 1, value: device, label: `${volumeName} (${device})`}];
-            return this.selectList(selectedPlugin, option, optionItems, optionValue, configuration);
         }
     }
 

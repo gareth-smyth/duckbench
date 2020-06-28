@@ -3,34 +3,44 @@ const path = require('path');
 const diskInfo = require('node-disk-info');
 
 class InstallWorkbench390 {
+    constructor() {
+        this.cdCacheMarkerPath = path.join(global.CACHE_DIR, 'wb390_installcd_cached');
+    }
+
     async structure() {
-        const availableDrives = await diskInfo.getDiskInfo();
+        const options = {
+            iso390: {
+                name: 'iso390',
+                label: 'OS 3.9 Drive',
+                description: 'The OS 3.9 Disk on the host',
+                type: 'list',
+                primary: true,
+            },
+        };
+
+        if (!fs.existsSync(this.cdCacheMarkerPath)) {
+            const availableDrives = await diskInfo.getDiskInfo();
+            options.iso390.items = availableDrives.map((drive) => {
+                return {
+                    label: `${drive.mounted} (${drive.filesystem})`,
+                    value: `${drive.mounted}`,
+                };
+            });
+            options.iso390.default = availableDrives[0].mounted;
+        } else {
+            options.iso390.items = [{
+                label: 'Already cached',
+                value: 'cached',
+            }];
+            options.iso390.default = 'cached';
+        }
+
         return {
             name: 'InstallWorkbench390',
             label: 'Workbench 3.9',
             type: 'workbench',
             showConfig: true,
-            options: {
-                device: {
-                    name: 'device',
-                    label: 'On drive',
-                    description: 'The drive to install workbench on e.g. "WORKBENCH"',
-                    type: 'partition',
-                },
-                iso390: {
-                    name: 'iso390',
-                    label: 'OS 3.9 Drive',
-                    description: 'The OS 3.9 Disk on the host',
-                    type: 'list',
-                    items: availableDrives.map((drive) => {
-                        return {
-                            label: `${drive.mounted} (${drive.filesystem})`,
-                            value: `${drive.mounted}`,
-                        };
-                    }),
-                    default: availableDrives[0].device,
-                },
-            },
+            options,
         };
     }
 
@@ -68,15 +78,14 @@ class InstallWorkbench390 {
             fs.copyFileSync(floppyPatchSource, floppyPatchDestination);
         }
 
-        const cacheMarkerPath = path.join(global.CACHE_DIR, 'wb390_installcd_cached');
-        if (!fs.existsSync(cacheMarkerPath)) {
+        if (!fs.existsSync(this.cdCacheMarkerPath)) {
             Logger.debug('Workbench 3.9 source not yet cached.  Copying to cache.');
             const installCDFolder = path.join(config.optionValues.iso390, 'OS-Version3.9');
             const cacheInstallFolder = path.join(global.CACHE_DIR, 'OS-Version3.9');
             fs.rmdirSync(cacheInstallFolder, {recursive: true});
             fs.copySync(installCDFolder, cacheInstallFolder);
 
-            fs.closeSync(fs.openSync(cacheMarkerPath, 'w'));
+            fs.closeSync(fs.openSync(this.cdCacheMarkerPath, 'w'));
         } else {
             Logger.debug('Workbench 3.9 source already in host cache - reusing.');
         }
@@ -110,11 +119,11 @@ class InstallWorkbench390 {
         }
 
         Logger.debug('Copying workbench 3.9 files from cache.');
-        await communicator.copy('DB_CLIENT_CACHE:InstallWorkbench390/wb', `${config.optionValues.device}:`,
+        await communicator.copy('DB_CLIENT_CACHE:InstallWorkbench390/wb', 'DH0:',
             {'ALL': true, 'CLONE': true}, undefined, 'copied');
 
         if (!environmentSetup.floppyDrive) {
-            const installedStartupSequence = `${config.optionValues.device}:s/startup-sequence`;
+            const installedStartupSequence = 'DH0:s/startup-sequence';
             const startupSequencePatch = 'DB_EXECUTION:wb3.9_no_floppy_startup.patch';
             await patch.run(installedStartupSequence, startupSequencePatch, 'duckbench:c/', {}, communicator);
         }
@@ -129,7 +138,7 @@ class InstallWorkbench390 {
     }
 
     finalise(config, environmentSetup) {
-        const runningLocation = path.join(environmentSetup.executionFolder, `${config.optionValues.device}.hdf`);
+        const runningLocation = path.join(environmentSetup.executionFolder, 'NewWorkbench.hdf');
         const saveLocation = path.join(process.cwd(), `Workbench390_${environmentSetup.systemName}.hdf`);
         fs.copyFileSync(runningLocation, saveLocation);
     }

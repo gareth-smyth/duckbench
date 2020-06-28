@@ -7,7 +7,7 @@ export default class PluginSelect {
         const plugins = configuration.plugins;
         const selectedPlugin = configuration.getSelectedPlugin(node.attrs.id);
         const primaryConfigOption = this.getPrimaryConfigurationOption(configuration, selectedPlugin);
-        const showConfigButton = this.getNonPrimaryConfigurationOptions(configuration, selectedPlugin);
+        const showConfigButton = this.getNonPrimaryNonHiddenConfigurationOptions(configuration, selectedPlugin);
         return m('.mb-1', [
             m('select.btn.btn-info.dropdown-toggle', {
                     id:`${selectedPlugin.id}`,
@@ -41,10 +41,11 @@ export default class PluginSelect {
         }
     }
 
-    getNonPrimaryConfigurationOptions(configuration, selectedPlugin) {
+    getNonPrimaryNonHiddenConfigurationOptions(configuration, selectedPlugin) {
         const plugin = configuration.getPlugin(selectedPlugin.name);
         if(plugin && plugin.options) {
-            return Object.keys(plugin.options).find(optionName => plugin.options[optionName].primary !== true);
+            return Object.keys(plugin.options)
+                .find(optionName => plugin.options[optionName].primary !== true && !plugin.options[optionName].hide);
         }
 
         return false;

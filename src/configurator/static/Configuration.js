@@ -5,10 +5,10 @@ export default class Configuration {
         this.selectedPlugins = [];
 
         const partitionPlugin = this.addSelectedPlugin('partition');
-        this.setSelectedPluginName(partitionPlugin.id, 'SinglePartition');
+        this.setSelectedPluginName(partitionPlugin.id, 'RecommendedPartition');
 
         const workbenchPlugin = this.addSelectedPlugin('workbench');
-        this.setSelectedPluginName(workbenchPlugin.id, 'InstallWorkbench310');
+        this.setSelectedPluginName(workbenchPlugin.id, 'InstallWorkbench390');
 
         const systemPlugin = this.addSelectedPlugin('system');
         this.setSelectedPluginName(systemPlugin.id, 'CD32');
@@ -43,22 +43,6 @@ export default class Configuration {
     setSelectedPluginOptionValue(pluginId, optionName, value) {
         const selectedPlugin = this.getSelectedPlugin(pluginId);
         selectedPlugin.optionValues[optionName] = value;
-        if(selectedPlugin.type === 'partition' && (optionName === 'device')) {
-            this.clearPartitionSelections();
-        }
-    }
-
-    clearPartitionSelections() {
-        this.selectedPlugins.forEach(selectedPlugin => {
-            selectedPlugin.optionValues && Object.keys(selectedPlugin.optionValues).forEach(optionKey => {
-                const plugin = this.getPlugin(selectedPlugin.name);
-                if(plugin.options && plugin.options[optionKey] && plugin.options[optionKey].type === 'partition') {
-                    if(selectedPlugin.optionValues[optionKey]) {
-                        delete selectedPlugin.optionValues[optionKey];
-                    }
-                }
-            })
-        });
     }
 
     addSelectedPlugin(type) {
