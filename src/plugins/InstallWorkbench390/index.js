@@ -30,6 +30,17 @@ class InstallWorkbench390 {
                     }),
                     default: availableDrives[0].device,
                 },
+                customisePrefs: {
+                    name: 'customisePrefs',
+                    label: 'Duckbench style?',
+                    description: 'Set a number of preferences including 32 colours and hi-res laced workbench',
+                    type: 'list',
+                    items: [
+                        'No',
+                        'Yes',
+                    ],
+                    default: 'Yes',
+                },
             },
         };
     }

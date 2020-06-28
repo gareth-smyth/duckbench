@@ -8,10 +8,10 @@ export default class Configuration {
         this.setSelectedPluginName(partitionPlugin.id, 'SinglePartition');
 
         const workbenchPlugin = this.addSelectedPlugin('workbench');
-        this.setSelectedPluginName(workbenchPlugin.id, 'InstallWorkbench310');
+        this.setSelectedPluginName(workbenchPlugin.id, 'InstallWorkbench390');
 
         const systemPlugin = this.addSelectedPlugin('system');
-        this.setSelectedPluginName(systemPlugin.id, 'CD32');
+        this.setSelectedPluginName(systemPlugin.id, 'Amiga1200');
     }
 
     setSelectedPluginName(id, pluginName) {
