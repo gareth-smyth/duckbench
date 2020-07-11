@@ -35,6 +35,11 @@ class InstallWorkbench310 {
             optionValues: {
                 location: 'duckbench:c/',
             },
+        }, {
+            name: 'UAEConfiguration',
+            optionValues: {
+                location: 'duckbench:c/',
+            },
         }];
     }
 
