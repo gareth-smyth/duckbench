@@ -65,7 +65,7 @@ it('maps the running execution drive', async () => {
     const setup = new Setup();
     await setup.prepare({}, environmentSetup);
 
-    expect(environmentSetup.mapFolderToDrive).toHaveBeenCalledWith('DB2', 'some folder', 'DB_EXECUTION');
+    expect(environmentSetup.mapFolderToDrive).toHaveBeenCalledWith('DB2', 'some folder', 'DB_EXECUTION', true);
 });
 
 it('creates and adds the cache partition when it does not exist', async () => {

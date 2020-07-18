@@ -93,10 +93,10 @@ class EnvironmentSetup {
         this.disks.HDF ? this.disks.HDF.push({drive, location}) : this.disks.HDF = [{drive, location}];
     }
 
-    mapFolderToDrive(drive, location, name) {
+    mapFolderToDrive(drive, location, name, writeable = false) {
         this.disks.MAPPED_DRIVE ?
-            this.disks.MAPPED_DRIVE.push({drive, location, name}) :
-            this.disks.MAPPED_DRIVE = [{drive, location, name}];
+            this.disks.MAPPED_DRIVE.push({drive, location, name, writeable}) :
+            this.disks.MAPPED_DRIVE = [{drive, location, name, writeable}];
     }
 
     destroy() {

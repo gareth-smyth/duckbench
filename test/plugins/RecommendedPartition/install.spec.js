@@ -2,7 +2,7 @@ const RecommendedPartition = require('../../../src/plugins/RecommendedPartition'
 
 it('calls the communicator to format the workbench partition', async () => {
     const communicator = {format: jest.fn(), assign: jest.fn()};
-    const pluginStore = {getPlugin: () => ({getFile: () => 'ram:somefile.txt'})};
+    const pluginStore = {getPlugin: () => ({createInput: () => 'ram:somefile.txt'})};
 
     const partition = new RecommendedPartition();
     await partition.install({optionValues: {size: 300}}, communicator, pluginStore);
@@ -15,7 +15,7 @@ it('calls the communicator to format the workbench partition', async () => {
 
 it('assigns work: to dh1:', async () => {
     const communicator = {format: jest.fn(), assign: jest.fn()};
-    const pluginStore = {getPlugin: () => ({getFile: () => 'ram:somefile.txt'})};
+    const pluginStore = {getPlugin: () => ({createInput: () => 'ram:somefile.txt'})};
 
     const partition = new RecommendedPartition();
     await partition.install({optionValues: {size: 300}}, communicator, pluginStore);
@@ -27,7 +27,7 @@ it('assigns work: to dh1:', async () => {
 describe('large hard drive set up', () => {
     it('calls the communicator to format the workbench partition', async () => {
         const communicator = {format: jest.fn(), assign: jest.fn()};
-        const pluginStore = {getPlugin: () => ({getFile: () => 'ram:somefile.txt'})};
+        const pluginStore = {getPlugin: () => ({createInput: () => 'ram:somefile.txt'})};
 
         const partition = new RecommendedPartition();
         await partition.install({optionValues: {size: 5000}}, communicator, pluginStore);
@@ -40,7 +40,7 @@ describe('large hard drive set up', () => {
 
     it('calls the communicator to format the work partition', async () => {
         const communicator = {format: jest.fn(), assign: jest.fn()};
-        const pluginStore = {getPlugin: () => ({getFile: () => 'ram:somefile.txt'})};
+        const pluginStore = {getPlugin: () => ({createInput: () => 'ram:somefile.txt'})};
 
         const partition = new RecommendedPartition();
         await partition.install({optionValues: {size: 5000}}, communicator, pluginStore);

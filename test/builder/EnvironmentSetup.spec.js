@@ -168,9 +168,11 @@ it('adds HDFs', () => {
 it('maps folders to drives', () => {
     const environmentSetup = new EnvironmentSetup({});
     environmentSetup.mapFolderToDrive('dh0:', '/home/drive1', 'driveA');
-    environmentSetup.mapFolderToDrive('dh3:', '/home/drive2', 'driveB');
-    expect(environmentSetup.disks.MAPPED_DRIVE[0]).toEqual({drive: 'dh0:', location: '/home/drive1', name: 'driveA'});
-    expect(environmentSetup.disks.MAPPED_DRIVE[1]).toEqual({drive: 'dh3:', location: '/home/drive2', name: 'driveB'});
+    environmentSetup.mapFolderToDrive('dh3:', '/home/drive2', 'driveB', true);
+    expect(environmentSetup.disks.MAPPED_DRIVE[0])
+        .toEqual({drive: 'dh0:', location: '/home/drive1', name: 'driveA', writeable: false});
+    expect(environmentSetup.disks.MAPPED_DRIVE[1])
+        .toEqual({drive: 'dh3:', location: '/home/drive2', name: 'driveB', writeable: true});
 });
 
 it('inserts amiga and non-amiga os ADFs', () => {

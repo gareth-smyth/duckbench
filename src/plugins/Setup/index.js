@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const ADFService = require('../../services/ADFService');
-const HitEnterFile = require('../HitEnterFile');
 const HardDriveService = require('../../services/HardDriveService');
 
 class Setup {
@@ -39,7 +38,7 @@ class Setup {
         environmentSetup.mapFolderToDrive('DB3', environmentSetup.duckbenchConfig.osFolder, 'DB_OS_DISKS');
 
         Logger.debug(`Mapping DB2: as DB_EXECUTION: at ${environmentSetup.executionFolder}`);
-        environmentSetup.mapFolderToDrive('DB2', environmentSetup.executionFolder, 'DB_EXECUTION');
+        environmentSetup.mapFolderToDrive('DB2', environmentSetup.executionFolder, 'DB_EXECUTION', true);
 
         const cacheLocation = path.join(global.CACHE_DIR, 'client_cache.hdf');
         if (!fs.existsSync(cacheLocation)) {
@@ -57,9 +56,7 @@ class Setup {
     }
 
     async install(config, communicator, pluginStore) {
-        const hitEnterFile = new HitEnterFile();
-        await hitEnterFile.install({}, communicator);
-        const enterFile = pluginStore.getPlugin('HitEnterFile').getFile();
+        const enterFile = await pluginStore.getPlugin('RedirectInputFile').createInput([''], communicator);
 
         try {
             const expectedResponse = 'DB_CLIENT_CACHE: not assigned';

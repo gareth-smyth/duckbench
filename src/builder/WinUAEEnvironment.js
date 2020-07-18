@@ -54,8 +54,11 @@ class WinUAEEnvironment {
 
         if (disks.MAPPED_DRIVE) {
             disks.MAPPED_DRIVE.forEach((disk) => {
-                fs.writeSync(configFile, `filesystem2=ro,${disk.drive}:${disk.name}:${disk.location},-128\n`);
-                fs.writeSync(configFile, `uaehf${diskIdx}=dir,ro,${disk.drive}:${disk.name}:${disk.location},-128\n`);
+                const readWrite = disk.writeable ? 'rw' : 'ro';
+                fs.writeSync(configFile,
+                    `filesystem2=${readWrite},${disk.drive}:${disk.name}:${disk.location},-128\n`);
+                fs.writeSync(configFile,
+                    `uaehf${diskIdx}=dir,${readWrite},${disk.drive}:${disk.name}:${disk.location},-128\n`);
                 diskIdx += 1;
             });
         }
