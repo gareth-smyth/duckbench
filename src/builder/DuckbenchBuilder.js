@@ -23,7 +23,7 @@ class DuckbenchBuilder {
             communicator.close();
 
             Logger.info('Pausing before shutting down the emulator.');
-            await this.sleep(5000);
+            await this.sleep(20000);
             environment.stop();
 
             Logger.info('Pausing to let the emulator shutdown.');

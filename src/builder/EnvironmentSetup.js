@@ -4,12 +4,14 @@ const path = require('path');
 // UnADF requires 300 to run
 const RomFileMappings = {
     '2.05': {
+        'a500': 'amiga-os-310-a600.rom',
         'a600': 'amiga-os-310-a600.rom',
     },
     '3.0': {
         'a1200': 'amiga-os-310-a1200.rom',
     },
     '3.1': {
+        'a500': 'amiga-os-310-a600.rom',
         'a600': 'amiga-os-310-a600.rom',
         'a1200': 'amiga-os-310-a1200.rom',
         'cd32': 'amiga-os-310-cd32.rom',
@@ -72,6 +74,10 @@ class EnvironmentSetup {
 
     setFloppyDrive(floppyDrive) {
         this.floppyDrive = floppyDrive;
+    }
+
+    insertCDISO(location) {
+        this.disks.CD ? this.disks.CD.push({location}) : this.disks.CD = [{location}];
     }
 
     insertDisk(drive, diskDefinition) {

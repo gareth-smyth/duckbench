@@ -78,7 +78,7 @@ it('creates and adds the cache partition when it does not exist', async () => {
 
     const clientCacheLocation = path.join(global.CACHE_DIR, 'client_cache.hdf');
     expect(HardDriveService.createRDB)
-        .toHaveBeenCalledWith(clientCacheLocation, 100, [{'driveName': 'DB1', 'fileSystem': 'pfs', 'size': 250}]);
+        .toHaveBeenCalledWith(clientCacheLocation, 250, [{'driveName': 'DB1', 'fileSystem': 'pfs', 'size': 250}]);
     expect(environmentSetup.attachHDF).toHaveBeenCalledWith('DB1', clientCacheLocation);
 });
 

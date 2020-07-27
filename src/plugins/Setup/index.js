@@ -43,7 +43,7 @@ class Setup {
         const cacheLocation = path.join(global.CACHE_DIR, 'client_cache.hdf');
         if (!fs.existsSync(cacheLocation)) {
             Logger.debug('Creating DB1: as DB_CLIENT_CACHE: as new HDF');
-            await HardDriveService.createRDB(cacheLocation, 100, [{driveName: 'DB1', fileSystem: 'pfs', size: 250}]);
+            await HardDriveService.createRDB(cacheLocation, 250, [{driveName: 'DB1', fileSystem: 'pfs', size: 250}]);
         } else {
             Logger.debug('Using existing HDF as DB1: as DB_CLIENT_CACHE:');
         }

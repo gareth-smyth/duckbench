@@ -131,6 +131,24 @@ it('writes the floppy related parts of the config', () => {
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'floppy2=some/disk2.adf\n');
 });
 
+it('writes the CD related parts of the config', () => {
+    const someFile = 'someFile';
+    fs.openSync.mockReturnValueOnce(someFile);
+    new WinUAEEnvironment(
+        {emuRoot: '/path/to/winuae/', romFolder: 'path/to/rom/folder'},
+        {
+            executionFolder: '/some/folder',
+            disks: {CD: [{location: 'some/disk.file'}, {location: 'some/disk2.iso'}]},
+            rom: 'arom',
+            getRomFileName: () => 'aRomFile', getCPU: () => '68020',
+        },
+    );
+    expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'win32.map_cd_drives=true\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cdimage0=some/disk.file\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cdimage1=some/disk2.iso\n');
+});
+
 it('writes the uaehf related parts of the config', () => {
     const someFile = 'someFile';
     fs.openSync.mockReturnValueOnce(someFile);

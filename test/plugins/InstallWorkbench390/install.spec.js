@@ -51,7 +51,7 @@ describe('when the cache does not exist', () => {
         const installWorkbench390 = new InstallWorkbench390();
         await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
 
-        expect(communicator.copy).toHaveBeenCalledWith('DB_HOST_CACHE:OS-Version3.9',
+        expect(communicator.copy).toHaveBeenCalledWith('CD0:OS-Version3.9',
             'DB_CLIENT_CACHE:InstallWorkbench390/installcd',
             {'ALL': true, 'CLONE': true}, undefined, '..copied');
         expect(communicator.protect).toHaveBeenCalledTimes(1);

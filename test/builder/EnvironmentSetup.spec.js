@@ -157,6 +157,14 @@ it('sets the floppy drive', () => {
     expect(environmentSetup.floppyDrive).toEqual(true);
 });
 
+it('sets the cd drive', () => {
+    const environmentSetup = new EnvironmentSetup({});
+    environmentSetup.insertCDISO('/my/location');
+    environmentSetup.insertCDISO('/my/other/location');
+    expect(environmentSetup.disks.CD[0]).toEqual({location: '/my/location'});
+    expect(environmentSetup.disks.CD[1]).toEqual({location: '/my/other/location'});
+});
+
 it('adds HDFs', () => {
     const environmentSetup = new EnvironmentSetup({});
     environmentSetup.attachHDF('dh0:', '/home/drive1');

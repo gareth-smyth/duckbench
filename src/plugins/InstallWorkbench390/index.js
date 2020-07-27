@@ -1,46 +1,22 @@
 const fs = require('fs-extra');
 const path = require('path');
-const diskInfo = require('node-disk-info');
 
 class InstallWorkbench390 {
-    constructor() {
-        this.cdCacheMarkerPath = path.join(global.CACHE_DIR, 'wb390_installcd_cached');
-    }
-
     async structure() {
-        const options = {
-            iso390: {
-                name: 'iso390',
-                label: 'OS 3.9 Drive',
-                description: 'The OS 3.9 Disk on the host',
-                type: 'list',
-                primary: true,
-            },
-        };
-
-        if (!fs.existsSync(this.cdCacheMarkerPath)) {
-            const availableDrives = await diskInfo.getDiskInfo();
-            options.iso390.items = availableDrives.map((drive) => {
-                return {
-                    label: `${drive.mounted} (${drive.filesystem})`,
-                    value: `${drive.mounted}`,
-                };
-            });
-            options.iso390.default = availableDrives[0].mounted;
-        } else {
-            options.iso390.items = [{
-                label: 'Already cached',
-                value: 'cached',
-            }];
-            options.iso390.default = 'cached';
-        }
-
         return {
             name: 'InstallWorkbench390',
             label: 'Workbench 3.9',
             type: 'workbench',
             showConfig: true,
-            options,
+            options: {
+                iso390: {
+                    name: 'iso390',
+                    label: 'OS 3.9 ISO',
+                    description: 'The path to the OS 3.9 ISO on the host',
+                    type: 'text',
+                    primary: true,
+                },
+            },
         };
     }
 
@@ -83,17 +59,7 @@ class InstallWorkbench390 {
             fs.copyFileSync(floppyPatchSource, floppyPatchDestination);
         }
 
-        if (!fs.existsSync(this.cdCacheMarkerPath)) {
-            Logger.debug('Workbench 3.9 source not yet cached.  Copying to cache.');
-            const installCDFolder = path.join(config.optionValues.iso390, 'OS-Version3.9');
-            const cacheInstallFolder = path.join(global.CACHE_DIR, 'OS-Version3.9');
-            fs.rmdirSync(cacheInstallFolder, {recursive: true});
-            fs.copySync(installCDFolder, cacheInstallFolder);
-
-            fs.closeSync(fs.openSync(this.cdCacheMarkerPath, 'w'));
-        } else {
-            Logger.debug('Workbench 3.9 source already in host cache - reusing.');
-        }
+        environmentSetup.insertCDISO(config.optionValues.iso390);
     }
 
     async install(config, communicator, pluginStore, environmentSetup) {
@@ -109,7 +75,7 @@ class InstallWorkbench390 {
             await communicator.makedir('DB_CLIENT_CACHE:InstallWorkbench390');
             await communicator.makedir('DB_CLIENT_CACHE:InstallWorkbench390/wb');
             await communicator.makedir('DB_CLIENT_CACHE:InstallWorkbench390/installcd');
-            await communicator.copy('DB_HOST_CACHE:OS-Version3.9', 'DB_CLIENT_CACHE:InstallWorkbench390/installcd',
+            await communicator.copy('CD0:OS-Version3.9', 'DB_CLIENT_CACHE:InstallWorkbench390/installcd',
                 {'ALL': true, 'CLONE': true}, undefined, '..copied');
             await communicator.protect('DB_CLIENT_CACHE:InstallWorkbench390/installcd',
                 {'+wd': true, 'all': true}, undefined, '..done');
