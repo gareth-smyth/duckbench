@@ -5,24 +5,28 @@ const Communicator = require('../../../src/builder/Communicator');
 const PluginStore = require('../../../src/builder/PluginStore');
 const InstallLG = require('../../../src/plugins/InstallerLG');
 const Patch = require('../../../src/plugins/Patch');
+const WinUAETools = require('../../../src/plugins/WinUAETools');
 
 jest.mock('fs-extra');
 jest.mock('../../../src/builder/Communicator');
 jest.mock('../../../src/builder/PluginStore');
 jest.mock('../../../src/plugins/InstallerLG');
 jest.mock('../../../src/plugins/Patch');
+jest.mock('../../../src/plugins/WinUAETools');
 
 let communicator;
 let pluginStore;
 let installerLG;
 let patch;
+let winUAETools;
 
 beforeEach(() => {
     communicator = new Communicator();
     pluginStore = new PluginStore();
     installerLG = new InstallLG();
     patch = new Patch();
-    pluginStore.getPlugin.mockReturnValueOnce(patch).mockReturnValueOnce(installerLG);
+    winUAETools = new WinUAETools();
+    pluginStore.getPlugin.mockReturnValueOnce(patch).mockReturnValueOnce(installerLG).mockReturnValueOnce(winUAETools);
 
     global.Logger = {info: jest.fn(), trace: jest.fn(), debug: jest.fn()};
 });
@@ -47,13 +51,20 @@ describe('when the cache does not exist', () => {
         const installWorkbench390 = new InstallWorkbench390();
         await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
 
-        expect(communicator.copy).toHaveBeenCalledTimes(2);
-        expect(communicator.copy).toHaveBeenCalledWith('DB_HOST_CACHE:OS-Version3.9',
+        expect(communicator.copy).toHaveBeenCalledWith('CD0:OS-Version3.9',
             'DB_CLIENT_CACHE:InstallWorkbench390/installcd',
             {'ALL': true, 'CLONE': true}, undefined, '..copied');
         expect(communicator.protect).toHaveBeenCalledTimes(1);
         expect(communicator.protect).toHaveBeenCalledWith('DB_CLIENT_CACHE:InstallWorkbench390/installcd',
             {'+wd': true, 'all': true}, undefined, '..done');
+    });
+
+    it('calls the communicator to discover if there is a work partition', async () => {
+        const installWorkbench390 = new InstallWorkbench390();
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
+
+        expect(communicator.assign).toHaveBeenCalledTimes(1);
+        expect(communicator.assign).toHaveBeenCalledWith('', '', {}, expect.any(Function), 'Volumes:');
     });
 
     it('throws an error if copying cached files fails', async () => {
@@ -187,16 +198,21 @@ describe('when the cache is already populated', () => {
         await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
 
         expect(communicator.delete).toHaveBeenCalledTimes(0);
-        expect(communicator.makedir).toHaveBeenCalledTimes(0);
+        expect(communicator.makedir).toHaveBeenCalledTimes(1);
+        expect(communicator.makedir).not.toHaveBeenCalledWith('DB_CLIENT_CACHE:InstallWorkbench390');
+        expect(communicator.makedir).not.toHaveBeenCalledWith('DB_CLIENT_CACHE:InstallWorkbench390/wb');
     });
 
     it('does not call copy to copy the host cached files to client cache and unprotect them', async () => {
         const installWorkbench390 = new InstallWorkbench390();
         await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
 
-        expect(communicator.copy).toHaveBeenCalledTimes(1);
+        expect(communicator.copy).toHaveBeenCalledTimes(4);
         expect(communicator.copy).toHaveBeenCalledWith('DB_CLIENT_CACHE:InstallWorkbench390/wb',
             'DH0:', {'ALL': true, 'CLONE': true}, undefined, 'copied');
+        expect(communicator.copy).not.toHaveBeenCalledWith('DB_HOST_CACHE:OS-Version3.9',
+            'DB_CLIENT_CACHE:InstallWorkbench390/installcd',
+            {'ALL': true, 'CLONE': true}, undefined, '..copied');
         expect(communicator.protect).toHaveBeenCalledTimes(0);
     });
 
@@ -226,5 +242,63 @@ describe('when the cache is already populated', () => {
             .rejects.toThrowError('patch startup error');
 
         expect(patch.run).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe('setting up the new workbench', () => {
+    beforeEach(() => {
+        fs.existsSync.mockReturnValueOnce(true);
+    });
+
+    it('copys AUX: to devs and adds newshell to user-startup', async () => {
+        const installWorkbench390 = new InstallWorkbench390();
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
+
+        expect(communicator.copy)
+            .toHaveBeenCalledWith('dh0:storage/dosdrivers/aux', 'dh0:devs/dosdrivers/aux', {'CLONE': true});
+        expect(communicator.copy)
+            .toHaveBeenCalledWith('dh0:storage/dosdrivers/aux.info', 'dh0:devs/dosdrivers/aux.info', {'CLONE': true});
+        expect(communicator.echo).toHaveBeenCalledWith('newshell AUX:', {'>>': 'dh0:s/user-startup'});
+    });
+
+    it('ejects the floppies and restarts', async () => {
+        const installWorkbench390 = new InstallWorkbench390();
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
+
+        expect(winUAETools.ejectFloppy).toHaveBeenCalledWith('duckbench:c/', 1, communicator, pluginStore);
+        expect(winUAETools.ejectFloppy).toHaveBeenCalledWith('duckbench:c/', 2, communicator, pluginStore);
+        expect(winUAETools.restart).toHaveBeenCalledWith('duckbench:c/', communicator, pluginStore);
+    });
+
+    it('when no WORK: partition is being created it creates the Work folder and adds assigns', async () => {
+        communicator.assign.mockImplementation((command, options, communicator, callback) => {
+            if (callback) {
+                callback({message: 'DATA_EVENT', data: '!NOTWORK!! [MOUNTED]'});
+            }
+            return Promise.resolve(['']);
+        });
+
+        const installWorkbench390 = new InstallWorkbench390();
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
+
+        expect(communicator.makedir).toHaveBeenCalledWith('dh0:Work');
+        expect(communicator.copy).toHaveBeenCalledWith('dh0:Tools.info', 'dh0:Work.info');
+        expect(communicator.echo).toHaveBeenCalledWith('assign WORK: dh0:Work', {'>>': 'dh0:s/user-startup'});
+    });
+
+    it('when WORK: partition is being created it does not create a Work folder', async () => {
+        communicator.assign.mockImplementation((command, options, communicator, callback) => {
+            if (callback) {
+                callback({message: 'DATA_EVENT', data: 'WORK [MOUNTED]'});
+            }
+            return Promise.resolve(['']);
+        });
+
+        const installWorkbench390 = new InstallWorkbench390();
+        await installWorkbench390.install({}, communicator, pluginStore, {floppyDrive: true});
+
+        expect(communicator.makedir).not.toHaveBeenCalledWith('dh0:Work');
+        expect(communicator.copy).not.toHaveBeenCalledWith('dh0:Tools.info', 'dh0:Work.info');
+        expect(communicator.echo).not.toHaveBeenCalledWith('assign WORK: dh0:Work', {'>>': 'dh0:s/user-startup'});
     });
 });

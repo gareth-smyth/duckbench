@@ -1,14 +1,7 @@
 #!/usr/bin/env node
 /* eslint-disable */
-require('../services/BaseDirService');
-require('../services/LoggerService');
 const fs = require('fs');
 const yargs = require('yargs');
-
-const Configurator = require('../configurator/Configurator');
-const Communicator = require('../builder/Communicator');
-const DuckbenchBuilder = require('../builder/DuckbenchBuilder');
-const WinUAEEnvironment = require('../builder/WinUAEEnvironment');
 
 yargs.command({
     command: 'build-workbench',
@@ -28,7 +21,13 @@ yargs.command({
             .demandOption('duckbench-file');
     },
     handler: async (args) => {
+        require('../services/LoggerService');
         Logger.setLevel(args.logLevel);
+        require('../services/BaseDirService');
+        const Communicator = require('../builder/Communicator');
+        const DuckbenchBuilder = require('../builder/DuckbenchBuilder');
+        const WinUAEEnvironment = require('../builder/WinUAEEnvironment');
+
         const duckbenchBuilder = new DuckbenchBuilder();
         await duckbenchBuilder.build(JSON.parse(fs.readFileSync(args.db)), WinUAEEnvironment, Communicator);
     },
@@ -44,7 +43,11 @@ yargs.command({
         })
     },
     handler: (args) => {
+        require('../services/LoggerService');
         Logger.setLevel(args.logLevel);
+        require('../services/BaseDirService');
+        const Configurator = require('../configurator/Configurator');
+
         const configurator = new Configurator();
         configurator.start();
     }

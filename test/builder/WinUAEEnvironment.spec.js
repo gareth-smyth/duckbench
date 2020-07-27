@@ -131,6 +131,24 @@ it('writes the floppy related parts of the config', () => {
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'floppy2=some/disk2.adf\n');
 });
 
+it('writes the CD related parts of the config', () => {
+    const someFile = 'someFile';
+    fs.openSync.mockReturnValueOnce(someFile);
+    new WinUAEEnvironment(
+        {emuRoot: '/path/to/winuae/', romFolder: 'path/to/rom/folder'},
+        {
+            executionFolder: '/some/folder',
+            disks: {CD: [{location: 'some/disk.file'}, {location: 'some/disk2.iso'}]},
+            rom: 'arom',
+            getRomFileName: () => 'aRomFile', getCPU: () => '68020',
+        },
+    );
+    expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'win32.map_cd_drives=true\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cdimage0=some/disk.file\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cdimage1=some/disk2.iso\n');
+});
+
 it('writes the uaehf related parts of the config', () => {
     const someFile = 'someFile';
     fs.openSync.mockReturnValueOnce(someFile);
@@ -141,7 +159,7 @@ it('writes the uaehf related parts of the config', () => {
             disks: {
                 HDF: [{drive: 'dh0', location: 'some/disk.hdf'}, {drive: 'dh4', location: 'some/disk2.hdf'}],
                 MAPPED_DRIVE: [
-                    {drive: 'dh3', name: 'drive1', location: 'some/folder'},
+                    {drive: 'dh3', name: 'drive1', location: 'some/folder', writeable: true},
                     {drive: 'dh2', name: 'drive2', location: 'some/folder2'},
                 ],
             },
@@ -154,8 +172,8 @@ it('writes the uaehf related parts of the config', () => {
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'uaehf0=hdf,rw,dh0:some/disk.hdf,0,0,0,512,0,,uae0\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'hardfile2=rw,dh4:some/disk2.hdf,0,0,0,512,0,,uae1\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'uaehf1=hdf,rw,dh4:some/disk2.hdf,0,0,0,512,0,,uae1\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'filesystem2=ro,dh3:drive1:some/folder,-128\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'uaehf2=dir,ro,dh3:drive1:some/folder,-128\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'filesystem2=rw,dh3:drive1:some/folder,-128\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'uaehf2=dir,rw,dh3:drive1:some/folder,-128\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'filesystem2=ro,dh2:drive2:some/folder2,-128\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'uaehf3=dir,ro,dh2:drive2:some/folder2,-128\n');
 });

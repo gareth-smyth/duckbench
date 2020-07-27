@@ -35,6 +35,11 @@ class InstallWorkbench310 {
             optionValues: {
                 location: 'duckbench:c/',
             },
+        }, {
+            name: 'WinUAETools',
+            optionValues: {
+                location: 'duckbench:c/',
+            },
         }];
     }
 
@@ -63,10 +68,11 @@ class InstallWorkbench310 {
         const patch = pluginStore.getPlugin('Patch');
         const unADF = pluginStore.getPlugin('UnADF');
         const installerLg = pluginStore.getPlugin('InstallerLG');
+        const winUAETools = pluginStore.getPlugin('WinUAETools');
 
         const cacheMarkerPath = path.join(global.CACHE_DIR, 'wb310_cached');
         if (!fs.existsSync(cacheMarkerPath)) {
-            Logger.debug('Workbench 3.1 not yet cached.  Building cache.');
+            Logger.debug('Workbench 3.1 not yet cached. Building cache.');
 
             await communicator.delete('DB_CLIENT_CACHE:InstallWorkbench310', {'ALL': true}, undefined, /.*/);
             await communicator.makedir('DB_CLIENT_CACHE:InstallWorkbench310');
@@ -98,6 +104,29 @@ class InstallWorkbench310 {
             const startupSequencePatch = 'DB_EXECUTION:wb3.1_no_floppy_startup.patch';
             await patch.run(installedStartupSequence, startupSequencePatch, 'duckbench:c/', {}, communicator);
         }
+
+        await communicator.copy('dh0:storage/dosdrivers/aux', 'dh0:devs/dosdrivers/aux', {'CLONE': true});
+        await communicator.copy('dh0:storage/dosdrivers/aux.info', 'dh0:devs/dosdrivers/aux.info', {'CLONE': true});
+        if (!await this.hasWorkPartition(communicator)) {
+            await communicator.makedir('dh0:Work');
+            await communicator.copy('dh0:Tools.info', 'dh0:Work.info');
+            await communicator.echo('assign WORK: dh0:Work', {'>>': 'dh0:s/user-startup'});
+        }
+        await communicator.echo('newshell AUX:', {'>>': 'dh0:s/user-startup'});
+
+        await winUAETools.ejectFloppy('duckbench:c/', 1, communicator, pluginStore);
+        await winUAETools.ejectFloppy('duckbench:c/', 2, communicator, pluginStore);
+        await winUAETools.restart('duckbench:c/', communicator, pluginStore);
+    }
+
+    async hasWorkPartition(communicator) {
+        let workPartition = false;
+        await communicator.assign('', '', {}, (event) => {
+            if (event.message === 'DATA_EVENT' && event.data.match(/WORK \[MOUNTED]/)) {
+                workPartition = true;
+            }
+        }, 'Volumes:');
+        return workPartition;
     }
 
     handleInstallUpdates(event) {

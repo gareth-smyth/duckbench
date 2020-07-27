@@ -23,7 +23,7 @@ class RecommendedPartition {
 
     configure() {
         return [{
-            name: 'HitEnterFile',
+            name: 'RedirectInputFile',
         }];
     }
 
@@ -43,7 +43,7 @@ class RecommendedPartition {
     }
 
     async install(config, communicator, pluginStore) {
-        const enterFile = pluginStore.getPlugin('HitEnterFile').getFile();
+        const enterFile = await pluginStore.getPlugin('RedirectInputFile').createInput([''], communicator);
         await communicator.format('DH0', 'WORKBENCH', {
             quick: true, intl: true, noicons: true, REDIRECT_IN: enterFile,
         });
