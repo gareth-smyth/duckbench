@@ -60,7 +60,8 @@ class Configurator {
                     body += chunk.toString();
                 });
                 request.on('end', () => {
-                    new DuckbenchBuilder().build(JSON.parse(body), WinUAEEnvironment, Communicator);
+                    const bodyJson = JSON.parse(body);
+                    new DuckbenchBuilder().build(bodyJson.config, WinUAEEnvironment, Communicator, bodyJson.settings);
                 });
                 response.writeHead(200);
                 response.end();

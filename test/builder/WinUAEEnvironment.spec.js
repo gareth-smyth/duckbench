@@ -9,9 +9,10 @@ jest.mock('fs');
 
 it('spawns a new winuae 32 bit process', () => {
     const environment = new WinUAEEnvironment(
-        {emuRoot: '/path/to/winuae/', romFolder: 'some/place'},
+        {romFolder: 'some/place'},
         {executionFolder: '/some/folder', disks: {}, rom: 'a_rom',
             getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
+        {'Setup': [{name: 'emulatorRoot', value: {folder: '/path/to/winuae/'}}]},
     );
     fs.existsSync = jest.fn().mockReturnValue(true);
     environment.start();
@@ -21,9 +22,10 @@ it('spawns a new winuae 32 bit process', () => {
 
 it('spawns a new winuae 64 bit process', () => {
     const environment = new WinUAEEnvironment(
-        {emuRoot: '/path/to/winuae/', romFolder: 'some/place'},
+        {romFolder: 'some/place'},
         {executionFolder: '/some/folder', disks: {}, rom: 'a_rom',
             getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
+        {'Setup': [{name: 'emulatorRoot', value: {folder: '/path/to/winuae/'}}]},
     );
     fs.existsSync = jest.fn().mockReturnValue(false);
     environment.start();
@@ -33,9 +35,10 @@ it('spawns a new winuae 64 bit process', () => {
 
 it('kills the winuae process', () => {
     const environment = new WinUAEEnvironment(
-        {emuRoot: '/path/to/winuae/', romFolder: 'some/place'},
+        {romFolder: 'some/place'},
         {executionFolder: '/some/folder', disks: {}, rom: 'a_rom',
             getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
+        {'Setup': [{name: 'emulatorRoot', value: {folder: '/path/to/winuae/'}}]},
     );
     const process = {kill: jest.fn()};
     spawn.mockReturnValueOnce(process);
@@ -46,9 +49,10 @@ it('kills the winuae process', () => {
 
 it('does not kill the winuae process when it does not exist', () => {
     const environment = new WinUAEEnvironment(
-        {emuRoot: '/path/to/winuae/', romFolder: 'some/place'},
+        {romFolder: 'some/place'},
         {executionFolder: '/some/folder', disks: {}, rom: 'a_rom',
             getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
+        {'Setup': [{name: 'emulatorRoot', value: {folder: '/path/to/winuae/'}}]},
     );
     spawn.mockReturnValueOnce(undefined);
     environment.start();
@@ -59,9 +63,10 @@ it('writes the non-configurable parts of the config', () => {
     const someFile = 'someFile';
     fs.openSync.mockReturnValueOnce(someFile);
     new WinUAEEnvironment(
-        {emuRoot: '/path/to/winuae/', romFolder: 'some/place'},
+        {romFolder: 'some/place'},
         {executionFolder: '/some/folder', disks: {}, rom: 'a_rom',
             getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
+        {'Setup': [{name: 'emulatorRoot', value: {folder: '/path/to/winuae/'}}]},
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'use_gui=no\n');
@@ -77,12 +82,13 @@ it('writes the non-disk or cpu related parts of the config', () => {
     const someFile = 'someFile';
     fs.openSync.mockReturnValueOnce(someFile);
     new WinUAEEnvironment(
-        {emuRoot: '/path/to/winuae/', romFolder: 'path/to/rom/folder'},
+        {romFolder: 'path/to/rom/folder'},
         {
             executionFolder: '/some/folder', disks: {}, rom: 'arom', cpu: '68000',
             chipMem: '4', fastMem: 'someMem',
             getRomFileName: () => 'aRomFile', getCPU: () => '68020',
         },
+        {'Setup': [{name: 'emulatorRoot', value: {folder: '/path/to/winuae/'}}]},
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
     const expectedRomPath = `${path.join('path/to/rom/folder/', 'aRomFile')}`;
@@ -96,12 +102,13 @@ it('writes the cpu related parts of the config for a non-68030', () => {
     const someFile = 'someFile';
     fs.openSync.mockReturnValueOnce(someFile);
     new WinUAEEnvironment(
-        {emuRoot: '/path/to/winuae/', romFolder: 'path/to/rom/folder'},
+        {romFolder: 'path/to/rom/folder'},
         {
             executionFolder: '/some/folder', disks: {}, rom: 'arom', cpu: '68000',
             chipMem: '4', fastMem: 'someMem',
             getRomFileName: () => 'aRomFile', getCPU: () => '68020',
         },
+        {'Setup': [{name: 'emulatorRoot', value: {folder: '/path/to/winuae/'}}]},
     );
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_type=68020\n');
 });
@@ -110,12 +117,13 @@ it('writes the cpu related parts of the config for a 68030', () => {
     const someFile = 'someFile';
     fs.openSync.mockReturnValueOnce(someFile);
     new WinUAEEnvironment(
-        {emuRoot: '/path/to/winuae/', romFolder: 'path/to/rom/folder'},
+        {romFolder: 'path/to/rom/folder'},
         {
             executionFolder: '/some/folder', disks: {}, rom: 'arom', cpu: '68000',
             chipMem: '4', fastMem: 'someMem',
             getRomFileName: () => 'aRomFile', getCPU: () => '68030',
         },
+        {'Setup': [{name: 'emulatorRoot', value: {folder: '/path/to/winuae/'}}]},
     );
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_type=68020\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_model=68030\n');
@@ -125,7 +133,7 @@ it('writes the floppy related parts of the config', () => {
     const someFile = 'someFile';
     fs.openSync.mockReturnValueOnce(someFile);
     new WinUAEEnvironment(
-        {emuRoot: '/path/to/winuae/', romFolder: 'path/to/rom/folder'},
+        {romFolder: 'path/to/rom/folder'},
         {
             executionFolder: '/some/folder',
             disks: {
@@ -136,6 +144,7 @@ it('writes the floppy related parts of the config', () => {
             rom: 'arom',
             getRomFileName: () => 'aRomFile', getCPU: () => '68020',
         },
+        {'Setup': [{name: 'emulatorRoot', value: {folder: '/path/to/winuae/'}}]},
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'floppy0=some/disk.adf\n');
@@ -146,13 +155,14 @@ it('writes the CD related parts of the config', () => {
     const someFile = 'someFile';
     fs.openSync.mockReturnValueOnce(someFile);
     new WinUAEEnvironment(
-        {emuRoot: '/path/to/winuae/', romFolder: 'path/to/rom/folder'},
+        {romFolder: 'path/to/rom/folder'},
         {
             executionFolder: '/some/folder',
             disks: {CD: [{location: 'some/disk.file'}, {location: 'some/disk2.iso'}]},
             rom: 'arom',
             getRomFileName: () => 'aRomFile', getCPU: () => '68020',
         },
+        {'Setup': [{name: 'emulatorRoot', value: {folder: '/path/to/winuae/'}}]},
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'win32.map_cd_drives=true\n');
@@ -164,7 +174,7 @@ it('writes the uaehf related parts of the config', () => {
     const someFile = 'someFile';
     fs.openSync.mockReturnValueOnce(someFile);
     new WinUAEEnvironment(
-        {emuRoot: '/path/to/winuae/', romFolder: 'path/to/rom/folder'},
+        {romFolder: 'path/to/rom/folder'},
         {
             executionFolder: '/some/folder',
             disks: {
@@ -177,6 +187,7 @@ it('writes the uaehf related parts of the config', () => {
             rom: 'arom',
             getRomFileName: () => 'aRomFile', getCPU: () => '68020',
         },
+        {'Setup': [{name: 'emulatorRoot', value: {folder: '/path/to/winuae/'}}]},
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'hardfile2=rw,dh0:some/disk.hdf,0,0,0,512,0,,uae0\n');

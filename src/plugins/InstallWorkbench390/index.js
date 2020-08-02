@@ -7,15 +7,6 @@ class InstallWorkbench390 {
             name: 'InstallWorkbench390',
             label: 'Workbench 3.9',
             type: 'workbench',
-            options: {
-                iso390: {
-                    name: 'iso390',
-                    label: 'OS 3.9 ISO',
-                    description: 'The path to the OS 3.9 ISO on the host',
-                    type: 'text',
-                    primary: true,
-                },
-            },
         };
     }
 
@@ -38,7 +29,7 @@ class InstallWorkbench390 {
         }];
     }
 
-    prepare(config, environmentSetup) {
+    prepare(config, environmentSetup, settings) {
         const patchSource = path.join(__dirname, 'wb3.9_install.patch');
         const patchDestination = path.join(environmentSetup.executionFolder, 'wb3.9_install.patch');
         Logger.debug(`Copying workbench 3.9 install script patch file from "${patchSource}" to "${patchDestination}".`);
@@ -58,7 +49,11 @@ class InstallWorkbench390 {
             fs.copyFileSync(floppyPatchSource, floppyPatchDestination);
         }
 
-        environmentSetup.insertCDISO(config.optionValues.iso390);
+        const cacheMarkerPath = path.join(global.CACHE_DIR, 'wb390_cached');
+        if (!fs.existsSync(cacheMarkerPath)) {
+            const isoLocation = settings['InstallWorkbench390'].find((setting) => setting.name === 'isoLocation');
+            environmentSetup.insertCDISO(isoLocation.value.file);
+        }
     }
 
     async install(config, communicator, pluginStore, environmentSetup) {

@@ -27,15 +27,15 @@ class Runner {
         });
     }
 
-    async prepare(environmentSetup) {
+    async prepare(environmentSetup, settings) {
         for (let configIndex = 0; configIndex < this.configs.length; configIndex++) {
             const config = this.configs[configIndex];
             const plugin = this.pluginStore.getPlugin(config.name);
             if (plugin.prepare) {
-                await plugin.prepare(config, environmentSetup);
+                await plugin.prepare(config, environmentSetup, settings);
             }
         }
-        await this.setupPlugin.prepare(this.setupConfig, environmentSetup);
+        await this.setupPlugin.prepare(this.setupConfig, environmentSetup, settings);
     }
 
     async install(communicator, environmentSetup) {

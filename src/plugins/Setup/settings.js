@@ -4,10 +4,12 @@ class Settings {
     get() {
         return {
             name: 'Setup',
+            label: 'Setup',
             settings: [{
                 name: 'emulatorRoot',
                 type: 'hostFolder',
                 label: 'Emulator root',
+                hasDefaultSearch: true,
             }],
         };
     }

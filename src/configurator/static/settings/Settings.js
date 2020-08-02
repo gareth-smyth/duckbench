@@ -8,7 +8,7 @@ export default class Settings {
             }
             const currentSettings = node.attrs.currentSettings[plugin.name];
             return [
-                m('.h4', plugin.name),
+                m('.h4', plugin.label),
                 ...plugin.settings.map(setting => {
                     let currentSetting = currentSettings.find(currentSetting => currentSetting.name === setting.name);
                     if(!currentSetting) {

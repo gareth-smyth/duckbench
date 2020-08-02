@@ -3,8 +3,8 @@ const path = require('path');
 const {spawn} = require('child_process');
 
 class WinUAEEnvironment {
-    constructor(config, environment) {
-        this.config = config;
+    constructor(config, environment, settings) {
+        this.settings = settings;
 
         this.uaeRunningConfig = path.join(environment.executionFolder, 'amiga.uae');
         const configFile = fs.openSync(this.uaeRunningConfig, 'w');
@@ -92,8 +92,9 @@ class WinUAEEnvironment {
     }
 
     start() {
-        const path32 = path.join(this.config.emuRoot, 'WinUAE.exe');
-        const path64 = path.join(this.config.emuRoot, 'WinUAE64.exe');
+        const emulatorRoot = this.settings['Setup'].find((setting) => setting.name === 'emulatorRoot');
+        const path32 = path.join(emulatorRoot.value.folder, 'WinUAE.exe');
+        const path64 = path.join(emulatorRoot.value.folder, 'WinUAE64.exe');
         const executablePath = fs.existsSync(path32) ? path32 : path64;
         this.winuaeProcess = spawn(executablePath,
             ['-f', path.join(this.uaeRunningConfig)],

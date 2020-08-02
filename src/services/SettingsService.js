@@ -53,7 +53,9 @@ class SettingsService {
         const PluginSettings = require(path.join(pluginPath, pluginName, 'settings'));
         const settings = new PluginSettings();
 
-        return {value: settings.default(settingName)};
+        if (settings.default) {
+            return {value: settings.default(settingName)};
+        }
     }
 }
 
