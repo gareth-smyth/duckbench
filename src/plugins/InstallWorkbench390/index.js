@@ -7,7 +7,6 @@ class InstallWorkbench390 {
             name: 'InstallWorkbench390',
             label: 'Workbench 3.9',
             type: 'workbench',
-            showConfig: true,
             options: {
                 iso390: {
                     name: 'iso390',

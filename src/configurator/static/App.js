@@ -1,5 +1,6 @@
 import Configuration from './Configuration.js';
 import PluginSelect from './PluginSelect.js';
+import Settings from './settings/Settings.js';
 
 export default class App {
     constructor() {
@@ -10,10 +11,16 @@ export default class App {
         m.request({method: "GET", url: "/plugins.json"}).then((plugins) => {
             this.configuration.setPlugins(plugins);
         });
+        m.request({method: "GET", url: "/settings.json"}).then((settings) => {
+            this.configuration.setSettings(settings);
+        });
+        m.request({method: "GET", url: "/currentSettings"}).then((currentSettings) => {
+            this.configuration.setCurrentSettings(currentSettings);
+        });
     }
 
     view() {
-        if(this.configuration.plugins) {
+        if(this.configuration.plugins && this.configuration.settings && this.configuration.currentSettings) {
             return [
                 // m('pre', {style: 'position:absolute', 'overflow-y': 'scroll'}, JSON.stringify(this.configuration.selectedPlugins, null, 2)), // DEBUG ONLY
                 m('nav.navbar.navbar-default.fixed-top.navbar-inverse.bg-primary', [
@@ -25,6 +32,10 @@ export default class App {
                                 m('input', {id: "LoadFile", style: "display:none", type:"file", onchange: this.load.bind(this)}),
                                 m('a.btn.btn-info.my-2.my-sm-0.ml-auto.mr-2', {download: "workbench.db", href: '/save', onclick: this.save.bind(this)}, "Save"),
                                 m('button.btn.btn-success.my-2.my-sm-0.ml-auto.mr-2', {onclick: this.runBuild.bind(this)}, "Build Workbench"),
+                                m('button.btn.btn-warning.my-2.my-sm-0.ml-auto.mr-2', {'data-toggle': 'modal', 'data-target': '#settingsModal'}, [
+                                    m('img.mr-2.align-middle', { src: "./images/gear-fill.svg", width:"23", height:"23", title:"Configure"}),
+                                    m('span.align-middle', "Settings"),
+                                ]),
                             ]),
                         ]),
                     ),
@@ -71,11 +82,29 @@ export default class App {
                     ]),
                     m('button.btn.btn-success.mt-5', {onclick: this.runBuild.bind(this)}, "Build Workbench"),
                 ]),
-            ])];
+            ]),
+            m('.modal', {id: 'settingsModal'}, [
+                m('.modal-dialog.modal-lg', [
+                    m('.modal-content', [
+                        m('.modal-header', [
+                            m('h3', 'Settings'),
+                            m('button.close', {'data-dismiss': 'modal'}, [
+                                m('span', [m.trust('&times;')]),
+                            ]),
+                        ]),
+                        m('.modal-body', [m(Settings, {settings: this.configuration.settings, currentSettings: this.configuration.currentSettings})]),
+                        m('.modal-footer', [
+                            m('buttons.btn.btn-secondary', {'data-dismiss': 'modal'}, 'Close'),
+                            m('buttons.btn.btn-primary', {'data-dismiss': 'modal', onclick: this.saveSettings.bind(this)}, 'Save'),
+                        ]),
+                    ]),
+                ]),
+            ]),
+            ];
         } else {
             return m("main", [
                 m('h2', 'Duckbench'),
-                m('div', 'Loading plugins...'),
+                m('div', 'Loading plugins and settings...'),
             ]);
         }
     }
@@ -86,6 +115,10 @@ export default class App {
 
     save(event) {
         event.target.href = `data:application/json,${JSON.stringify(this.configuration.selectedPlugins)}`;
+    }
+
+    saveSettings() {
+        return m.request({method: "POST", url: "/currentSettings", body: this.configuration.currentSettings});
     }
 
     load(event) {

@@ -19,7 +19,7 @@ class PluginStore {
         return Promise.all(plugins.filter((pluginDir) => pluginDir.isDirectory()).map(async (pluginDir) => {
             const Plugin = require(path.join(pluginPath, pluginDir.name));
             const plugin = new Plugin();
-            return await plugin.structure();
+            return plugin.structure();
         }));
     }
 

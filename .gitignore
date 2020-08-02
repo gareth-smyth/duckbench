@@ -5,3 +5,4 @@
 /coverage/
 /*.hdf
 /cache/
+db_settings.json

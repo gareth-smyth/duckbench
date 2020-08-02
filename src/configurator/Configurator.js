@@ -1,9 +1,11 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const URL = require('url').URL;
 const DuckbenchBuilder = require('../builder/DuckbenchBuilder');
 const PluginStore = require('../builder/PluginStore');
 const Communicator = require('../builder/Communicator');
+const SettingsService = require('../services/SettingsService');
 const WinUAEEnvironment = require('../builder/WinUAEEnvironment');
 
 class Configurator {
@@ -11,13 +13,47 @@ class Configurator {
         const server = http.createServer();
         server.on('request', async (request, response) => {
             Logger.debug(`Request for ${request.url}`);
-            if(request.url === '/plugins.json') {
+            const url = new URL(request.url, 'http://localhost');
+            if(url.pathname === '/plugins.json') {
                 Logger.trace('Getting plugins');
                 const plugins = await PluginStore.getStructures();
                 response.writeHead(200, {'Content-Type': 'application/json'});
                 response.end(JSON.stringify(plugins), 'utf-8');
                 return;
-            } else if(request.url === '/run') {
+            } else if(url.pathname === '/settings.json') {
+                Logger.trace('Getting settings');
+                const plugins = await SettingsService.getAvailable();
+                response.writeHead(200, {'Content-Type': 'application/json'});
+                response.end(JSON.stringify(plugins.filter((settings) => settings !== undefined)), 'utf-8');
+                return;
+            } else if(url.pathname === '/currentSettings') {
+                if(request.method === 'GET') {
+                    Logger.trace('Getting settings');
+                    const currentSettings = await SettingsService.loadCurrent();
+                    response.writeHead(200, {'Content-Type': 'application/json'});
+                    response.end(JSON.stringify(currentSettings), 'utf-8');
+                    return;
+                } else {
+                    Logger.trace('Saving settings');
+                    let body = '';
+                    request.on('data', chunk => {
+                        body += chunk.toString();
+                    });
+                    request.on('end', () => {
+                        SettingsService.saveCurrent(JSON.parse(body));
+                    });
+                    response.writeHead(200);
+                    response.end();
+                    return;
+                }
+            } else if(url.pathname === '/setting/default') {
+                const plugin = url.searchParams.get('plugin');
+                const setting = url.searchParams.get('setting');
+                const defaultValue = await SettingsService.getDefault(plugin, setting);
+                response.writeHead(200, {'Content-Type': 'application/json'});
+                response.end(JSON.stringify(defaultValue), 'utf-8');
+                return;
+            } else if(url.pathname === '/run') {
                 Logger.trace('Running duckbench builder');
                 let body = '';
                 request.on('data', chunk => {
@@ -31,7 +67,7 @@ class Configurator {
                 return;
             }
 
-            let filePath = path.join(__dirname, './static', request.url);
+            let filePath = path.join(__dirname, './static', url.pathname);
             if (filePath === './') {
                 filePath = path.join(__dirname, './static/index.html');
             }

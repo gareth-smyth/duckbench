@@ -86,7 +86,9 @@ class WinUAEEnvironment {
     }
 
     stop() {
-        this.winuaeProcess.kill();
+        if (this.winuaeProcess) {
+            this.winuaeProcess.kill();
+        }
     }
 
     start() {

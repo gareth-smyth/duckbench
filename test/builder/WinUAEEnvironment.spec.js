@@ -44,6 +44,17 @@ it('kills the winuae process', () => {
     expect(process.kill).toHaveBeenCalledTimes(1);
 });
 
+it('does not kill the winuae process when it does not exist', () => {
+    const environment = new WinUAEEnvironment(
+        {emuRoot: '/path/to/winuae/', romFolder: 'some/place'},
+        {executionFolder: '/some/folder', disks: {}, rom: 'a_rom',
+            getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
+    );
+    spawn.mockReturnValueOnce(undefined);
+    environment.start();
+    environment.stop();
+});
+
 it('writes the non-configurable parts of the config', () => {
     const someFile = 'someFile';
     fs.openSync.mockReturnValueOnce(someFile);
