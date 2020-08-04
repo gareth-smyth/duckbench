@@ -6,11 +6,27 @@ export default class Setting {
         const plugin = node.attrs.plugin;
         const setting = node.attrs.setting;
         const currentSetting = node.attrs.currentSetting;
-        return m('.form-group row', [
-            m('label.col-sm-3.col-form-label.option-label.text-nowrap.text-right', setting.label),
-            m('.col-sm-8', [ this.setting(setting, currentSetting) ]),
-            setting.hasDefaultSearch ? m('a.btn.btn-info.ml-1', {onclick: () => this.default(plugin, setting, currentSetting)}, [
+
+        let showCached = false;
+        if(setting.cached) {
+            showCached = true;
+        }
+        let showNotCached = false;
+        if(setting.cached === false) {
+            showNotCached = true;
+        }
+
+        return m('.form-group.row', [
+            m('.col-2', [m('label.col-form-label.option-label.text-nowrap.text-right', setting.label)]),
+            m('.col-8', [ this.setting(setting, currentSetting) ]),
+            setting.hasDefaultSearch ? m('.col-1', [m('a.btn.btn-info', {onclick: () => this.default(plugin, setting, currentSetting)}, [
                 m('img', { src: "./images/binoculars-fill.svg", width:"23", height:"23", title:"Auto default"}),
+            ])]) : m('.col-1'),
+            showCached ? m('.col-1.my-auto', [
+                m('img', { src: "./images/archive-fill.svg", width:"23", height:"23", title:"Cached"}),
+            ]) : '',
+            showNotCached ? m('.col-1.my-auto', [
+                m('img', { src: "./images/archive.svg", width:"23", height:"23", title:"Not cached"}),
             ]) : '',
         ]);
     }

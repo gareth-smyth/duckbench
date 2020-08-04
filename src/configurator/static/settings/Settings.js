@@ -18,7 +18,7 @@ export default class Settings {
                         }
                         currentSettings.push(currentSetting);
                     }
-                    return m(Setting, {plugin, setting, currentSetting})
+                    return m('.container-fluid', [m(Setting, {plugin, setting, currentSetting})]);
                 }),
             ];
         });
