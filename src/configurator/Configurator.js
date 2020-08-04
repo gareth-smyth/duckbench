@@ -24,7 +24,7 @@ class Configurator {
                 Logger.trace('Getting settings');
                 const plugins = await SettingsService.getAvailable();
                 response.writeHead(200, {'Content-Type': 'application/json'});
-                response.end(JSON.stringify(plugins.filter((settings) => settings !== undefined)), 'utf-8');
+                response.end(JSON.stringify(plugins), 'utf-8');
                 return;
             } else if(url.pathname === '/currentSettings') {
                 if(request.method === 'GET') {

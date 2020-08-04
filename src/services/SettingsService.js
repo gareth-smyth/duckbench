@@ -12,27 +12,39 @@ class SettingsService {
         }
         plugins.sort();
         await pluginsDir.close();
-        return Promise.all(plugins.filter((pluginDir) => pluginDir.isDirectory()).map(async (pluginDir) => {
-            let PluginSettings;
+        const settings = await Promise.all(
+            plugins.filter((pluginDir) => pluginDir.isDirectory()).map(async (pluginDir) => {
+                let PluginSettings;
 
-            try {
-                PluginSettings = require(path.join(pluginPath, pluginDir.name, 'settings'));
-            } catch (error) {
+                try {
+                    PluginSettings = require(path.join(pluginPath, pluginDir.name, 'settings'));
+                } catch (error) {
                 /* istanbul ignore else */
-                if (error.code === 'MODULE_NOT_FOUND') {
-                    Logger.trace(`No settings for ${pluginDir.name}`);
-                    return Promise.resolve(undefined);
-                } else {
-                    Logger.error(`No settings for ${pluginDir.name}`);
-                    throw new Error(`Could not load settings for plugin ${pluginDir.name} even though it exists.`);
+                    if (error.code === 'MODULE_NOT_FOUND') {
+                        Logger.trace(`No settings for ${pluginDir.name}`);
+                        return Promise.resolve(undefined);
+                    } else {
+                        Logger.error(`No settings for ${pluginDir.name}`);
+                        throw new Error(`Could not load settings for plugin ${pluginDir.name} even though it exists.`);
+                    }
                 }
-            }
 
-            Logger.trace(`Loading settings for ${pluginDir.name}`);
-            const pluginSettings = new PluginSettings();
-            return pluginSettings.get();
-        }));
+                Logger.trace(`Loading settings for ${pluginDir.name}`);
+                const pluginSettings = new PluginSettings();
+                return pluginSettings.get();
+            }),
+        );
+
+        /* Only two plugins have settings as yet and tests use real plugins so can't sort fully */
+        /* istanbul ignore next */
+        return settings.filter((settings) => settings !== undefined)
+            .sort((plugin1, plugin2) => {
+                if (plugin1.name === 'Setup') return -1;
+                if (plugin2.name === 'Setup') return 1;
+                return 0;
+            });
     }
+
 
     static loadCurrent() {
         const settingsPath = path.join(global.BASE_DIR, 'db_settings.json');
