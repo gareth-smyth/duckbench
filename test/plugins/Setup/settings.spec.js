@@ -27,5 +27,5 @@ it('defaults emulator root to undefined when DUCKBENCH_EMU is not set and not fo
     const settings = new Settings();
     delete process.env.DUCKBENCH_EMU;
     fs.existsSync.mockReturnValueOnce(false).mockReturnValueOnce(false);
-    expect(settings.default('emulatorRoot')).toEqual(undefined);
+    expect(settings.default('emulatorRoot')).toEqual({});
 });

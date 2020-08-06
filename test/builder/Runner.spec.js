@@ -156,12 +156,14 @@ describe('install', () => {
         runner.setupPlugin = {install: jest.fn()};
         const communicator = {};
         const environmentSetup = {};
-        await runner.install(communicator, environmentSetup);
+        await runner.install(communicator, environmentSetup, 'settings');
 
         expect(installFunc1).toHaveBeenCalledTimes(1);
-        expect(installFunc1).toHaveBeenCalledWith({name: 'a'}, communicator, mockPluginStoreInstance, environmentSetup);
+        expect(installFunc1).toHaveBeenCalledWith({name: 'a'}, communicator, mockPluginStoreInstance,
+            environmentSetup, 'settings');
         expect(installFunc2).toHaveBeenCalledTimes(1);
-        expect(installFunc2).toHaveBeenCalledWith({name: 'c'}, communicator, mockPluginStoreInstance, environmentSetup);
+        expect(installFunc2).toHaveBeenCalledWith({name: 'c'}, communicator, mockPluginStoreInstance,
+            environmentSetup, 'settings');
     });
 
     it('calls install on the setup plugin', async () => {
@@ -171,11 +173,11 @@ describe('install', () => {
         runner.setupPlugin = {install: jest.fn()};
         const communicator = {};
         const environmentSetup = {};
-        await runner.install(communicator, environmentSetup);
+        await runner.install(communicator, environmentSetup, 'settings');
 
         expect(runner.setupPlugin.install).toHaveBeenCalledTimes(1);
         expect(runner.setupPlugin.install).toHaveBeenCalledWith({name: 'Setup'}, communicator,
-            mockPluginStoreInstance, environmentSetup);
+            mockPluginStoreInstance, environmentSetup, 'settings');
     });
 });
 

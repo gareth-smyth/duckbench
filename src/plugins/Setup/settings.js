@@ -28,7 +28,7 @@ class Settings {
                 Logger.trace('Found WinUAE paths at "C:/Program Files (x86)/WinUAE".');
                 return {folder: 'C:/Program Files (x86)/WinUAE'};
             } else {
-                return undefined;
+                return {};
             }
         }
     }

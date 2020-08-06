@@ -18,7 +18,7 @@ it('copies the installer patch', async () => {
         {'InstallWorkbench390': [{name: 'isoLocation', value: {file: 'isoFile'}}]},
     );
 
-    const expectedCopyFrom = path.join(__dirname, pluginBasePath, 'wb3.9_install.patch');
+    const expectedCopyFrom = path.join(__dirname, pluginBasePath, 'files', 'wb3.9_install.patch');
     const expectedCopyTo = path.join('aFolder', 'wb3.9_install.patch');
     expect(fs.copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });
@@ -31,8 +31,8 @@ it('copies the install key', async () => {
         {'InstallWorkbench390': [{name: 'isoLocation', value: {file: 'isoFile'}}]},
     );
 
-    const expectedCopyFrom = path.join(__dirname, pluginBasePath, 'install_key');
-    const expectedCopyTo = path.join('aFolder', 'wb390_install_key');
+    const expectedCopyFrom = path.join(__dirname, pluginBasePath, 'files', 'wb3.9_install_key');
+    const expectedCopyTo = path.join('aFolder', 'wb3.9_install_key');
     expect(fs.copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });
 
@@ -44,7 +44,7 @@ it('copies the startup sequence patch when floppy is false', async () => {
         {'InstallWorkbench390': [{name: 'isoLocation', value: {file: 'isoFile'}}]},
     );
 
-    const expectedCopyFrom = path.join(__dirname, pluginBasePath, 'wb3.9_no_floppy_startup.patch');
+    const expectedCopyFrom = path.join(__dirname, pluginBasePath, 'files', 'wb3.9_no_floppy_startup.patch');
     const expectedCopyTo = path.join('aFolder', 'wb3.9_no_floppy_startup.patch');
     expect(fs.copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });

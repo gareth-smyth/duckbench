@@ -12,6 +12,10 @@ jest.mock('../../../src/services/HardDriveService');
 
 const Setup = require('../../../src/plugins/Setup');
 
+const settings = {
+    InstallWorkbench310: [{name: 'workbench', value: {file: 'aFile'}}],
+};
+
 let environmentSetup;
 
 beforeEach(() => {
@@ -24,23 +28,21 @@ beforeEach(() => {
 
 it('inserts the boot disk', async () => {
     const setup = new Setup();
-    await setup.prepare({}, environmentSetup);
+    await setup.prepare({}, environmentSetup, settings);
 
     expect(environmentSetup.insertDisk).toHaveBeenCalledWith('DF0', {location: path.join('some folder', 'boot.adf')});
 });
 
 it('inserts the workbench disk', async () => {
-    environmentSetup.getWorkbenchDiskFileName.mockReturnValue('amiga-os-310-workbench.adf');
     const setup = new Setup();
-    await setup.prepare({}, environmentSetup);
+    await setup.prepare({}, environmentSetup, settings);
 
-    expect(environmentSetup.insertDisk)
-        .toHaveBeenCalledWith('DF1', {name: 'amiga-os-310-workbench.adf', type: 'amigaos'});
+    expect(environmentSetup.insertDisk).toHaveBeenCalledWith('DF1', {'location': 'aFile'});
 });
 
 it('maps the host cache drive', async () => {
     const setup = new Setup();
-    await setup.prepare({}, environmentSetup);
+    await setup.prepare({}, environmentSetup, settings);
 
     expect(environmentSetup.mapFolderToDrive)
         .toHaveBeenCalledWith('DB5', path.join(process.cwd(), 'cache'), 'DB_HOST_CACHE');
@@ -48,22 +50,15 @@ it('maps the host cache drive', async () => {
 
 it('maps the external tools drive', async () => {
     const setup = new Setup();
-    await setup.prepare({}, environmentSetup);
+    await setup.prepare({}, environmentSetup, settings);
 
     expect(environmentSetup.mapFolderToDrive)
         .toHaveBeenCalledWith('DB4', path.join(process.cwd(), 'external_tools'), 'DB_TOOLS');
 });
 
-it('maps the os disks drive', async () => {
-    const setup = new Setup();
-    await setup.prepare({}, environmentSetup);
-
-    expect(environmentSetup.mapFolderToDrive).toHaveBeenCalledWith('DB3', 'someOsFolder', 'DB_OS_DISKS');
-});
-
 it('maps the running execution drive', async () => {
     const setup = new Setup();
-    await setup.prepare({}, environmentSetup);
+    await setup.prepare({}, environmentSetup, settings);
 
     expect(environmentSetup.mapFolderToDrive).toHaveBeenCalledWith('DB2', 'some folder', 'DB_EXECUTION', true);
 });
@@ -71,7 +66,7 @@ it('maps the running execution drive', async () => {
 it('creates and adds the cache partition when it does not exist', async () => {
     fs.existsSync.mockReturnValueOnce(false);
     const setup = new Setup();
-    await setup.prepare({}, environmentSetup);
+    await setup.prepare({}, environmentSetup, settings);
 
     expect(HardDriveService.createRDB).toHaveBeenCalledTimes(2);
     expect(environmentSetup.attachHDF).toHaveBeenCalledTimes(2);
@@ -85,7 +80,7 @@ it('creates and adds the cache partition when it does not exist', async () => {
 it('does not create the cache partition when it already exists', async () => {
     fs.existsSync.mockReturnValueOnce(true);
     const setup = new Setup();
-    await setup.prepare({}, environmentSetup);
+    await setup.prepare({}, environmentSetup, settings);
 
     expect(HardDriveService.createRDB).toHaveBeenCalledTimes(1);
     expect(environmentSetup.attachHDF).toHaveBeenCalledTimes(2);
@@ -93,7 +88,7 @@ it('does not create the cache partition when it already exists', async () => {
 
 it('creates and adds the duckbench partition', async () => {
     const setup = new Setup();
-    await setup.prepare({}, environmentSetup);
+    await setup.prepare({}, environmentSetup, settings);
 
     const expectedHDFLocation = path.join('some folder', 'duckbench.hdf');
     expect(HardDriveService.createRDB)
@@ -103,7 +98,7 @@ it('creates and adds the duckbench partition', async () => {
 
 it('creates the boot ADF with the required setup files', async () => {
     const setup = new Setup();
-    await setup.prepare({}, environmentSetup);
+    await setup.prepare({}, environmentSetup, settings);
 
     expect(ADFService.createBootableADF).toHaveBeenCalledWith(path.join('some folder', 'boot.adf'), 'DuckBoot');
     expect(ADFService.createFile).toHaveBeenCalledTimes(2);

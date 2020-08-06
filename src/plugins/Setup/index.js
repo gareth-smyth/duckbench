@@ -11,7 +11,7 @@ class Setup {
         };
     }
 
-    async prepare(config, environmentSetup) {
+    async prepare(config, environmentSetup, settings) {
         const bootDiskFileName = path.join(environmentSetup.executionFolder, 'boot.adf');
         Logger.info(`Creating boot disk at ${bootDiskFileName}`);
         ADFService.createBootableADF(bootDiskFileName, 'DuckBoot');
@@ -24,8 +24,7 @@ class Setup {
         Logger.debug('Inserting boot disk in DF0 and workbench disk in DF1.');
         environmentSetup.insertDisk('DF0', {location: bootDiskFileName});
         environmentSetup.insertDisk('DF1', {
-            type: 'amigaos',
-            name: environmentSetup.getWorkbenchDiskFileName(),
+            location: settings['InstallWorkbench310'].find((setting) => setting.name === 'workbench').value.file,
         });
 
         Logger.debug(`Mapping DB5: as DB_HOST_CACHE: at ${global.CACHE_DIR}`);
@@ -33,9 +32,6 @@ class Setup {
 
         Logger.debug(`Mapping DB4: as DB_TOOLS: at ${global.TOOLS_DIR}`);
         environmentSetup.mapFolderToDrive('DB4', global.TOOLS_DIR, 'DB_TOOLS');
-
-        Logger.debug(`Mapping DB3: as DB_OS_DISKS: at ${environmentSetup.duckbenchConfig.osFolder}`);
-        environmentSetup.mapFolderToDrive('DB3', environmentSetup.duckbenchConfig.osFolder, 'DB_OS_DISKS');
 
         Logger.debug(`Mapping DB2: as DB_EXECUTION: at ${environmentSetup.executionFolder}`);
         environmentSetup.mapFolderToDrive('DB2', environmentSetup.executionFolder, 'DB_EXECUTION', true);

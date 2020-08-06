@@ -16,7 +16,7 @@ class DuckbenchBuilder {
             communicator = new Communicator();
             await communicator.connect();
 
-            await runner.install(communicator, environmentSetup);
+            await runner.install(communicator, environmentSetup, settings);
 
             communicator.close();
 

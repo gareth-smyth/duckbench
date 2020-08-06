@@ -87,7 +87,8 @@ it('creates a runner, configures, prepares, installs and finalises', async () =>
     expect(mockRunnerInstance.prepare).toHaveBeenCalledTimes(1);
     expect(mockRunnerInstance.prepare).toHaveBeenCalledWith(mockEnvironmentSetupInstance, 'settings');
     expect(mockRunnerInstance.install).toHaveBeenCalledTimes(1);
-    expect(mockRunnerInstance.install).toHaveBeenCalledWith(mockCommunicatorInstance, mockEnvironmentSetupInstance);
+    expect(mockRunnerInstance.install)
+        .toHaveBeenCalledWith(mockCommunicatorInstance, mockEnvironmentSetupInstance, 'settings');
     expect(mockRunnerInstance.finalise).toHaveBeenCalledTimes(1);
     expect(mockRunnerInstance.finalise).toHaveBeenCalledWith(mockEnvironmentSetupInstance);
 });
@@ -108,7 +109,8 @@ it('throws an exception when finalising the environment fails', async () => {
         expect(mockRunnerInstance.prepare).toHaveBeenCalledTimes(1);
         expect(mockRunnerInstance.prepare).toHaveBeenCalledWith(mockEnvironmentSetupInstance, 'settings');
         expect(mockRunnerInstance.install).toHaveBeenCalledTimes(1);
-        expect(mockRunnerInstance.install).toHaveBeenCalledWith(mockCommunicatorInstance, mockEnvironmentSetupInstance);
+        expect(mockRunnerInstance.install)
+            .toHaveBeenCalledWith(mockCommunicatorInstance, mockEnvironmentSetupInstance, 'settings');
         expect(mockRunnerInstance.finalise).toHaveBeenCalledTimes(1);
         expect(mockRunnerInstance.finalise).toHaveBeenCalledWith(mockEnvironmentSetupInstance);
     });

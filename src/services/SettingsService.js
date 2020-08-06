@@ -66,7 +66,7 @@ class SettingsService {
         const settings = new PluginSettings();
 
         if (settings.default) {
-            return {value: settings.default(settingName)};
+            return {value: await settings.default(settingName)};
         }
     }
 }
