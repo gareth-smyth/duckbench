@@ -1,4 +1,3 @@
-const duckbenchConfig = require('./duckbench.config');
 const Runner = require('./Runner');
 const EnvironmentSetup = require('./EnvironmentSetup');
 
@@ -6,12 +5,12 @@ class DuckbenchBuilder {
     async build(config, Environment, Communicator, settings) {
         let communicator;
         let environment;
-        const environmentSetup = new EnvironmentSetup(duckbenchConfig);
+        const environmentSetup = new EnvironmentSetup(settings);
 
-        const runner = new Runner(duckbenchConfig);
+        const runner = new Runner();
         runner.configureAndSetup({name: 'Setup'}, config);
         return runner.prepare(environmentSetup, settings).then(async () => {
-            environment = new Environment(duckbenchConfig, environmentSetup, settings);
+            environment = new Environment(environmentSetup, settings);
             environment.start();
             communicator = new Communicator();
             await communicator.connect();

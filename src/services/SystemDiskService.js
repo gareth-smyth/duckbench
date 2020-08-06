@@ -40,7 +40,7 @@ class SystemDiskService {
 
     static examine(fileName) {
         if (path.extname(fileName).localeCompare('.adf', undefined, {sensitivity: 'accent'}) === 0) {
-            Logger.trace(`Examing disk ${fileName}.`);
+            Logger.trace(`Examining disk ${fileName}.`);
             const diskInfo = ADFService.info(fileName);
             switch (diskInfo.name) {
             case 'Install2.1':
@@ -93,7 +93,7 @@ class SystemDiskService {
                 return {};
             }
         } else {
-            Logger.trace(`Not trying file ${fileName} as it does not appear ot be an adf.`);
+            Logger.trace(`Not trying file ${fileName} as it does not appear to be an adf.`);
             return {};
         }
     }

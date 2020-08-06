@@ -3,7 +3,7 @@ const path = require('path');
 const {spawn} = require('child_process');
 
 class WinUAEEnvironment {
-    constructor(config, environment, settings) {
+    constructor(environment, settings) {
         this.settings = settings;
 
         this.uaeRunningConfig = path.join(environment.executionFolder, 'amiga.uae');
@@ -16,8 +16,8 @@ class WinUAEEnvironment {
         fs.writeSync(configFile, 'serial_direct=true\n');
         fs.writeSync(configFile, 'serial_translate=disabled\n');
 
-        fs.writeSync(configFile, `kickstart_rom_file=${path.join(config.romFolder, environment.getRomFileName())}\n`);
-        fs.writeSync(configFile, `rom_path=${config.romFolder}\n`);
+        const romFile = this.settings['Setup'].find((setting) => setting.name === 'rom310');
+        fs.writeSync(configFile, `kickstart_rom_file=${romFile.value.file}\n`);
         fs.writeSync(configFile, `cpu_type=${this.getCPUType(environment.getCPU())}\n`);
         const cpuModel = this.getCPUModel(environment.getCPU());
         if (cpuModel) {

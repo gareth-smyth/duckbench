@@ -64,43 +64,6 @@ it('sets the rom', () => {
     expect(environmentSetup.rom).toEqual('somerom');
 });
 
-describe('getRomFileName', () => {
-    it('a600 2.05 rom filename', () => {
-        const environmentSetup = new EnvironmentSetup({});
-        environmentSetup.setSystemName('a600');
-        environmentSetup.setRom('2.05');
-        expect(environmentSetup.getRomFileName()).toEqual('amiga-os-310-a600.rom');
-    });
-
-    it('a600 3.1 rom filename', () => {
-        const environmentSetup = new EnvironmentSetup({});
-        environmentSetup.setSystemName('a600');
-        environmentSetup.setRom('3.1');
-        expect(environmentSetup.getRomFileName()).toEqual('amiga-os-310-a600.rom');
-    });
-
-    it('a1200 3.0 rom filename', () => {
-        const environmentSetup = new EnvironmentSetup({});
-        environmentSetup.setSystemName('a1200');
-        environmentSetup.setRom('3.0');
-        expect(environmentSetup.getRomFileName()).toEqual('amiga-os-310-a1200.rom');
-    });
-
-    it('a1200 3.1 rom filename', () => {
-        const environmentSetup = new EnvironmentSetup({});
-        environmentSetup.setSystemName('a1200');
-        environmentSetup.setRom('3.1');
-        expect(environmentSetup.getRomFileName()).toEqual('amiga-os-310-a1200.rom');
-    });
-
-    it('cd32 3.1 rom filename', () => {
-        const environmentSetup = new EnvironmentSetup({});
-        environmentSetup.setSystemName('cd32');
-        environmentSetup.setRom('3.1');
-        expect(environmentSetup.getRomFileName()).toEqual('amiga-os-310-cd32.rom');
-    });
-});
-
 it('sets the cpu', () => {
     const environmentSetup = new EnvironmentSetup({});
     environmentSetup.setCPU('68060');

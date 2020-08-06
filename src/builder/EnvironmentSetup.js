@@ -1,26 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// UnADF requires 300 to run
-const RomFileMappings = {
-    '2.05': {
-        'a500': 'amiga-os-310-a600.rom',
-        'a600': 'amiga-os-310-a600.rom',
-    },
-    '3.0': {
-        'a1200': 'amiga-os-310-a1200.rom',
-    },
-    '3.1': {
-        'a500': 'amiga-os-310-a600.rom',
-        'a600': 'amiga-os-310-a600.rom',
-        'a1200': 'amiga-os-310-a1200.rom',
-        'cd32': 'amiga-os-310-cd32.rom',
-    },
-};
-
 class EnvironmentSetup {
-    constructor(duckbenchConfig) {
-        this.duckbenchConfig = duckbenchConfig;
+    constructor() {
         this.disks = {};
 
         const executionNumber = (new Date()).toISOString().replace(/[^0-9]/g, '');
@@ -39,10 +21,6 @@ class EnvironmentSetup {
 
     setRom(rom) {
         this.rom = rom;
-    }
-
-    getRomFileName() {
-        return RomFileMappings[this.rom][this.systemName];
     }
 
     setCPU(cpu) {

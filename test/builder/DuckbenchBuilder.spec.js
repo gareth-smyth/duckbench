@@ -5,7 +5,6 @@ const MockRunner = jest.fn();
 
 jest.mock('../../src/plugins/Setup');
 jest.mock('../../src/builder/Runner', () => MockRunner);
-jest.mock('../../src/builder/duckbench.config', () => 'mock_config');
 jest.doMock('../../src/builder/EnvironmentSetup', () => MockEnvironmentSetup);
 
 const DuckbenchBuilder = require('../../src/builder/DuckbenchBuilder');
@@ -50,7 +49,7 @@ it('creates and destroys an environment setup .', async () => {
     await duckbenchBuilder.build([], MockEnvironment, MockCommunicator, 'settings');
 
     expect(MockEnvironmentSetup).toHaveBeenCalledTimes(1);
-    expect(MockEnvironmentSetup).toHaveBeenCalledWith('mock_config');
+    expect(MockEnvironmentSetup).toHaveBeenCalledWith('settings');
     expect(mockEnvironmentSetupInstance.destroy).toHaveBeenCalledTimes(1);
     expect(mockEnvironmentSetupInstance.destroy).toHaveBeenCalledWith();
 });
@@ -59,7 +58,7 @@ it('creates an environment with the proper config, starts it, and stops it.', as
     await duckbenchBuilder.build([], MockEnvironment, MockCommunicator, 'settings');
 
     expect(MockEnvironment).toHaveBeenCalledTimes(1);
-    expect(MockEnvironment).toHaveBeenCalledWith('mock_config', mockEnvironmentSetupInstance, 'settings');
+    expect(MockEnvironment).toHaveBeenCalledWith(mockEnvironmentSetupInstance, 'settings');
     expect(mockEnvironmentInstance.start).toHaveBeenCalledTimes(1);
     expect(mockEnvironmentInstance.start).toHaveBeenCalledWith();
     expect(mockEnvironmentInstance.stop).toHaveBeenCalledTimes(2);
@@ -79,7 +78,7 @@ it('creates a runner, configures, prepares, installs and finalises', async () =>
     await duckbenchBuilder.build(['plugin_config1', 'plugin_config2'], MockEnvironment, MockCommunicator, 'settings');
 
     expect(MockRunner).toHaveBeenCalledTimes(1);
-    expect(MockRunner).toHaveBeenCalledWith('mock_config');
+    expect(MockRunner).toHaveBeenCalledWith();
     expect(mockRunnerInstance.configureAndSetup).toHaveBeenCalledTimes(1);
     expect(mockRunnerInstance.configureAndSetup).toHaveBeenCalledWith(
         {name: 'Setup'}, ['plugin_config1', 'plugin_config2'],
@@ -103,7 +102,7 @@ it('throws an exception when finalising the environment fails', async () => {
     }).catch((err) => {
         expect(err.message).toEqual('Some error');
         expect(MockRunner).toHaveBeenCalledTimes(1);
-        expect(MockRunner).toHaveBeenCalledWith('mock_config');
+        expect(MockRunner).toHaveBeenCalledWith();
         expect(mockRunnerInstance.configureAndSetup).toHaveBeenCalledTimes(1);
         expect(mockRunnerInstance.configureAndSetup).toHaveBeenCalledWith({name: 'Setup'}, ['plugin_config1']);
         expect(mockRunnerInstance.prepare).toHaveBeenCalledTimes(1);
@@ -126,7 +125,7 @@ it('throws an exception when starting the environment fails', async () => {
     }).catch((err) => {
         expect(err.message).toEqual('Some error');
         expect(MockEnvironment).toHaveBeenCalledTimes(1);
-        expect(MockEnvironment).toHaveBeenCalledWith('mock_config', mockEnvironmentSetupInstance, 'settings');
+        expect(MockEnvironment).toHaveBeenCalledWith(mockEnvironmentSetupInstance, 'settings');
         expect(mockEnvironmentInstance.start).toHaveBeenCalledTimes(1);
         expect(mockEnvironmentInstance.start).toHaveBeenCalledWith();
         expect(mockEnvironmentInstance.stop).toHaveBeenCalledTimes(1);
@@ -145,7 +144,7 @@ it('throws an exception when creating the environment fails', async () => {
     }).catch((err) => {
         expect(err.message).toEqual('Some error');
         expect(MockEnvironment).toHaveBeenCalledTimes(1);
-        expect(MockEnvironment).toHaveBeenCalledWith('mock_config', mockEnvironmentSetupInstance, 'settings');
+        expect(MockEnvironment).toHaveBeenCalledWith(mockEnvironmentSetupInstance, 'settings');
         expect(mockEnvironmentInstance.stop).toHaveBeenCalledTimes(0);
         expect(mockCommunicatorInstance.close).toHaveBeenCalledTimes(0);
     });
