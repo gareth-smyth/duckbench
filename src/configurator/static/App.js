@@ -98,8 +98,8 @@ export default class App {
                         ]),
                         m('.modal-body', [m(Settings, {settings: this.configuration.settings, currentSettings: this.configuration.currentSettings})]),
                         m('.modal-footer', [
-                            m('buttons.btn.btn-secondary.mr-auto', {'data-dismiss': 'modal', onclick: this.getCurrentSettings.bind(this)}, 'Cancel'),
-                            m('buttons.btn.btn-secondary', {'data-dismiss': 'modal'}, 'Use don\'t save'),
+                            m('buttons.btn.btn-secondary.mr-auto', {'data-dismiss': 'modal', onclick: this.getCurrentSettings.bind(this)}, 'Restore saved'),
+                            m('buttons.btn.btn-secondary', {'data-dismiss': 'modal'}, 'Use, don\'t save'),
                             m('buttons.btn.btn-primary', {'data-dismiss': 'modal', onclick: this.saveSettings.bind(this)}, 'Save'),
                         ]),
                     ]),
@@ -117,7 +117,7 @@ export default class App {
     runBuild() {
         return m.request({method: "POST", url: "/run", body: {
             config: this.configuration.selectedPlugins,
-            settings:this.configuration.currentSettings,
+            settings: this.configuration.currentSettings,
         }});
     }
 
