@@ -1,4 +1,4 @@
 /* istanbul ignore file */
-const log = require('simple-node-logger').createSimpleLogger();
+const log = require('pino')();
 
 global.Logger = log;

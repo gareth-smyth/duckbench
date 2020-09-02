@@ -22,7 +22,7 @@ yargs.command({
     },
     handler: async (args) => {
         require('../services/LoggerService');
-        Logger.setLevel(args.logLevel);
+        Logger.level = args.logLevel;
         require('../services/BaseDirService');
         const Communicator = require('../builder/Communicator');
         const DuckbenchBuilder = require('../builder/DuckbenchBuilder');
@@ -44,7 +44,7 @@ yargs.command({
     },
     handler: (args) => {
         require('../services/LoggerService');
-        Logger.setLevel(args.logLevel);
+        Logger.level = args.logLevel;
         require('../services/BaseDirService');
         const Configurator = require('../configurator/Configurator');
 

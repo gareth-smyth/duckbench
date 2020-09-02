@@ -1,32 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// UnADF requires 300 to run
-const RomFileMappings = {
-    '2.05': {
-        'a500': 'amiga-os-310-a600.rom',
-        'a600': 'amiga-os-310-a600.rom',
-    },
-    '3.0': {
-        'a1200': 'amiga-os-310-a1200.rom',
-    },
-    '3.1': {
-        'a500': 'amiga-os-310-a600.rom',
-        'a600': 'amiga-os-310-a600.rom',
-        'a1200': 'amiga-os-310-a1200.rom',
-        'cd32': 'amiga-os-310-cd32.rom',
-    },
-};
-
-const WorkbenchDiskMappings = {
-    '2.05': 'amiga-os-210-workbench.adf',
-    '3.0': 'amiga-os-300-workbench.adf',
-    '3.1': 'amiga-os-310-workbench.adf',
-};
-
 class EnvironmentSetup {
-    constructor(duckbenchConfig) {
-        this.duckbenchConfig = duckbenchConfig;
+    constructor() {
         this.disks = {};
 
         const executionNumber = (new Date()).toISOString().replace(/[^0-9]/g, '');
@@ -45,14 +21,6 @@ class EnvironmentSetup {
 
     setRom(rom) {
         this.rom = rom;
-    }
-
-    getRomFileName() {
-        return RomFileMappings[this.rom][this.systemName];
-    }
-
-    getWorkbenchDiskFileName() {
-        return WorkbenchDiskMappings[this.rom];
     }
 
     setCPU(cpu) {
@@ -81,16 +49,10 @@ class EnvironmentSetup {
     }
 
     insertDisk(drive, diskDefinition) {
-        let location;
-        if ('amigaos'.localeCompare(diskDefinition.type, undefined, {sensitivity: 'accent'}) === 0) {
-            const startLocation = path.join(this.duckbenchConfig.osFolder, diskDefinition.name);
-            location = path.join(this.executionFolder, drive + '.adf');
-            fs.copyFileSync(startLocation, location);
-            fs.chmodSync(location, 0o0666);
-        } else {
-            location = diskDefinition.location;
-            fs.chmodSync(location, 0o0666);
-        }
+        const startLocation = diskDefinition.location;
+        const location = path.join(this.executionFolder, drive + '.adf');
+        fs.copyFileSync(startLocation, location);
+        fs.chmodSync(location, 0o0666);
 
         this.disks.ADF ? this.disks.ADF.push({drive, location}) : this.disks.ADF = [{drive, location}];
     }
