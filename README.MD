@@ -106,3 +106,7 @@ https://github.com/sodero/InstallerLG
 #### LHA
 * [http://www.osirusoft.com/joejared/lzhformat.html](https://web.archive.org/web/20021005080911/http://www.osirusoft.com/joejared/lzhformat.html)
 * https://fragglet.github.io/lhasa/
+
+### Release process
+npm login
+npm publish
