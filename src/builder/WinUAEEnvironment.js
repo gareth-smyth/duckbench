@@ -3,8 +3,8 @@ const path = require('path');
 const {spawn} = require('child_process');
 
 class WinUAEEnvironment {
-    constructor(config, environment) {
-        this.config = config;
+    constructor(environment, settings) {
+        this.settings = settings;
 
         this.uaeRunningConfig = path.join(environment.executionFolder, 'amiga.uae');
         const configFile = fs.openSync(this.uaeRunningConfig, 'w');
@@ -16,8 +16,8 @@ class WinUAEEnvironment {
         fs.writeSync(configFile, 'serial_direct=true\n');
         fs.writeSync(configFile, 'serial_translate=disabled\n');
 
-        fs.writeSync(configFile, `kickstart_rom_file=${path.join(config.romFolder, environment.getRomFileName())}\n`);
-        fs.writeSync(configFile, `rom_path=${config.romFolder}\n`);
+        const romFile = this.settings['Setup'].find((setting) => setting.name === 'rom310');
+        fs.writeSync(configFile, `kickstart_rom_file=${romFile.value.file}\n`);
         fs.writeSync(configFile, `cpu_type=${this.getCPUType(environment.getCPU())}\n`);
         const cpuModel = this.getCPUModel(environment.getCPU());
         if (cpuModel) {
@@ -86,12 +86,15 @@ class WinUAEEnvironment {
     }
 
     stop() {
-        this.winuaeProcess.kill();
+        if (this.winuaeProcess) {
+            this.winuaeProcess.kill();
+        }
     }
 
     start() {
-        const path32 = path.join(this.config.emuRoot, 'WinUAE.exe');
-        const path64 = path.join(this.config.emuRoot, 'WinUAE64.exe');
+        const emulatorRoot = this.settings['Setup'].find((setting) => setting.name === 'emulatorRoot');
+        const path32 = path.join(emulatorRoot.value.folder, 'WinUAE.exe');
+        const path64 = path.join(emulatorRoot.value.folder, 'WinUAE64.exe');
         const executablePath = fs.existsSync(path32) ? path32 : path64;
         this.winuaeProcess = spawn(executablePath,
             ['-f', path.join(this.uaeRunningConfig)],

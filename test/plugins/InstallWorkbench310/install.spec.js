@@ -58,17 +58,17 @@ describe('when the cache does not exist', () => {
         await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
 
         expect(unADF.run).toHaveBeenCalledTimes(6);
-        expect(unADF.run).toHaveBeenCalledWith('DB_OS_DISKS:', 'amiga-os-310-install.adf',
+        expect(unADF.run).toHaveBeenCalledWith('DB_EXECUTION:', 'install.adf',
             'duckbench:disks/', 'duckbench:', {}, communicator);
-        expect(unADF.run).toHaveBeenCalledWith('DB_OS_DISKS:', 'amiga-os-310-workbench.adf',
+        expect(unADF.run).toHaveBeenCalledWith('DB_EXECUTION:', 'workbench.adf',
             'duckbench:disks/', 'duckbench:', {}, communicator);
-        expect(unADF.run).toHaveBeenCalledWith('DB_OS_DISKS:', 'amiga-os-310-locale.adf',
+        expect(unADF.run).toHaveBeenCalledWith('DB_EXECUTION:', 'locale.adf',
             'duckbench:disks/', 'duckbench:', {}, communicator);
-        expect(unADF.run).toHaveBeenCalledWith('DB_OS_DISKS:', 'amiga-os-310-fonts.adf',
+        expect(unADF.run).toHaveBeenCalledWith('DB_EXECUTION:', 'fonts.adf',
             'duckbench:disks/', 'duckbench:', {}, communicator);
-        expect(unADF.run).toHaveBeenCalledWith('DB_OS_DISKS:', 'amiga-os-310-extras.adf',
+        expect(unADF.run).toHaveBeenCalledWith('DB_EXECUTION:', 'extras.adf',
             'duckbench:disks/', 'duckbench:', {}, communicator);
-        expect(unADF.run).toHaveBeenCalledWith('DB_OS_DISKS:', 'amiga-os-310-storage.adf',
+        expect(unADF.run).toHaveBeenCalledWith('DB_EXECUTION:', 'storage.adf',
             'duckbench:disks/', 'duckbench:', {}, communicator);
     });
 
@@ -146,8 +146,8 @@ describe('when the cache does not exist', () => {
         await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
 
         expect(installerLG.run).toHaveBeenCalledTimes(1);
-        expect(installerLG.run).toHaveBeenCalledWith('Install3.1:install/install',
-            {'REDIRECT_IN': 'DB_EXECUTION:install_key'},
+        expect(installerLG.run).toHaveBeenCalledWith('Install3.1:Install/Install',
+            {'REDIRECT_IN': 'DB_EXECUTION:wb3.1_install_key'},
             communicator, expect.any(Function), 'The installation of Release 3.1 is now complete.');
     });
 

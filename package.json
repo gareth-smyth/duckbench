@@ -28,7 +28,7 @@
     "moment": "2.27.0",
     "request": "2.88.2",
     "request-promise": "4.2.5",
-    "simple-node-logger": "18.12.24",
+    "pino": "6.5.0",
     "yargs": "15.4.0"
   },
   "devDependencies": {

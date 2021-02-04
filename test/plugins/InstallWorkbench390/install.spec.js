@@ -6,6 +6,7 @@ const PluginStore = require('../../../src/builder/PluginStore');
 const InstallLG = require('../../../src/plugins/InstallerLG');
 const Patch = require('../../../src/plugins/Patch');
 const WinUAETools = require('../../../src/plugins/WinUAETools');
+const UnADF = require('../../../src/plugins/UnADF');
 
 jest.mock('fs-extra');
 jest.mock('../../../src/builder/Communicator');
@@ -13,20 +14,26 @@ jest.mock('../../../src/builder/PluginStore');
 jest.mock('../../../src/plugins/InstallerLG');
 jest.mock('../../../src/plugins/Patch');
 jest.mock('../../../src/plugins/WinUAETools');
+jest.mock('../../../src/plugins/UnADF');
 
 let communicator;
 let pluginStore;
 let installerLG;
 let patch;
+let unADF;
 let winUAETools;
 
 beforeEach(() => {
     communicator = new Communicator();
     pluginStore = new PluginStore();
     installerLG = new InstallLG();
+    unADF = new UnADF();
     patch = new Patch();
     winUAETools = new WinUAETools();
-    pluginStore.getPlugin.mockReturnValueOnce(patch).mockReturnValueOnce(installerLG).mockReturnValueOnce(winUAETools);
+    pluginStore.getPlugin.mockReturnValueOnce(patch)
+        .mockReturnValueOnce(unADF)
+        .mockReturnValueOnce(installerLG)
+        .mockReturnValueOnce(winUAETools);
 
     global.Logger = {info: jest.fn(), trace: jest.fn(), debug: jest.fn()};
 });
@@ -97,7 +104,7 @@ describe('when the cache does not exist', () => {
 
         expect(installerLG.run).toHaveBeenCalledTimes(1);
         expect(installerLG.run).toHaveBeenCalledWith('DB_CLIENT_CACHE:InstallWorkbench390/installcd/OS3.9Install-Emu',
-            {'REDIRECT_IN': 'DB_EXECUTION:wb390_install_key'},
+            {'REDIRECT_IN': 'DB_EXECUTION:wb3.9_install_key'},
             communicator, expect.any(Function), 'The installation of Release 3.9 is now complete.');
     });
 
