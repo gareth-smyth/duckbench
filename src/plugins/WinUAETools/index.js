@@ -31,16 +31,16 @@ class WinUAETools {
         }];
     }
 
-    async install(config, communicator, pluginStore, environmentSetup) {
+    async install(config, communicator, pluginStore, environmentSetup, settings) {
         if (!this.installed[config.optionValues.location]) {
             Logger.trace(`Installing win uae tools to ${config.optionValues.location}`);
             if (!fs.existsSync(path.join(global.CACHE_DIR, 'uae-configuration')) ||
                 !fs.existsSync(path.join(global.CACHE_DIR, 'uaectrl'))) {
                 Logger.trace('Installing win uae tools to cache');
 
-                const emuRoot = environmentSetup.duckbenchConfig.emuRoot;
-                const configurationPath = path.join(emuRoot, 'Amiga Programs', 'uae-configuration');
-                const ctrlPath = path.join(emuRoot, 'Amiga Programs', 'uaectrl');
+                const emuRoot = settings['Setup'].find((setting) => setting.name === 'emulatorRoot');
+                const configurationPath = path.join(emuRoot.value.folder, 'Amiga Programs', 'uae-configuration');
+                const ctrlPath = path.join(emuRoot.value.folder, 'Amiga Programs', 'uaectrl');
 
                 fs.copyFileSync(configurationPath, path.join(global.CACHE_DIR, 'uae-configuration'));
                 fs.copyFileSync(ctrlPath, path.join(global.CACHE_DIR, 'uaectrl'));
