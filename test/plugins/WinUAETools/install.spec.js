@@ -13,18 +13,22 @@ beforeEach(() => {
     communicator = new Communicator();
 });
 
-const environmentSetup = {duckbenchConfig: {emuRoot: 'c:/some_place/'}};
+const environmentSetup = {};
+const settings = {'Setup': [
+    {name: 'emulatorRoot', value: {folder: 'c:/some_place/'}},
+    {name: 'rom310', value: {file: 'some/place'}},
+]};
 
 it('copies the tools to the cache when both not already there', async () => {
     fs.existsSync.mockReturnValueOnce(false)
         .mockReturnValue(true);
 
     const winUAETools = new WinUAETools();
-    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup);
-    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup);
-    await winUAETools.install({optionValues: {location: 'B:'}}, communicator, {}, environmentSetup);
+    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup, settings);
+    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup, settings);
+    await winUAETools.install({optionValues: {location: 'B:'}}, communicator, {}, environmentSetup, settings);
 
-    const emuRoot = environmentSetup.duckbenchConfig.emuRoot;
+    const emuRoot = 'c:/some_place/';
     const configurationPath = path.join(emuRoot, 'Amiga Programs', 'uae-configuration');
     const ctrlPath = path.join(emuRoot, 'Amiga Programs', 'uaectrl');
     expect(fs.copyFileSync).toHaveBeenCalledTimes(2);
@@ -38,11 +42,11 @@ it('copies the tools to the cache when either not already there', async () => {
         .mockReturnValue(true);
 
     const winUAETools = new WinUAETools();
-    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup);
-    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup);
-    await winUAETools.install({optionValues: {location: 'B:'}}, communicator, {}, environmentSetup);
+    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup, settings);
+    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup, settings);
+    await winUAETools.install({optionValues: {location: 'B:'}}, communicator, {}, environmentSetup, settings);
 
-    const emuRoot = environmentSetup.duckbenchConfig.emuRoot;
+    const emuRoot = 'c:/some_place/';
     const configurationPath = path.join(emuRoot, 'Amiga Programs', 'uae-configuration');
     const ctrlPath = path.join(emuRoot, 'Amiga Programs', 'uaectrl');
     expect(fs.copyFileSync).toHaveBeenCalledTimes(2);
@@ -54,18 +58,18 @@ it('does not copy the tools to the cache when both already exist', async () => {
     fs.existsSync.mockReturnValue(true);
 
     const winUAETools = new WinUAETools();
-    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup);
-    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup);
-    await winUAETools.install({optionValues: {location: 'B:'}}, communicator, {}, environmentSetup);
+    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup, settings);
+    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup, settings);
+    await winUAETools.install({optionValues: {location: 'B:'}}, communicator, {}, environmentSetup, settings);
 
     expect(fs.copyFileSync).toHaveBeenCalledTimes(0);
 });
 
 it('copies the tools to the requested location', async () => {
     const winUAETools = new WinUAETools();
-    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup);
-    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup);
-    await winUAETools.install({optionValues: {location: 'B:'}}, communicator, {}, environmentSetup);
+    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup, settings);
+    await winUAETools.install({optionValues: {location: 'A:'}}, communicator, {}, environmentSetup, settings);
+    await winUAETools.install({optionValues: {location: 'B:'}}, communicator, {}, environmentSetup, settings);
 
     expect(communicator.copy).toHaveBeenCalledTimes(4);
     expect(communicator.copy).toHaveBeenCalledWith('DB_HOST_CACHE:uae-configuration', 'A:');
