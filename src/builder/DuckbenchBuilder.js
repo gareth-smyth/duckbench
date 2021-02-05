@@ -12,6 +12,7 @@ class DuckbenchBuilder {
         return runner.prepare(environmentSetup, settings).then(async () => {
             environment = new Environment(environmentSetup, settings);
             environment.start();
+            await this.sleep(5000);
             communicator = new Communicator();
             await communicator.connect();
 

@@ -47,7 +47,7 @@ class RecommendedPartition {
         await communicator.format('DH0', 'WORKBENCH', {
             quick: true, intl: true, noicons: true, REDIRECT_IN: enterFile,
         });
-        if (config.optionValues.size > 3950) {
+        if (config.optionValues.size > 3999) {
             await communicator.format('DH1', 'WORK', {
                 quick: true, intl: true, noicons: true, REDIRECT_IN: enterFile,
             });
