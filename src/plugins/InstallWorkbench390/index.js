@@ -11,7 +11,7 @@ class InstallWorkbench390 extends BaseInstall {
         this.name = 'InstallWorkbench390';
         this.cacheName = 'wb390_cached';
         this.readableName = 'Workbench 3.9';
-        this.installFileLocation = 'DB_CLIENT_CACHE:InstallWorkbench390/installcd/OS3.9Install-Emu';
+        this.installFileLocation = 'DB_CLIENT_CACHE:InstallWorkbench390/installcd/OS3.9Install';
         this.installationSuccessMessage = 'The installation of Release 3.9 is now complete.';
         this.disks = [
             {name: 'install', label: 'Install disk'},

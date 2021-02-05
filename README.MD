@@ -108,5 +108,15 @@ https://github.com/sodero/InstallerLG
 * https://fragglet.github.io/lhasa/
 
 ### Release process
-npm login
-npm publish
+npm login  
+npm publish  
+  
+### Issue notes
+* Need WinUAE to get Amiga Programs, Amiga forever doesn't include them
+* Need to make sure settings are validated - what is absolutely necessary for a build
+* Test with different versions of Node
+* E2E test somehow
+
+### Enhancement notes
+* Custom partitions
+* Boing bags
