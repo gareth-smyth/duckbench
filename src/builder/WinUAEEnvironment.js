@@ -10,7 +10,7 @@ class WinUAEEnvironment {
         const configFile = fs.openSync(this.uaeRunningConfig, 'w');
 
         fs.writeSync(configFile, 'use_gui=no\n');
-        fs.writeSync(configFile, 'headless=true\n');
+        fs.writeSync(configFile, '// headless=true\n');
         fs.writeSync(configFile, 'use_debugger=true\n');
         fs.writeSync(configFile, 'win32.serial_port=TCP://0.0.0.0:1234\n');
         fs.writeSync(configFile, 'serial_direct=true\n');
