@@ -5,6 +5,7 @@ import Settings from './settings/Settings.js';
 export default class App {
     constructor() {
         this.configuration = new Configuration();
+        this.messages = [];
     }
 
     oninit() {
@@ -44,6 +45,13 @@ export default class App {
                         ]),
                     ),
                 ]),
+                m('.container.mt-1.message-window',
+                    m('ul.list-group',
+                        this.messages.slice().reverse().map((message) => {
+                            return m(`li.list-group-item.list-group-item-${message.type}`, {key: message.key}, message.text);
+                        }),
+                    ),
+                ),
             m("", [
                 m('.container.section-container', [
                     m('h2.mb-4.mt-4', "How would you like to partition your hard drives?"),
@@ -115,10 +123,19 @@ export default class App {
     }
 
     runBuild() {
-        return m.request({method: "POST", url: "/run", body: {
-            config: this.configuration.selectedPlugins,
-            settings: this.configuration.currentSettings,
-        }});
+        const ws = new WebSocket('ws://localhost:8553');
+        ws.onopen = () => {
+            ws.send(JSON.stringify({
+                command: 'RUN',
+                config: this.configuration.selectedPlugins,
+                settings: this.configuration.currentSettings,
+            }));
+        };
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            this.messages.push({...data, key: Date.now()});
+            m.redraw();
+        }
     }
 
     save(event) {
