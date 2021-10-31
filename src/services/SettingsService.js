@@ -35,7 +35,7 @@ class SettingsService {
             }),
         );
 
-        /* Only two plugins have settings as yet and tests use real plugins so can't sort fully */
+        /* Only two plugins have settings as yet and tests use real plugins so can't test sort fully */
         /* istanbul ignore next */
         return settings.filter((settings) => settings !== undefined)
             .sort((plugin1, plugin2) => {
@@ -68,6 +68,10 @@ class SettingsService {
         if (settings.default) {
             return {value: await settings.default(settingName)};
         }
+    }
+
+    static getValue(settings, pluginName, settingName) {
+        return settings[pluginName].find((setting) => setting.name === settingName).value;
     }
 }
 

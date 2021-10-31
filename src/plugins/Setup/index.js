@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const ADFService = require('../../services/ADFService');
 const HardDriveService = require('../../services/HardDriveService');
+const SettingsService = require('../../services/SettingsService');
 
 class Setup {
     structure() {
@@ -9,6 +10,37 @@ class Setup {
             name: 'Setup',
             type: 'internal',
         };
+    }
+
+    validate(config, environmentSetup, settings) {
+        const validationErrors = [];
+        const workbenchADFFileName = SettingsService.getValue(settings, 'InstallWorkbench310', 'workbench').file;
+        if (!workbenchADFFileName) {
+            validationErrors.push({type: 'error', text: 'Workbench 3.1 ADF could not be found'});
+        } else if (!fs.existsSync(workbenchADFFileName)) {
+            const errorText = `Workbench 3.1 ADF could not be found at ${workbenchADFFileName}`;
+            validationErrors.push({type: 'error', text: errorText});
+        }
+
+        const winuaePath = SettingsService.getValue(settings, 'Setup', 'emulatorRoot').folder;
+        if (!winuaePath) {
+            validationErrors.push({type: 'error', text: 'Path to WinUAE is not set'});
+        } else {
+            const path32 = path.join(winuaePath, 'WinUAE.exe');
+            const path64 = path.join(winuaePath, 'WinUAE64.exe');
+            if (!fs.existsSync(path32) && !fs.existsSync(path64)) {
+                validationErrors.push({type: 'error', text: `Could not find WinUAE executable at ${winuaePath}`});
+            }
+        }
+
+        const rom310File = SettingsService.getValue(settings, 'Setup', 'rom310').file;
+        if (!rom310File) {
+            validationErrors.push({type: 'error', text: 'Path to 310 rom file is not set'});
+        } else if (!fs.existsSync(rom310File)) {
+            validationErrors.push({type: 'error', text: `Could not find 310 ROM file at ${rom310File}`});
+        }
+
+        return validationErrors;
     }
 
     async prepare(config, environmentSetup, settings) {
@@ -24,7 +56,7 @@ class Setup {
         Logger.debug('Inserting boot disk in DF0 and workbench disk in DF1.');
         environmentSetup.insertDisk('DF0', {location: bootDiskFileName});
         environmentSetup.insertDisk('DF1', {
-            location: settings['InstallWorkbench310'].find((setting) => setting.name === 'workbench').value.file,
+            location: SettingsService.getValue(settings, 'InstallWorkbench310', 'workbench').file,
         });
 
         Logger.debug(`Mapping DB5: as DB_HOST_CACHE: at ${global.CACHE_DIR}`);

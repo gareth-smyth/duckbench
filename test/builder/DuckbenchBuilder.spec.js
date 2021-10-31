@@ -15,6 +15,7 @@ const mockEnvironmentSetupInstance = {
 
 const mockRunnerInstance = {
     configureAndSetup: jest.fn(),
+    validate: jest.fn(),
     prepare: jest.fn(),
     install: jest.fn(),
     finalise: jest.fn(),
@@ -41,6 +42,7 @@ beforeEach(() => {
     MockRunner.mockImplementation(() => mockRunnerInstance);
     mockRunnerInstance.prepare.mockResolvedValue({});
     mockRunnerInstance.finalise.mockResolvedValue({});
+    mockRunnerInstance.validate.mockReturnValue([]);
     duckbenchBuilder = new DuckbenchBuilder();
     duckbenchBuilder.sleep = () => Promise.resolve();
 });

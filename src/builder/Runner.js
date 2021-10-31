@@ -1,4 +1,5 @@
 const PluginStore = require('./PluginStore');
+const ValidationError = require('../errors/ValidationError');
 
 class Runner {
     constructor() {
@@ -25,6 +26,22 @@ class Runner {
             }
             this.configs.push(config);
         });
+    }
+
+    validate(environmentSetup, settings) {
+        const validationErrors = [];
+        validationErrors.push(...this.setupPlugin.validate(this.setupConfig, environmentSetup, settings));
+
+        this.configs.map((config) => {
+            const plugin = this.pluginStore.getPlugin(config.name);
+            if (plugin.validate) {
+                validationErrors.push(...plugin.validate(config, environmentSetup, settings));
+            }
+        });
+
+        if (validationErrors.length) {
+            throw new ValidationError(validationErrors);
+        }
     }
 
     async prepare(environmentSetup, settings) {

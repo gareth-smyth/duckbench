@@ -109,6 +109,48 @@ describe('setupAndConfigure', () => {
     });
 });
 
+describe('validate', () => {
+    it('calls validate on all configs with a validate method', () => {
+        const validateFunc1 = jest.fn().mockReturnValueOnce([]);
+        const validateFunc2 = jest.fn().mockReturnValueOnce([]);
+        const setupValidateFunc = jest.fn().mockReturnValueOnce([]);
+        mockPluginStoreInstance.getPlugin.mockReturnValueOnce({validate: validateFunc1})
+            .mockReturnValueOnce({})
+            .mockReturnValueOnce({validate: validateFunc2});
+
+        const runner = new Runner();
+        runner.configs = [{name: 'a'}, {name: 'b'}, {name: 'c'}];
+        runner.setupConfig = {name: 'Setup'};
+        runner.setupPlugin = {validate: setupValidateFunc};
+        const env = {};
+        runner.validate(env, 'settings');
+
+        expect(validateFunc1).toHaveBeenCalledTimes(1);
+        expect(validateFunc1).toHaveBeenCalledWith({name: 'a'}, env, 'settings');
+        expect(validateFunc2).toHaveBeenCalledTimes(1);
+        expect(validateFunc2).toHaveBeenCalledWith({name: 'c'}, env, 'settings');
+        expect(setupValidateFunc).toHaveBeenCalledTimes(1);
+        expect(setupValidateFunc).toHaveBeenCalledWith({name: 'Setup'}, env, 'settings');
+    });
+
+    it('throws an error when a plugin returns a validation error', () => {
+        const validateFunc1 = jest.fn().mockReturnValueOnce([{err: 'an error'}]);
+        const validateFunc2 = jest.fn().mockReturnValueOnce([]);
+        const setupValidateFunc = jest.fn().mockReturnValueOnce([]);
+        mockPluginStoreInstance.getPlugin.mockReturnValueOnce({validate: validateFunc1})
+            .mockReturnValueOnce({})
+            .mockReturnValueOnce({validate: validateFunc2});
+
+        const runner = new Runner();
+        runner.configs = [{name: 'a'}, {name: 'b'}, {name: 'c'}];
+        runner.setupConfig = {name: 'Setup'};
+        runner.setupPlugin = {validate: setupValidateFunc};
+        const env = {};
+
+        expect(() => runner.validate(env, 'settings')).toThrow();
+    });
+});
+
 describe('prepare', () => {
     it('calls prepare on all configs with a prepare method', async () => {
         const prepareFunc1 = jest.fn();

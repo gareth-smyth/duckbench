@@ -8,6 +8,7 @@ const PluginStore = require('../builder/PluginStore');
 const Communicator = require('../builder/Communicator');
 const SettingsService = require('../services/SettingsService');
 const WinUAEEnvironment = require('../builder/WinUAEEnvironment');
+const ValidationError = require('../errors/ValidationError');
 
 
 class Configurator {
@@ -29,7 +30,13 @@ class Configurator {
                     new DuckbenchBuilder().build(payload.config, WinUAEEnvironment, Communicator, payload.settings).then(() => {
                         socket.send(JSON.stringify({ type: 'info', text: 'Build complete' }));
                     }).catch((err) => {
-                        socket.send(JSON.stringify({ type: 'danger', text: `Build failed ${err}` }));
+                        if(err instanceof ValidationError) {
+                            err.validationErrors.forEach(error => {
+                               socket.send(JSON.stringify({type: 'danger', text: `Build failed ${error.text}`}))
+                            });
+                        } else {
+                            socket.send(JSON.stringify({type: 'danger', text: `Build failed ${err}`}));
+                        }
                     });
                     break;
                 default:
@@ -82,19 +89,6 @@ class Configurator {
                 const defaultValue = await SettingsService.getDefault(plugin, setting);
                 response.writeHead(200, {'Content-Type': 'application/json'});
                 response.end(JSON.stringify(defaultValue), 'utf-8');
-                return;
-            } else if (url.pathname === '/run') {
-                Logger.trace('Running duckbench builder');
-                let body = '';
-                request.on('data', chunk => {
-                    body += chunk.toString();
-                });
-                request.on('end', () => {
-                    const bodyJson = JSON.parse(body);
-                    new DuckbenchBuilder().build(bodyJson.config, WinUAEEnvironment, Communicator, bodyJson.settings);
-                });
-                response.writeHead(200);
-                response.end();
                 return;
             }
 

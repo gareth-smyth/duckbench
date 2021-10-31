@@ -14,7 +14,9 @@ Develop Tests:
 
 ### Config
 If you have an installation of Amiga Forever with the `AMIGAFOREVERDATA` and `AMIGAFOREVERROOT` environment
-variables set, duckbench should pick up ROMs, OS floppies, and WinUAE automatically.
+variables set, duckbench should pick up ROMs, OS floppies, and WinUAE automatically. 
+
+**!! N.B. Duckbench does not currently work with the version of WinUAE bundled with Amiga Forever, so it must be installed manually !!**
 
 If you are not using Amiga Forever you must set the following environment variables:
 

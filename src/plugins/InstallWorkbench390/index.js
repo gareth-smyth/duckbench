@@ -2,6 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 
 const BaseInstall = require('../InstallWorkbench310');
+const SettingsService = require('../../services/SettingsService');
 
 class InstallWorkbench390 extends BaseInstall {
     constructor() {
@@ -23,11 +24,22 @@ class InstallWorkbench390 extends BaseInstall {
         ];
     }
 
+    validate(config, environmentSetup, settings) {
+        const validationErrors = [];
+        const isoLocation = SettingsService.getValue(settings, 'InstallWorkbench390', 'isoLocation').file;
+        if (!isoLocation) {
+            validationErrors.push({type: 'error', text: 'Workbench 3.9 ISO could not be found'});
+        } else if (!fs.existsSync(isoLocation)) {
+            validationErrors.push({type: 'error', text: `Workbench 3.9 ISO could not be found at ${isoLocation}`});
+        }
+        return validationErrors;
+    }
+
     prepareDisks(settings, environmentSetup) {
         const cacheMarkerPath = path.join(global.CACHE_DIR, this.cacheName);
         if (!fs.existsSync(cacheMarkerPath)) {
-            const isoLocation = settings[this.name].find((setting) => setting.name === 'isoLocation');
-            environmentSetup.insertCDISO(isoLocation.value.file);
+            const isoLocation = SettingsService.getValue(settings, 'InstallWorkbench390', 'isoLocation');
+            environmentSetup.insertCDISO(isoLocation.file);
         }
     }
 
