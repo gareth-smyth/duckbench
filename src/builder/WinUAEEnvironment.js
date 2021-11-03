@@ -28,6 +28,7 @@ class WinUAEEnvironment {
         fs.writeSync(configFile, `chipmem_size=${Number(environment.chipMem) * 2}\n`);
         fs.writeSync(configFile, `z3mem_size=${environment.fastMem}\n`);
         fs.writeSync(configFile, 'floppy_speed=0\n');
+        fs.writeSync(configFile, 'cpu_speed=max\n');
 
         this.writeDiskConfig(configFile, environment.disks);
 

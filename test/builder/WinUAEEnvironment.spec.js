@@ -76,6 +76,7 @@ it('writes the non-configurable parts of the config', () => {
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'serial_direct=true\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'serial_translate=disabled\n');
     expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'floppy_speed=0\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_speed=max\n');
 });
 
 it('writes the non-disk or cpu related parts of the config', () => {

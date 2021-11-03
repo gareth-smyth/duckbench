@@ -13,6 +13,7 @@ class A500 {
                     items: [
                         {label: '2.0/2.05', value: '2.05'},
                         {label: '3.1', value: '3.1'},
+                        {label: '3.2', value: '3.2'},
                     ],
                     default: '3.1',
                 },
