@@ -93,7 +93,7 @@ class Configurator {
             }
 
             let filePath = path.join(__dirname, './static', url.pathname);
-            if (filePath === './') {
+            if (filePath === './' || url.pathname === '/') {
                 filePath = path.join(__dirname, './static/index.html');
             }
 
@@ -133,7 +133,7 @@ class Configurator {
 
         });
         server.listen(8552);
-        Logger.info('Open a browser at http://127.0.0.1:8552/index.html');
+        Logger.info('Browse http://127.0.0.1:8552/index.html');
     }
 }
 

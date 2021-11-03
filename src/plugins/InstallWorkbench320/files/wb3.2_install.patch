@@ -1,0 +1,37 @@
+--- install	2020-06-26 22:27:38.930917500 +0100
++++ install2	2020-06-26 23:28:15.971070200 +0100
+@@ -6440,7 +6440,7 @@
+ 	(message #reboot)
+ 	(MAKETARGETTOSYS)
+ 	(run "C:LoadModule REMOVE NOREBOOT >NIL:")
+-	(reboot)
++;	(reboot) REMOVED BY DUCKBENCH
+ ))
+
+ )
+@@ -6482,7 +6482,7 @@
+
+ ;===
+ (message #reboot-lang)
+-(reboot)
++; (reboot) - REMOVED BY DUCKBENCH
+ )
+
+ (
+@@ -6581,7 +6581,7 @@
+ (complete 99)
+ ;===
+ (message #reboot-icon)
+-(reboot)
++; (reboot) - REMOVED BY DUCKBENCH
+ )
+
+ (
+@@ -6667,6 +6667,6 @@
+ (complete 100)
+ ;===
+ (message #reboot-mmu)
+-(reboot)
++; (reboot) - REMOVED BY DUCKBENCH
+ )
+ )
