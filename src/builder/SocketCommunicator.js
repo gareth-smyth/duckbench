@@ -128,7 +128,7 @@ class SocketCommunicator {
     }
 
     _responseIsPrompt(responseLine) {
-        return responseLine.match('2..*>');
+        return responseLine.match(/\d\..*>/);
     }
 
     _escapeRegex(string) {

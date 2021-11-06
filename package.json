@@ -1,6 +1,6 @@
 {
   "name": "duckbench",
-  "version": "0.0.1-alpha.5",
+  "version": "0.0.1-alpha.7",
   "description": "A set of tools to help setup Amiga OS on real hardware or in an emulator.",
   "repository": "https://github.com/gareth-smyth/duckbench",
   "main": "index.js",
@@ -24,19 +24,19 @@
   "license": "ISC",
   "dependencies": {
     "fs-extra": "9.0.1",
-    "md5-file": "4.0.0",
-    "moment": "2.24.0",
-    "node-disk-info": "1.1.0",
+    "md5-file": "5.0.0",
+    "moment": "2.27.0",
+    "pino": "6.5.0",
     "request": "2.88.2",
     "request-promise": "4.2.5",
-    "simple-node-logger": "18.12.24",
-    "yargs": "15.3.1"
+    "ws": "^8.2.3",
+    "yargs": "15.4.0"
   },
   "devDependencies": {
-    "eslint": "6.8.0",
+    "eslint": "^8.0.1",
     "eslint-config-google": "0.14.0",
-    "jest": "25.1.0",
-    "jest-when": "2.7.1"
+    "jest": "^27.3.1",
+    "jest-when": "^3.4.1"
   },
   "jest": {
     "resetMocks": true,

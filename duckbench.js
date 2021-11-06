@@ -4,6 +4,7 @@ require('./src/services/LoggerService');
 let configurator;
 
 try {
+    Logger.level = 'debug';
     const Configurator = require('./src/configurator/Configurator');
     configurator = new Configurator();
     configurator.start();

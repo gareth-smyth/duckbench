@@ -1,0 +1,37 @@
+--- install	2020-06-27 15:22:50.432164700 +0100
++++ install2	2020-06-27 15:24:39.126291400 +0100
+@@ -3519,7 +3519,7 @@
+
+       (user 2)
+       (message #prereboot)
+-      (reboot)
++;      (reboot) REMOVED BY DUCKBENCH
+       )
+
+       (
+@@ -4567,11 +4567,11 @@
+
+       (set #current_wb (expandpath "sys:"))
+
+-      (if (AND (<> #xold_wb #current_wb) (<> #idfixtrue 1))
+-          (
+-          (@instal_cd_driver)   ; Install CD ROM driver
+-          )
+-      )
++;      (if (AND (<> #xold_wb #current_wb) (<> #idfixtrue 1))
++;          (
++;          (@instal_cd_driver)   ; Install CD ROM driver REMOVED BY DUCKBENCH
++;          )
++;      )
+
+
+ ;===========
+@@ -4638,7 +4638,7 @@
+       (user 2)
+       (message #reboot)
+       (closemedia instpic4)
+-      (reboot)
++;      (reboot) REMOVED BY DUCKBENCH
+       )
+       (
+       (complete 100)

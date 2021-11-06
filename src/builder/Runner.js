@@ -1,4 +1,5 @@
 const PluginStore = require('./PluginStore');
+const ValidationError = require('../errors/ValidationError');
 
 class Runner {
     constructor() {
@@ -27,24 +28,40 @@ class Runner {
         });
     }
 
-    async prepare(environmentSetup) {
+    validate(environmentSetup, settings) {
+        const validationErrors = [];
+        validationErrors.push(...this.setupPlugin.validate(this.setupConfig, environmentSetup, settings));
+
+        this.configs.map((config) => {
+            const plugin = this.pluginStore.getPlugin(config.name);
+            if (plugin.validate) {
+                validationErrors.push(...plugin.validate(config, environmentSetup, settings));
+            }
+        });
+
+        if (validationErrors.length) {
+            throw new ValidationError(validationErrors);
+        }
+    }
+
+    async prepare(environmentSetup, settings) {
         for (let configIndex = 0; configIndex < this.configs.length; configIndex++) {
             const config = this.configs[configIndex];
             const plugin = this.pluginStore.getPlugin(config.name);
             if (plugin.prepare) {
-                await plugin.prepare(config, environmentSetup);
+                await plugin.prepare(config, environmentSetup, settings);
             }
         }
-        await this.setupPlugin.prepare(this.setupConfig, environmentSetup);
+        await this.setupPlugin.prepare(this.setupConfig, environmentSetup, settings);
     }
 
-    async install(communicator, environmentSetup) {
-        await this.setupPlugin.install(this.setupConfig, communicator, this.pluginStore, environmentSetup);
+    async install(communicator, environmentSetup, settings) {
+        await this.setupPlugin.install(this.setupConfig, communicator, this.pluginStore, environmentSetup, settings);
         for (let configIndex = 0; configIndex < this.configs.length; configIndex++) {
             const config = this.configs[configIndex];
             const plugin = this.pluginStore.getPlugin(config.name);
             if (plugin.install) {
-                await plugin.install(config, communicator, this.pluginStore, environmentSetup);
+                await plugin.install(config, communicator, this.pluginStore, environmentSetup, settings);
             }
         }
     }

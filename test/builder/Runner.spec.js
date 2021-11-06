@@ -109,6 +109,48 @@ describe('setupAndConfigure', () => {
     });
 });
 
+describe('validate', () => {
+    it('calls validate on all configs with a validate method', () => {
+        const validateFunc1 = jest.fn().mockReturnValueOnce([]);
+        const validateFunc2 = jest.fn().mockReturnValueOnce([]);
+        const setupValidateFunc = jest.fn().mockReturnValueOnce([]);
+        mockPluginStoreInstance.getPlugin.mockReturnValueOnce({validate: validateFunc1})
+            .mockReturnValueOnce({})
+            .mockReturnValueOnce({validate: validateFunc2});
+
+        const runner = new Runner();
+        runner.configs = [{name: 'a'}, {name: 'b'}, {name: 'c'}];
+        runner.setupConfig = {name: 'Setup'};
+        runner.setupPlugin = {validate: setupValidateFunc};
+        const env = {};
+        runner.validate(env, 'settings');
+
+        expect(validateFunc1).toHaveBeenCalledTimes(1);
+        expect(validateFunc1).toHaveBeenCalledWith({name: 'a'}, env, 'settings');
+        expect(validateFunc2).toHaveBeenCalledTimes(1);
+        expect(validateFunc2).toHaveBeenCalledWith({name: 'c'}, env, 'settings');
+        expect(setupValidateFunc).toHaveBeenCalledTimes(1);
+        expect(setupValidateFunc).toHaveBeenCalledWith({name: 'Setup'}, env, 'settings');
+    });
+
+    it('throws an error when a plugin returns a validation error', () => {
+        const validateFunc1 = jest.fn().mockReturnValueOnce([{err: 'an error'}]);
+        const validateFunc2 = jest.fn().mockReturnValueOnce([]);
+        const setupValidateFunc = jest.fn().mockReturnValueOnce([]);
+        mockPluginStoreInstance.getPlugin.mockReturnValueOnce({validate: validateFunc1})
+            .mockReturnValueOnce({})
+            .mockReturnValueOnce({validate: validateFunc2});
+
+        const runner = new Runner();
+        runner.configs = [{name: 'a'}, {name: 'b'}, {name: 'c'}];
+        runner.setupConfig = {name: 'Setup'};
+        runner.setupPlugin = {validate: setupValidateFunc};
+        const env = {};
+
+        expect(() => runner.validate(env, 'settings')).toThrow();
+    });
+});
+
 describe('prepare', () => {
     it('calls prepare on all configs with a prepare method', async () => {
         const prepareFunc1 = jest.fn();
@@ -121,12 +163,12 @@ describe('prepare', () => {
         runner.configs = [{name: 'a'}, {name: 'b'}, {name: 'c'}];
         runner.setupPlugin = {prepare: jest.fn()};
         const env = {};
-        await runner.prepare(env);
+        await runner.prepare(env, 'settings');
 
         expect(prepareFunc1).toHaveBeenCalledTimes(1);
-        expect(prepareFunc1).toHaveBeenCalledWith({name: 'a'}, env);
+        expect(prepareFunc1).toHaveBeenCalledWith({name: 'a'}, env, 'settings');
         expect(prepareFunc2).toHaveBeenCalledTimes(1);
-        expect(prepareFunc2).toHaveBeenCalledWith({name: 'c'}, env);
+        expect(prepareFunc2).toHaveBeenCalledWith({name: 'c'}, env, 'settings');
     });
 
     it('calls prepare on all configs with a setup plugin', async () => {
@@ -135,10 +177,10 @@ describe('prepare', () => {
         runner.setupConfig = {name: 'Setup'};
         runner.setupPlugin = {prepare: jest.fn()};
         const env = {};
-        await runner.prepare(env);
+        await runner.prepare(env, 'settings');
 
         expect(runner.setupPlugin.prepare).toHaveBeenCalledTimes(1);
-        expect(runner.setupPlugin.prepare).toHaveBeenCalledWith({name: 'Setup'}, env);
+        expect(runner.setupPlugin.prepare).toHaveBeenCalledWith({name: 'Setup'}, env, 'settings');
     });
 });
 
@@ -156,12 +198,14 @@ describe('install', () => {
         runner.setupPlugin = {install: jest.fn()};
         const communicator = {};
         const environmentSetup = {};
-        await runner.install(communicator, environmentSetup);
+        await runner.install(communicator, environmentSetup, 'settings');
 
         expect(installFunc1).toHaveBeenCalledTimes(1);
-        expect(installFunc1).toHaveBeenCalledWith({name: 'a'}, communicator, mockPluginStoreInstance, environmentSetup);
+        expect(installFunc1).toHaveBeenCalledWith({name: 'a'}, communicator, mockPluginStoreInstance,
+            environmentSetup, 'settings');
         expect(installFunc2).toHaveBeenCalledTimes(1);
-        expect(installFunc2).toHaveBeenCalledWith({name: 'c'}, communicator, mockPluginStoreInstance, environmentSetup);
+        expect(installFunc2).toHaveBeenCalledWith({name: 'c'}, communicator, mockPluginStoreInstance,
+            environmentSetup, 'settings');
     });
 
     it('calls install on the setup plugin', async () => {
@@ -171,11 +215,11 @@ describe('install', () => {
         runner.setupPlugin = {install: jest.fn()};
         const communicator = {};
         const environmentSetup = {};
-        await runner.install(communicator, environmentSetup);
+        await runner.install(communicator, environmentSetup, 'settings');
 
         expect(runner.setupPlugin.install).toHaveBeenCalledTimes(1);
         expect(runner.setupPlugin.install).toHaveBeenCalledWith({name: 'Setup'}, communicator,
-            mockPluginStoreInstance, environmentSetup);
+            mockPluginStoreInstance, environmentSetup, 'settings');
     });
 });
 

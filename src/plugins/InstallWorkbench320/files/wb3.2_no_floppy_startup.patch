@@ -1,0 +1,11 @@
+--- startup-sequence	2020-06-11 17:34:16.656070100 +0100
++++ startup-sequence_no_floppy	2020-06-11 17:33:48.223792800 +0100
+@@ -18,7 +18,7 @@
+ EndIf
+
+ C:Version >NIL:
+-C:AddBuffers >NIL: DF0: 15
++; C:AddBuffers >NIL: DF0: 15
+
+ C:MakeDir RAM:T RAM:Clipboards RAM:ENV RAM:ENV/Sys
+ C:Copy >NIL: ENVARC: RAM:ENV ALL NOREQ

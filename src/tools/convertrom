@@ -36,7 +36,7 @@ yargs.command({
             .demandOption('output-size');
     },
     handler: (args) => {
-        Logger.setLevel(args.logLevel);
+        Logger.level = args.logLevel;
         RomConversionService.realToEmulator(args.input, args.output, args.force, args.outputSize, 262144)
     }
 }).command({
@@ -72,7 +72,7 @@ yargs.command({
             .demandOption('o');
     },
     handler: (args) => {
-        Logger.setLevel(args.logLevel);
+        Logger.level = args.logLevel;
         RomConversionService.emulatorToReal(args.input, args.output, args.force, args.outputSize, args.split, 262144)
     }
 })

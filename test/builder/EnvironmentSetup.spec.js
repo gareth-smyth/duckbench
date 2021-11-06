@@ -64,63 +64,6 @@ it('sets the rom', () => {
     expect(environmentSetup.rom).toEqual('somerom');
 });
 
-describe('getRomFileName', () => {
-    it('a600 2.05 rom filename', () => {
-        const environmentSetup = new EnvironmentSetup({});
-        environmentSetup.setSystemName('a600');
-        environmentSetup.setRom('2.05');
-        expect(environmentSetup.getRomFileName()).toEqual('amiga-os-310-a600.rom');
-    });
-
-    it('a600 3.1 rom filename', () => {
-        const environmentSetup = new EnvironmentSetup({});
-        environmentSetup.setSystemName('a600');
-        environmentSetup.setRom('3.1');
-        expect(environmentSetup.getRomFileName()).toEqual('amiga-os-310-a600.rom');
-    });
-
-    it('a1200 3.0 rom filename', () => {
-        const environmentSetup = new EnvironmentSetup({});
-        environmentSetup.setSystemName('a1200');
-        environmentSetup.setRom('3.0');
-        expect(environmentSetup.getRomFileName()).toEqual('amiga-os-310-a1200.rom');
-    });
-
-    it('a1200 3.1 rom filename', () => {
-        const environmentSetup = new EnvironmentSetup({});
-        environmentSetup.setSystemName('a1200');
-        environmentSetup.setRom('3.1');
-        expect(environmentSetup.getRomFileName()).toEqual('amiga-os-310-a1200.rom');
-    });
-
-    it('cd32 3.1 rom filename', () => {
-        const environmentSetup = new EnvironmentSetup({});
-        environmentSetup.setSystemName('cd32');
-        environmentSetup.setRom('3.1');
-        expect(environmentSetup.getRomFileName()).toEqual('amiga-os-310-cd32.rom');
-    });
-});
-
-describe('getWorkbenchDiskFileName', () => {
-    it('2.05 workbench disk file name', () => {
-        const environmentSetup = new EnvironmentSetup({});
-        environmentSetup.setRom('2.05');
-        expect(environmentSetup.getWorkbenchDiskFileName()).toEqual('amiga-os-210-workbench.adf');
-    });
-
-    it('3.0 workbench disk file name', () => {
-        const environmentSetup = new EnvironmentSetup({});
-        environmentSetup.setRom('3.0');
-        expect(environmentSetup.getWorkbenchDiskFileName()).toEqual('amiga-os-300-workbench.adf');
-    });
-
-    it('3.1 workbench disk file name', () => {
-        const environmentSetup = new EnvironmentSetup({});
-        environmentSetup.setRom('3.1');
-        expect(environmentSetup.getWorkbenchDiskFileName()).toEqual('amiga-os-310-workbench.adf');
-    });
-});
-
 it('sets the cpu', () => {
     const environmentSetup = new EnvironmentSetup({});
     environmentSetup.setCPU('68060');
@@ -157,6 +100,14 @@ it('sets the floppy drive', () => {
     expect(environmentSetup.floppyDrive).toEqual(true);
 });
 
+it('sets the cd drive', () => {
+    const environmentSetup = new EnvironmentSetup({});
+    environmentSetup.insertCDISO('/my/location');
+    environmentSetup.insertCDISO('/my/other/location');
+    expect(environmentSetup.disks.CD[0]).toEqual({location: '/my/location'});
+    expect(environmentSetup.disks.CD[1]).toEqual({location: '/my/other/location'});
+});
+
 it('adds HDFs', () => {
     const environmentSetup = new EnvironmentSetup({});
     environmentSetup.attachHDF('dh0:', '/home/drive1');
@@ -168,9 +119,11 @@ it('adds HDFs', () => {
 it('maps folders to drives', () => {
     const environmentSetup = new EnvironmentSetup({});
     environmentSetup.mapFolderToDrive('dh0:', '/home/drive1', 'driveA');
-    environmentSetup.mapFolderToDrive('dh3:', '/home/drive2', 'driveB');
-    expect(environmentSetup.disks.MAPPED_DRIVE[0]).toEqual({drive: 'dh0:', location: '/home/drive1', name: 'driveA'});
-    expect(environmentSetup.disks.MAPPED_DRIVE[1]).toEqual({drive: 'dh3:', location: '/home/drive2', name: 'driveB'});
+    environmentSetup.mapFolderToDrive('dh3:', '/home/drive2', 'driveB', true);
+    expect(environmentSetup.disks.MAPPED_DRIVE[0])
+        .toEqual({drive: 'dh0:', location: '/home/drive1', name: 'driveA', writeable: false});
+    expect(environmentSetup.disks.MAPPED_DRIVE[1])
+        .toEqual({drive: 'dh3:', location: '/home/drive2', name: 'driveB', writeable: true});
 });
 
 it('inserts amiga and non-amiga os ADFs', () => {
@@ -180,30 +133,34 @@ it('inserts amiga and non-amiga os ADFs', () => {
     environmentSetup.insertDisk('df0', {location: '/home/disk1.adf'});
     environmentSetup.insertDisk('df1', {type: 'amigaos', name: 'amiga-os-310-workbench.adf'});
     environmentSetup.insertDisk('df5', {location: '/home/disk2.adf'});
-    expect(environmentSetup.disks.ADF[0]).toEqual({drive: 'df0', location: '/home/disk1.adf'});
+    const bootDiskLocation = path.join(global.BASE_DIR, 'execution', '20200401202930235', 'df0.adf');
+    expect(environmentSetup.disks.ADF[0]).toEqual({drive: 'df0', location: bootDiskLocation});
     const wbDiskLocation = path.join(global.BASE_DIR, 'execution', '20200401202930235', 'df1.adf');
     expect(environmentSetup.disks.ADF[1]).toEqual({drive: 'df1', location: wbDiskLocation});
-    expect(environmentSetup.disks.ADF[2]).toEqual({drive: 'df5', location: '/home/disk2.adf'});
+    const otherDiskLocation = path.join(global.BASE_DIR, 'execution', '20200401202930235', 'df5.adf');
+    expect(environmentSetup.disks.ADF[2]).toEqual({drive: 'df5', location: otherDiskLocation});
 });
 
 it('sets disk permissions for non amiga os disks', () => {
     global.Date = jest.fn(() => new RealDate('2020-04-01T20:29:30.235Z'));
     const environmentSetup = new EnvironmentSetup({osFolder: '/home/osdisks/'});
 
-    environmentSetup.insertDisk('df0:', {location: '/home/disk1.adf'});
+    environmentSetup.insertDisk('df0', {location: '/home/disk1.adf'});
     expect(fs.chmodSync).toHaveBeenCalledTimes(1);
-    expect(fs.chmodSync).toHaveBeenCalledWith('/home/disk1.adf', 0o0666);
+    const diskLocation = path.join(global.BASE_DIR, 'execution', '20200401202930235', 'df0.adf');
+    expect(fs.chmodSync).toHaveBeenCalledWith(diskLocation, 0o0666);
 });
 
-it('copies os disks and sets permissions', () => {
+it('copies disks and sets permissions', () => {
     global.Date = jest.fn(() => new RealDate('2020-04-01T20:29:30.235Z'));
-    const environmentSetup = new EnvironmentSetup({osFolder: '/home/osdisks/'});
-    const wbSourceLocation = path.join('/home/osdisks/', 'amiga-os-310-workbench.adf');
+    const environmentSetup = new EnvironmentSetup({});
+    const wbSourceLocation = '/home/osdisks/amiga-os-310-workbench.adf';
     const wbDestLocation = path.join(global.BASE_DIR, 'execution', '20200401202930235', 'df1.adf');
 
-    environmentSetup.insertDisk('df1', {type: 'amigaos', name: 'amiga-os-310-workbench.adf'});
+    environmentSetup.insertDisk('df1', {location: '/home/osdisks/amiga-os-310-workbench.adf'});
     expect(fs.copyFileSync).toHaveBeenCalledTimes(1);
     expect(fs.copyFileSync).toHaveBeenCalledWith(wbSourceLocation, wbDestLocation);
     expect(fs.chmodSync).toHaveBeenCalledTimes(1);
-    expect(fs.chmodSync).toHaveBeenCalledWith(wbDestLocation, 0o0666);
+    const diskLocation = path.join(global.BASE_DIR, 'execution', '20200401202930235', 'df1.adf');
+    expect(fs.chmodSync).toHaveBeenCalledWith(diskLocation, 0o0666);
 });

@@ -1,10 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const {spawn} = require('child_process');
+const SettingsService = require('../services/SettingsService');
 
 class WinUAEEnvironment {
-    constructor(config, environment) {
-        this.config = config;
+    constructor(environment, settings) {
+        this.settings = settings;
 
         this.uaeRunningConfig = path.join(environment.executionFolder, 'amiga.uae');
         const configFile = fs.openSync(this.uaeRunningConfig, 'w');
@@ -16,8 +17,8 @@ class WinUAEEnvironment {
         fs.writeSync(configFile, 'serial_direct=true\n');
         fs.writeSync(configFile, 'serial_translate=disabled\n');
 
-        fs.writeSync(configFile, `kickstart_rom_file=${path.join(config.romFolder, environment.getRomFileName())}\n`);
-        fs.writeSync(configFile, `rom_path=${config.romFolder}\n`);
+        const romFile = SettingsService.getValue(settings, 'Setup', 'rom310');
+        fs.writeSync(configFile, `kickstart_rom_file=${romFile.file}\n`);
         fs.writeSync(configFile, `cpu_type=${this.getCPUType(environment.getCPU())}\n`);
         const cpuModel = this.getCPUModel(environment.getCPU());
         if (cpuModel) {
@@ -27,6 +28,7 @@ class WinUAEEnvironment {
         fs.writeSync(configFile, `chipmem_size=${Number(environment.chipMem) * 2}\n`);
         fs.writeSync(configFile, `z3mem_size=${environment.fastMem}\n`);
         fs.writeSync(configFile, 'floppy_speed=0\n');
+        fs.writeSync(configFile, 'cpu_speed=max\n');
 
         this.writeDiskConfig(configFile, environment.disks);
 
@@ -54,9 +56,19 @@ class WinUAEEnvironment {
 
         if (disks.MAPPED_DRIVE) {
             disks.MAPPED_DRIVE.forEach((disk) => {
-                fs.writeSync(configFile, `filesystem2=ro,${disk.drive}:${disk.name}:${disk.location},-128\n`);
-                fs.writeSync(configFile, `uaehf${diskIdx}=dir,ro,${disk.drive}:${disk.name}:${disk.location},-128\n`);
+                const readWrite = disk.writeable ? 'rw' : 'ro';
+                fs.writeSync(configFile,
+                    `filesystem2=${readWrite},${disk.drive}:${disk.name}:${disk.location},-128\n`);
+                fs.writeSync(configFile,
+                    `uaehf${diskIdx}=dir,${readWrite},${disk.drive}:${disk.name}:${disk.location},-128\n`);
                 diskIdx += 1;
+            });
+        }
+
+        if (disks.CD) {
+            fs.writeSync(configFile, 'win32.map_cd_drives=true\n');
+            disks.CD.forEach((disk, cdIdx) => {
+                fs.writeSync(configFile, `cdimage${cdIdx}=${disk.location}\n`);
             });
         }
     }
@@ -76,12 +88,15 @@ class WinUAEEnvironment {
     }
 
     stop() {
-        this.winuaeProcess.kill();
+        if (this.winuaeProcess) {
+            this.winuaeProcess.kill();
+        }
     }
 
     start() {
-        const path32 = path.join(this.config.emuRoot, 'WinUAE.exe');
-        const path64 = path.join(this.config.emuRoot, 'WinUAE64.exe');
+        const emulatorRoot = SettingsService.getValue(this.settings, 'Setup', 'emulatorRoot');
+        const path32 = path.join(emulatorRoot.folder, 'WinUAE.exe');
+        const path64 = path.join(emulatorRoot.folder, 'WinUAE64.exe');
         const executablePath = fs.existsSync(path32) ? path32 : path64;
         this.winuaeProcess = spawn(executablePath,
             ['-f', path.join(this.uaeRunningConfig)],

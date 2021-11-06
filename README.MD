@@ -14,7 +14,9 @@ Develop Tests:
 
 ### Config
 If you have an installation of Amiga Forever with the `AMIGAFOREVERDATA` and `AMIGAFOREVERROOT` environment
-variables set, duckbench should pick up ROMs, OS floppies, and WinUAE automatically.
+variables set, duckbench should pick up ROMs, OS floppies, and WinUAE automatically. 
+
+**!! N.B. Duckbench does not currently work with the version of WinUAE bundled with Amiga Forever, so it must be installed manually !!**
 
 If you are not using Amiga Forever you must set the following environment variables:
 
@@ -106,3 +108,17 @@ https://github.com/sodero/InstallerLG
 #### LHA
 * [http://www.osirusoft.com/joejared/lzhformat.html](https://web.archive.org/web/20021005080911/http://www.osirusoft.com/joejared/lzhformat.html)
 * https://fragglet.github.io/lhasa/
+
+### Release process
+npm login  
+npm publish  
+  
+### Issue notes
+* Need WinUAE to get Amiga Programs, Amiga forever doesn't include them
+* Need to make sure settings are validated - what is absolutely necessary for a build
+* Test with different versions of Node
+* E2E test somehow
+
+### Enhancement notes
+* Custom partitions
+* Boing bags

@@ -1,3 +1,9 @@
 body {
     padding-top: 70px;
 }
+
+.message-window {
+    max-height: 99px;
+    overflow-y: auto;
+    min-height: 99px;
+}
