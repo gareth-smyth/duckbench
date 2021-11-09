@@ -38,6 +38,9 @@ beforeEach(() => {
     global.Logger = {info: jest.fn(), trace: jest.fn(), debug: jest.fn()};
 });
 
+const config = {optionValues: {customisePrefs: 'Yes'}};
+const envSetup = {floppyDrive: true};
+
 describe('when the cache does not exist', () => {
     beforeEach(() => {
         fs.existsSync.mockReturnValueOnce(false);
@@ -45,7 +48,7 @@ describe('when the cache does not exist', () => {
 
     it('deletes and recreates the wb install cache', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(communicator.delete)
             .toHaveBeenCalledWith('DB_CLIENT_CACHE:InstallWorkbench310', {'ALL': true}, undefined, /.*/);
@@ -55,7 +58,7 @@ describe('when the cache does not exist', () => {
 
     it('calls unADF for each workbench disk', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(unADF.run).toHaveBeenCalledTimes(6);
         expect(unADF.run).toHaveBeenCalledWith('DB_EXECUTION:', 'install.adf',
@@ -73,12 +76,12 @@ describe('when the cache does not exist', () => {
     });
 
     it('throws an error if it cannot unADF a disk', async () => {
-        unADF.run.mockResolvedValueOnce({}).mockImplementation(() => {
+        unADF.run.mockResolvedValueOnce(config).mockImplementation(() => {
             throw new Error('unadf error');
         });
 
         const installWorkbench310 = new InstallWorkbench310();
-        await expect(installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true}))
+        await expect(installWorkbench310.install(config, communicator, pluginStore, envSetup))
             .rejects.toThrowError('unadf error');
 
         expect(unADF.run).toHaveBeenCalledTimes(2);
@@ -89,7 +92,7 @@ describe('when the cache does not exist', () => {
 
     it('calls the communicator to assign the install disk', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(communicator.assign).toHaveBeenCalledTimes(2);
         expect(communicator.assign).toHaveBeenCalledWith('Install3.1:', 'duckbench:disks/Install3.1');
@@ -97,7 +100,7 @@ describe('when the cache does not exist', () => {
 
     it('calls the communicator to discover if there is a work partition', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(communicator.assign).toHaveBeenCalledTimes(2);
         expect(communicator.assign).toHaveBeenCalledWith('', '', {}, expect.any(Function), 'Volumes:');
@@ -108,7 +111,7 @@ describe('when the cache does not exist', () => {
             throw new Error('assign error');
         });
         const installWorkbench310 = new InstallWorkbench310();
-        await expect(installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true}))
+        await expect(installWorkbench310.install(config, communicator, pluginStore, envSetup))
             .rejects.toThrowError('assign error');
 
         expect(unADF.run).toHaveBeenCalledTimes(6);
@@ -119,7 +122,7 @@ describe('when the cache does not exist', () => {
 
     it('calls patch for the install file', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(patch.run).toHaveBeenCalledTimes(1);
         expect(patch.run).toHaveBeenCalledWith('Install3.1:Install/Install', 'DB_EXECUTION:wb3.1_install.patch',
@@ -132,7 +135,7 @@ describe('when the cache does not exist', () => {
         });
 
         const installWorkbench310 = new InstallWorkbench310();
-        await expect(installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true}))
+        await expect(installWorkbench310.install(config, communicator, pluginStore, envSetup))
             .rejects.toThrowError('patch error');
 
         expect(unADF.run).toHaveBeenCalledTimes(6);
@@ -143,7 +146,7 @@ describe('when the cache does not exist', () => {
 
     it('calls installerLG to install workbench', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(installerLG.run).toHaveBeenCalledTimes(1);
         expect(installerLG.run).toHaveBeenCalledWith('Install3.1:Install/Install',
@@ -157,7 +160,7 @@ describe('when the cache does not exist', () => {
         });
 
         const installWorkbench310 = new InstallWorkbench310();
-        await expect(installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true}))
+        await expect(installWorkbench310.install(config, communicator, pluginStore, envSetup))
             .rejects.toThrowError('installerLG error');
 
         expect(unADF.run).toHaveBeenCalledTimes(6);
@@ -175,7 +178,7 @@ describe('when the cache does not exist', () => {
         });
 
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(Logger.info).toHaveBeenCalledWith('10%');
     });
@@ -190,14 +193,14 @@ describe('when the cache does not exist', () => {
         });
 
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(Logger.trace).toHaveBeenCalledWith(JSON.stringify(event));
     });
 
     it('calls patch for the startup sequence if there is no floppy', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: false});
+        await installWorkbench310.install(config, communicator, pluginStore, {floppyDrive: false});
 
         expect(patch.run).toHaveBeenCalledTimes(2);
         expect(patch.run).toHaveBeenCalledWith('DH0:s/startup-sequence', 'DB_EXECUTION:wb3.1_no_floppy_startup.patch',
@@ -205,18 +208,36 @@ describe('when the cache does not exist', () => {
     });
 
     it('throws an error if patching startup sequence fails', async () => {
-        patch.run.mockResolvedValueOnce({}).mockImplementation(() => {
+        patch.run.mockResolvedValueOnce(config).mockImplementation(() => {
             throw new Error('patch startup error');
         });
 
         const installWorkbench310 = new InstallWorkbench310();
-        await expect(installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: false}))
+        await expect(installWorkbench310.install(config, communicator, pluginStore, {floppyDrive: false}))
             .rejects.toThrowError('patch startup error');
 
         expect(unADF.run).toHaveBeenCalledTimes(6);
         expect(communicator.assign).toHaveBeenCalledTimes(1);
         expect(patch.run).toHaveBeenCalledTimes(2);
         expect(installerLG.run).toHaveBeenCalledTimes(1);
+    });
+
+    it('copies the screen mode prefs when customisePrefs is Yes', async () => {
+        const installWorkbench310 = new InstallWorkbench310();
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
+
+        const copyCommand = communicator.copy;
+        expect(copyCommand).toHaveBeenCalledTimes(5);
+        expect(copyCommand).toHaveBeenCalledWith('DB_EXECUTION:screenmode.prefs', 'dh0:prefs/Env-Archive/sys');
+    });
+
+    it('does not copy the screen mode prefs when customisePrefs is Yes', async () => {
+        const installWorkbench310 = new InstallWorkbench310();
+        await installWorkbench310.install({optionValues: {customisePrefs: 'No'}}, communicator, pluginStore, envSetup);
+
+        const copyCommand = communicator.copy;
+        expect(copyCommand).toHaveBeenCalledTimes(4);
+        expect(copyCommand).not.toHaveBeenCalledWith('DB_EXECUTION:screenmode.prefs', 'dh0:prefs/Env-Archive/sys');
     });
 });
 
@@ -227,7 +248,7 @@ describe('when the cache is already populated', () => {
 
     it('does not delete and recreate the wb install cache', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(communicator.delete).toHaveBeenCalledTimes(0);
         expect(communicator.makedir).not.toHaveBeenCalledWith('DB_CLIENT_CACHE:InstallWorkbench310');
@@ -236,14 +257,14 @@ describe('when the cache is already populated', () => {
 
     it('does not calls unADF for each workbench disk', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(unADF.run).toHaveBeenCalledTimes(0);
     });
 
     it('does not call the communicator to assign the install disk', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(communicator.assign).toHaveBeenCalledTimes(1);
         expect(communicator.assign).not.toHaveBeenCalledWith('Install3.1:', 'duckbench:disks/Install3.1');
@@ -251,21 +272,21 @@ describe('when the cache is already populated', () => {
 
     it('does not call patch for the install file', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(patch.run).toHaveBeenCalledTimes(0);
     });
 
     it('does not call installerLG to install workbench', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(installerLG.run).toHaveBeenCalledTimes(0);
     });
 
     it('calls patch for the startup sequence if there is no floppy', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: false});
+        await installWorkbench310.install(config, communicator, pluginStore, {floppyDrive: false});
 
         expect(patch.run).toHaveBeenCalledTimes(1);
         expect(patch.run).toHaveBeenCalledWith('DH0:s/startup-sequence', 'DB_EXECUTION:wb3.1_no_floppy_startup.patch',
@@ -278,7 +299,7 @@ describe('when the cache is already populated', () => {
         });
 
         const installWorkbench310 = new InstallWorkbench310();
-        await expect(installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: false}))
+        await expect(installWorkbench310.install(config, communicator, pluginStore, {floppyDrive: false}))
             .rejects.toThrowError('patch startup error');
 
         expect(patch.run).toHaveBeenCalledTimes(1);
@@ -292,7 +313,7 @@ describe('setting up the new workbench', () => {
 
     it('copys AUX: to devs and adds newshell to user-startup', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(communicator.copy)
             .toHaveBeenCalledWith('dh0:storage/dosdrivers/aux', 'dh0:devs/dosdrivers/aux', {'CLONE': true});
@@ -303,7 +324,7 @@ describe('setting up the new workbench', () => {
 
     it('ejects the floppies and restarts', async () => {
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(winUAETools.ejectFloppy).toHaveBeenCalledWith('duckbench:c/', 1, communicator, pluginStore);
         expect(winUAETools.ejectFloppy).toHaveBeenCalledWith('duckbench:c/', 2, communicator, pluginStore);
@@ -319,7 +340,7 @@ describe('setting up the new workbench', () => {
         });
 
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(communicator.makedir).toHaveBeenCalledWith('dh0:Work');
         expect(communicator.copy).toHaveBeenCalledWith('dh0:Tools.info', 'dh0:Work.info');
@@ -335,7 +356,7 @@ describe('setting up the new workbench', () => {
         });
 
         const installWorkbench310 = new InstallWorkbench310();
-        await installWorkbench310.install({}, communicator, pluginStore, {floppyDrive: true});
+        await installWorkbench310.install(config, communicator, pluginStore, envSetup);
 
         expect(communicator.makedir).not.toHaveBeenCalledWith('dh0:Work');
         expect(communicator.copy).not.toHaveBeenCalledWith('dh0:Tools.info', 'dh0:Work.info');

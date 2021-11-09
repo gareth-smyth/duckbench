@@ -1,5 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
+const {ScreenMode, HIRES_LACED} = require('../../services/prefs/ScreenMode');
 
 class InstallWorkbench310 {
     constructor() {
@@ -70,6 +71,14 @@ class InstallWorkbench310 {
         this.copyNoFloppyPatch(environmentSetup);
         this.copyInstallKey(environmentSetup);
         this.prepareDisks(settings, environmentSetup);
+        this.createConfig(environmentSetup, config.optionValues.customisePrefs);
+    }
+
+    createConfig(environmentSetup, customise) {
+        if (customise === 'Yes') {
+            const screenMode = new ScreenMode(HIRES_LACED, 8);
+            ScreenMode.write(screenMode, path.join(environmentSetup.executionFolder, 'screenmode.prefs'));
+        }
     }
 
     copyInstallKey(environmentSetup) {
@@ -123,6 +132,10 @@ class InstallWorkbench310 {
             const installedStartupSequence = 'DH0:s/startup-sequence';
             const startupSequencePatch = `DB_EXECUTION:wb${this.identifier}_no_floppy_startup.patch`;
             await patch.run(installedStartupSequence, startupSequencePatch, 'duckbench:c/', {}, communicator);
+        }
+
+        if (config.optionValues.customisePrefs === 'Yes') {
+            await communicator.copy('DB_EXECUTION:screenmode.prefs', 'dh0:prefs/Env-Archive/sys');
         }
 
         await communicator.copy('dh0:storage/dosdrivers/aux', 'dh0:devs/dosdrivers/aux', {'CLONE': true});
