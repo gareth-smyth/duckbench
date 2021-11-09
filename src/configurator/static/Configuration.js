@@ -11,7 +11,7 @@ export default class Configuration {
         this.setSelectedPluginName(workbenchPlugin.id, 'InstallWorkbench390');
 
         const systemPlugin = this.addSelectedPlugin('system');
-        this.setSelectedPluginName(systemPlugin.id, 'CD32');
+        this.setSelectedPluginName(systemPlugin.id, 'Amiga1200');
     }
 
     setSettings(settings) {

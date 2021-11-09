@@ -29,6 +29,7 @@ class WinUAEEnvironment {
         fs.writeSync(configFile, `z3mem_size=${environment.fastMem}\n`);
         fs.writeSync(configFile, 'floppy_speed=0\n');
         fs.writeSync(configFile, 'cpu_speed=max\n');
+        fs.writeSync(configFile, 'chipset=aga\n');
 
         this.writeDiskConfig(configFile, environment.disks);
 
