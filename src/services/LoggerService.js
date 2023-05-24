@@ -1,4 +1,9 @@
 /* istanbul ignore file */
-const log = require('pino')();
-
+const pino = require('pino');
+const log = pino({
+    transport: {
+        target: 'pino-pretty',
+    },
+});
+log.level = 'trace';
 global.Logger = log;

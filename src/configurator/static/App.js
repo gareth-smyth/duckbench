@@ -1,6 +1,7 @@
 import Configuration from './Configuration.js';
 import PluginSelect from './PluginSelect.js';
 import Settings from './settings/Settings.js';
+import Build from './Build.js';
 
 export default class App {
     constructor() {
@@ -45,13 +46,6 @@ export default class App {
                         ]),
                     ),
                 ]),
-                m('.container.mt-1.message-window',
-                    m('ul.list-group',
-                        this.messages.slice().reverse().map((message) => {
-                            return m(`li.list-group-item.list-group-item-${message.type}`, {key: message.key}, message.text);
-                        }),
-                    ),
-                ),
             m("", [
                 m('.container.section-container', [
                     m('h2.mb-4.mt-4', "How would you like to partition your hard drives?"),
@@ -92,7 +86,7 @@ export default class App {
                     m('.mt-4', [
                         m('button.btn.btn-primary', {onclick: () => this.configuration.addSelectedPlugin() }, "Add"),
                     ]),
-                    m('button.btn.btn-success.mt-5', {onclick: this.runBuild.bind(this)}, "Build Workbench"),
+                    m('button.btn.btn-success.mt-5', {'data-toggle': 'modal', 'data-target': '#buildModal', onclick: this.runBuild.bind(this)}, "Build Workbench"),
                 ]),
             ]),
             m('.modal', {id: 'settingsModal'}, [
@@ -113,12 +107,35 @@ export default class App {
                     ]),
                 ]),
             ]),
-            ];
+            m('.modal', {id: 'buildModal'}, [
+                m('.modal-dialog.modal-lg', [
+                    m('.modal-content', [
+                        m('.modal-header', [
+                            m('h3', 'Build status'),
+                            m('button.close', {'data-dismiss': 'modal'}, [
+                                m('span', [m.trust('&times;')]),
+                            ]),
+                        ]),
+                        m('.modal-body', [m(Build, { messages: this.messages })]),
+                    ]),
+                ]),
+            ])];
         } else {
             return m("main", [
                 m('h2', 'Duckbench'),
                 m('div', 'Loading plugins and settings...'),
             ]);
+        }
+    }
+
+    findMessage(messages, id) {
+        for(let msgIdx = 0; msgIdx < messages.length; msgIdx++) {
+            const message = messages[msgIdx];
+            if(message.id === id) {
+                return message;
+            } else if(message.children.length) {
+                messages.push(...message.children);
+            }
         }
     }
 
@@ -130,11 +147,26 @@ export default class App {
                 config: this.configuration.selectedPlugins,
                 settings: this.configuration.currentSettings,
             }));
+            this.messages.length = 0;
         };
         ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            this.messages.push({...data, key: Date.now()});
+            if(data.parentId) {
+                const parentMessage = this.findMessage(this.messages.slice(), data.parentId);
+                parentMessage.children.push({...data, startAt: Date.now(), updateAt: Date.now(), children: [], type: 'info'});
+            } else if(data.action === 'update') {
+                const originalMessage = this.findMessage(this.messages.slice(), data.id);
+                Object.assign(originalMessage, data, {updateAt: Date.now()});
+                if(data.percentComplete === 100) {
+                    originalMessage.type = 'success';
+                }
+            } else {
+                this.messages.push({...data, startAt: Date.now(), updateAt: Date.now(), children: [], type: 'info'});
+            }
             m.redraw();
+            setInterval(() => {
+                m.redraw();
+            }, 900);
         }
     }
 

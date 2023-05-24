@@ -3,13 +3,10 @@ const fs = require('fs');
 const path = require('path');
 const URL = require('url').URL;
 const WebSocket = require('ws');
-const DuckbenchBuilder = require('../builder/DuckbenchBuilder');
+const {Worker} = require('worker_threads');
 const PluginStore = require('../builder/PluginStore');
-const Communicator = require('../builder/Communicator');
 const SettingsService = require('../services/SettingsService');
-const WinUAEEnvironment = require('../builder/WinUAEEnvironment');
 const ValidationError = require('../errors/ValidationError');
-
 
 class Configurator {
     start() {
@@ -23,20 +20,35 @@ class Configurator {
             socket.on('message', (message) => {
                 Logger.trace(`Message received - ${message}`);
                 const payload = JSON.parse(message);
-                switch(payload.command) {
+                switch (payload.command) {
                 case 'RUN':
                     Logger.trace('Running duckbench builder');
-                    socket.send(JSON.stringify({ type: 'warning', text: 'Running builder' }));
-                    new DuckbenchBuilder().build(payload.config, WinUAEEnvironment, Communicator, payload.settings).then(() => {
-                        socket.send(JSON.stringify({ type: 'info', text: 'Build complete' }));
-                    }).catch((err) => {
-                        if(err instanceof ValidationError) {
-                            err.validationErrors.forEach(error => {
-                               socket.send(JSON.stringify({type: 'danger', text: `Build failed ${error.text}`}))
+                    const worker = new Worker('./src/builder/DuckbenchBuilder.js', {
+                        workerData: {
+                            config: payload.config,
+                            settings: payload.settings,
+                        },
+                    });
+
+                    worker.on('exit', (code) => {
+                        if (code !== 0) {
+                            socket.send(JSON.stringify({
+                                type: 'danger',
+                                text: `Error code ${code} building workbench`,
+                            }));
+                        }
+                    });
+                    worker.on('error', (error) => {
+                        if (error instanceof ValidationError) {
+                            error.validationErrors.forEach(error => {
+                                socket.send(JSON.stringify({type: 'error', text: `Build failed ${error.text}`}));
                             });
                         } else {
-                            socket.send(JSON.stringify({type: 'danger', text: `Build failed ${err}`}));
+                            socket.send(JSON.stringify({type: 'error', text: `Build failed ${error}`}));
                         }
+                    });
+                    worker.on('message', (message) => {
+                        socket.send(JSON.stringify(message));
                     });
                     break;
                 default:

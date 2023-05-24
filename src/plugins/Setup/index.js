@@ -44,6 +44,7 @@ class Setup {
     }
 
     async prepare(config, environmentSetup, settings) {
+        let expectedTime = 20000;
         const bootDiskFileName = path.join(environmentSetup.executionFolder, 'boot.adf');
         Logger.info(`Creating boot disk at ${bootDiskFileName}`);
         ADFService.createBootableADF(bootDiskFileName, 'DuckBoot');
@@ -73,6 +74,7 @@ class Setup {
             Logger.debug('Creating DB1: as DB_CLIENT_CACHE: as new HDF');
             await HardDriveService.createRDB(cacheLocation, 250, [{driveName: 'DB1', fileSystem: 'pfs', size: 250}]);
         } else {
+            expectedTime -= 10000;
             Logger.debug('Using existing HDF as DB1: as DB_CLIENT_CACHE:');
         }
         environmentSetup.attachHDF('DB1', cacheLocation);
@@ -81,11 +83,13 @@ class Setup {
         const location = path.join(environmentSetup.executionFolder, 'duckbench.hdf');
         await HardDriveService.createRDB(location, 100, [{driveName: 'DB0', fileSystem: 'pfs', size: 100}]);
         environmentSetup.attachHDF('DB0', location);
+
+        config.progress.setExpectations('Setting up the emulator', expectedTime);
     }
 
     async install(config, communicator, pluginStore) {
         const enterFile = await pluginStore.getPlugin('RedirectInputFile').createInput([''], communicator);
-
+        config.progress.start();
         try {
             const expectedResponse = 'DB_CLIENT_CACHE: not assigned';
             await communicator.assign('DB_CLIENT_CACHE:', '', {'EXISTS': true}, undefined, expectedResponse);
@@ -93,6 +97,7 @@ class Setup {
             await communicator.format('DB1', 'DB_CLIENT_CACHE', {
                 ffs: true, quick: true, intl: true, noicons: true, REDIRECT_IN: enterFile,
             });
+            config.progress.progress(50);
         } catch (err) {
             Logger.debug('Using existing formatted HDF as DB1: as DB_CLIENT_CACHE:');
         }
@@ -101,6 +106,7 @@ class Setup {
         await communicator.format('DB0', 'DUCKBENCH', {
             ffs: true, quick: true, intl: true, noicons: true, REDIRECT_IN: enterFile,
         });
+        config.progress.progress(90);
 
         await communicator.makedir('duckbench:c');
         await communicator.path('duckbench:c', {ADD: true});
@@ -109,6 +115,7 @@ class Setup {
         await communicator.makedir('duckbench:disks');
         await communicator.assign('t:', 'duckbench:t');
         await communicator.assign('envarc:', 'duckbench:envarc');
+        config.progress.progress(100);
     }
 }
 

@@ -68,7 +68,7 @@ class EnvironmentSetup {
     }
 
     destroy() {
-        fs.rmdirSync(this.executionFolder, {recursive: true});
+        fs.rmSync(this.executionFolder, {recursive: true, force: true});
     }
 }
 

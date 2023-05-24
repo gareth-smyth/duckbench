@@ -3,7 +3,7 @@ body {
 }
 
 .message-window {
-    max-height: 99px;
+    max-height: 399px;
     overflow-y: auto;
-    min-height: 99px;
+    min-height: 399px;
 }

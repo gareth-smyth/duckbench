@@ -1,35 +1,49 @@
+const {workerData} = require('worker_threads');
+require('../services/BaseDirService');
+require('../services/LoggerService');
+
+const Communicator = require('../builder/Communicator');
+const WinUAEEnvironment = require('../builder/WinUAEEnvironment');
 const Runner = require('./Runner');
 const EnvironmentSetup = require('./EnvironmentSetup');
 
 class DuckbenchBuilder {
-    constructor() {
-        this.environment = undefined;
-        this.communicator = undefined;
-    }
-
-    async build(config, Environment, Communicator, settings) {
-        const environmentSetup = new EnvironmentSetup(settings);
-
-        const runner = new Runner();
+    build(config, Environment, Communicator, settings) {
         try {
+            this.envSetup = new EnvironmentSetup(settings);
+            const runner = new Runner();
             runner.configureAndSetup({name: 'Setup'}, config);
-            runner.validate(environmentSetup, settings);
-            await runner.prepare(environmentSetup, settings);
-            await this.executeBuild(Environment, environmentSetup, settings, Communicator, runner);
+            runner.validate(this.envSetup, settings);
+            return runner.prepare(this.envSetup, settings).then(() => {
+                return this.executeBuild(Environment, this.envSetup, settings, Communicator, runner).then(() => {
+                    this.shutdown(this.envSetup);
+                }).catch((err) => {
+                    this.shutdown(this.envSetup);
+                    Logger.trace(err);
+                });
+            }).catch((err) => {
+                this.shutdown(this.envSetup);
+                Logger.trace(err);
+            });
         } catch (err) {
+            this.shutdown(this.envSetup);
             Logger.trace(err);
             throw err;
-        } finally {
-            if (this.communicator) {
-                this.communicator.close();
-            }
-            if (this.environment) {
-                this.environment.stop();
-            }
-            environmentSetup.destroy();
-            Logger.info('Build complete.');
         }
     };
+
+    shutdown(environmentSetup) {
+        if (this.communicator) {
+            this.communicator.close();
+        }
+        if (this.environment) {
+            this.environment.stop();
+        }
+        if (this.envSetup) {
+            environmentSetup.destroy();
+        }
+        Logger.info('Build complete.');
+    }
 
     async executeBuild(Environment, environmentSetup, settings, Communicator, runner) {
         this.environment = new Environment(environmentSetup, settings);
@@ -58,4 +72,10 @@ class DuckbenchBuilder {
     }
 }
 
-module.exports = DuckbenchBuilder;
+try {
+    const duckbenchBuilder = new DuckbenchBuilder();
+    return duckbenchBuilder.build(workerData.config, WinUAEEnvironment, Communicator, workerData.settings);
+} catch (error) {
+    Logger.error(error);
+    throw error;
+}
