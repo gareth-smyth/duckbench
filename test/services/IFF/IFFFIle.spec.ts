@@ -1,13 +1,14 @@
 import IFFFIle from '../../../src/services/IFF/IFFFile';
 import {HIRES_LACED} from '../../../src/services/prefs/ScreenMode';
 import fs from 'fs';
+import IFFWrapperChunk from "../../../src/services/IFF/IFFWrapperChunk";
 
 afterAll(() => {
     fs.unlinkSync('./test/services/IFF/testfile-test.iff');
 });
 
 it('reads a file correctly', () => {
-    const file = IFFFIle.read('./test/services/IFF/testfile.iff');
+    const file = IFFFIle.read('./test/services/IFF/testfile.iff') as IFFWrapperChunk;
     expect(file.type).toEqual('FORM');
     expect(file.groupType).toEqual('PREF');
     expect(file.children[0].type).toEqual('PRHD');
@@ -19,7 +20,7 @@ it('reads a file correctly', () => {
 it('writes a file correctly', () => {
     const file = IFFFIle.read('./test/services/IFF/testfile.iff');
     IFFFIle.write('./test/services/IFF/testfile-test.iff', file);
-    const writtenFile = IFFFIle.read('./test/services/IFF/testfile-test.iff');
+    const writtenFile = IFFFIle.read('./test/services/IFF/testfile-test.iff') as IFFWrapperChunk;
     expect(writtenFile.type).toEqual('FORM');
     expect(writtenFile.groupType).toEqual('PREF');
     expect(writtenFile.children[0].type).toEqual('PRHD');

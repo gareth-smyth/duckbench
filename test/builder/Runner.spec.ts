@@ -1,5 +1,6 @@
-const MockPluginStore = jest.fn();
-jest.doMock('../../src/builder/PluginStore', () => MockPluginStore);
+import PluginStore from "../../src/builder/PluginStore";
+
+jest.mock('../../src/builder/PluginStore');
 const mockPluginStoreInstance = {
     hasPlugin: jest.fn(),
     create: jest.fn(),
@@ -7,7 +8,7 @@ const mockPluginStoreInstance = {
     getPlugin: jest.fn(),
 };
 beforeEach(() => {
-    MockPluginStore.mockImplementation(() => mockPluginStoreInstance);
+    (PluginStore as unknown as jest.Mock).mockImplementation(() => mockPluginStoreInstance);
 });
 
 import Runner from '../../src/builder/Runner';

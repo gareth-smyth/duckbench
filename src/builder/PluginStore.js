@@ -17,14 +17,15 @@ export default class PluginStore {
         plugins.sort();
         await pluginsDir.close();
         return Promise.all(plugins.filter((pluginDir) => pluginDir.isDirectory()).map(async (pluginDir) => {
-            const Plugin = await import(path.join(pluginPath, pluginDir.name));
+            const Plugin = (await import(path.join(pluginPath, pluginDir.name))).default;
+            console.log(Plugin)
             const plugin = new Plugin();
             return plugin.structure();
         }));
     }
 
     async create(pluginName) {
-        const Plugin = await import(`../plugins/${pluginName}`);
+        const Plugin = (await import(`../plugins/${pluginName}`)).default;
         return new Plugin();
     }
 

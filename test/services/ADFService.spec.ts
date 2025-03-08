@@ -4,11 +4,11 @@ import path from 'path';
 
 import adfService from '../../src/services/ADFService';
 
-const createdFiles = [];
+const createdFiles: string[] = [];
 const littleTempFileName = path.join(os.tmpdir(), 'testfile.txt');
 
 beforeEach(() => {
-    fs.writeFileSync(littleTempFileName, Buffer.alloc(10, 2, 'UTF-8'));
+    fs.writeFileSync(littleTempFileName, Buffer.alloc(10, 2, 'utf-8'));
     createdFiles.push(littleTempFileName);
 });
 
@@ -48,7 +48,7 @@ it('creates files', () => {
 
 it('handles attempts to overfill the disk', () => {
     const bigTempFileName = path.join(os.tmpdir(), 'bigTestFile.txt');
-    fs.writeFileSync(bigTempFileName, Buffer.alloc(35000, 2, 'UTF-8'));
+    fs.writeFileSync(bigTempFileName, Buffer.alloc(35000, 2, 'utf-8'));
     const diskFileName = path.join(os.tmpdir(), 'testCreated7.adf');
     createdFiles.push(diskFileName);
     createdFiles.push(bigTempFileName);

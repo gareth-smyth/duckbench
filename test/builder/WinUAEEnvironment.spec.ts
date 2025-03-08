@@ -6,6 +6,7 @@ import WinUAEEnvironment from '../../src/builder/WinUAEEnvironment';
 
 jest.mock('child_process');
 jest.mock('fs');
+const mockedFs = fs as jest.Mocked<typeof fs>;
 
 const settings = {'Setup': [
     {name: 'emulatorRoot', value: {folder: '/path/to/winuae/'}},
@@ -43,7 +44,7 @@ it('kills the winuae process', () => {
         settings,
     );
     const process = {kill: jest.fn()};
-    spawn.mockReturnValueOnce(process);
+    (spawn as jest.Mock).mockReturnValueOnce(process);
     environment.start();
     environment.stop();
     expect(process.kill).toHaveBeenCalledTimes(1);
@@ -55,33 +56,31 @@ it('does not kill the winuae process when it does not exist', () => {
             getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
         settings,
     );
-    spawn.mockReturnValueOnce(undefined);
+    (spawn as jest.Mock).mockReturnValueOnce(undefined);
     environment.start();
     environment.stop();
 });
 
 it('writes the non-configurable parts of the config', () => {
-    const someFile = 'someFile';
-    fs.openSync.mockReturnValueOnce(someFile);
+    mockedFs.openSync.mockReturnValueOnce(112);
     new WinUAEEnvironment(
         {executionFolder: '/some/folder', disks: {}, rom: 'a_rom',
             getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
         settings,
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'use_gui=no\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, '// headless=true\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'use_debugger=true\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'win32.serial_port=TCP://0.0.0.0:1234\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'serial_direct=true\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'serial_translate=disabled\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'floppy_speed=0\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_speed=max\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'use_gui=no\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, '// headless=true\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'use_debugger=true\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'win32.serial_port=TCP://0.0.0.0:1234\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'serial_direct=true\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'serial_translate=disabled\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'floppy_speed=0\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'cpu_speed=max\n');
 });
 
 it('writes the non-disk or cpu related parts of the config', () => {
-    const someFile = 'someFile';
-    fs.openSync.mockReturnValueOnce(someFile);
+    mockedFs.openSync.mockReturnValueOnce(112);
     new WinUAEEnvironment(
         {
             executionFolder: '/some/folder', disks: {}, rom: 'arom', cpu: '68000',
@@ -91,14 +90,13 @@ it('writes the non-disk or cpu related parts of the config', () => {
         settings,
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'kickstart_rom_file=some/place\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'chipmem_size=8\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'z3mem_size=someMem\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'kickstart_rom_file=some/place\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'chipmem_size=8\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'z3mem_size=someMem\n');
 });
 
 it('writes the cpu related parts of the config for a non-68030', () => {
-    const someFile = 'someFile';
-    fs.openSync.mockReturnValueOnce(someFile);
+    mockedFs.openSync.mockReturnValueOnce(112);
     new WinUAEEnvironment(
         {
             executionFolder: '/some/folder', disks: {}, rom: 'arom', cpu: '68000',
@@ -107,12 +105,11 @@ it('writes the cpu related parts of the config for a non-68030', () => {
         },
         settings,
     );
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_type=68020\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'cpu_type=68020\n');
 });
 
 it('writes the cpu related parts of the config for a 68030', () => {
-    const someFile = 'someFile';
-    fs.openSync.mockReturnValueOnce(someFile);
+    mockedFs.openSync.mockReturnValueOnce(112);
     new WinUAEEnvironment(
         {
             executionFolder: '/some/folder', disks: {}, rom: 'arom', cpu: '68000',
@@ -121,13 +118,12 @@ it('writes the cpu related parts of the config for a 68030', () => {
         },
         settings,
     );
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_type=68020\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cpu_model=68030\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'cpu_type=68020\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'cpu_model=68030\n');
 });
 
 it('writes the floppy related parts of the config', () => {
-    const someFile = 'someFile';
-    fs.openSync.mockReturnValueOnce(someFile);
+    mockedFs.openSync.mockReturnValueOnce(112);
     new WinUAEEnvironment(
         {
             executionFolder: '/some/folder',
@@ -142,13 +138,12 @@ it('writes the floppy related parts of the config', () => {
         settings,
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'floppy0=some/disk.adf\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'floppy2=some/disk2.adf\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'floppy0=some/disk.adf\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'floppy2=some/disk2.adf\n');
 });
 
 it('writes the CD related parts of the config', () => {
-    const someFile = 'someFile';
-    fs.openSync.mockReturnValueOnce(someFile);
+    mockedFs.openSync.mockReturnValueOnce(112);
     new WinUAEEnvironment(
         {
             executionFolder: '/some/folder',
@@ -159,14 +154,13 @@ it('writes the CD related parts of the config', () => {
         settings,
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'win32.map_cd_drives=true\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cdimage0=some/disk.file\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'cdimage1=some/disk2.iso\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'win32.map_cd_drives=true\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'cdimage0=some/disk.file\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'cdimage1=some/disk2.iso\n');
 });
 
 it('writes the uaehf related parts of the config', () => {
-    const someFile = 'someFile';
-    fs.openSync.mockReturnValueOnce(someFile);
+    mockedFs.openSync.mockReturnValueOnce(112);
     new WinUAEEnvironment(
         {
             executionFolder: '/some/folder',
@@ -183,12 +177,12 @@ it('writes the uaehf related parts of the config', () => {
         settings,
     );
     expect(fs.openSync).toHaveBeenCalledWith(path.join('/some/folder/', 'amiga.uae'), 'w');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'hardfile2=rw,dh0:some/disk.hdf,0,0,0,512,0,,uae0\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'uaehf0=hdf,rw,dh0:some/disk.hdf,0,0,0,512,0,,uae0\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'hardfile2=rw,dh4:some/disk2.hdf,0,0,0,512,0,,uae1\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'uaehf1=hdf,rw,dh4:some/disk2.hdf,0,0,0,512,0,,uae1\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'filesystem2=rw,dh3:drive1:some/folder,-128\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'uaehf2=dir,rw,dh3:drive1:some/folder,-128\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'filesystem2=ro,dh2:drive2:some/folder2,-128\n');
-    expect(fs.writeSync).toHaveBeenCalledWith(someFile, 'uaehf3=dir,ro,dh2:drive2:some/folder2,-128\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'hardfile2=rw,dh0:some/disk.hdf,0,0,0,512,0,,uae0\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'uaehf0=hdf,rw,dh0:some/disk.hdf,0,0,0,512,0,,uae0\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'hardfile2=rw,dh4:some/disk2.hdf,0,0,0,512,0,,uae1\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'uaehf1=hdf,rw,dh4:some/disk2.hdf,0,0,0,512,0,,uae1\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'filesystem2=rw,dh3:drive1:some/folder,-128\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'uaehf2=dir,rw,dh3:drive1:some/folder,-128\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'filesystem2=ro,dh2:drive2:some/folder2,-128\n');
+    expect(fs.writeSync).toHaveBeenCalledWith(112, 'uaehf3=dir,ro,dh2:drive2:some/folder2,-128\n');
 });

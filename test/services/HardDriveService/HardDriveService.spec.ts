@@ -19,14 +19,15 @@ function cleanTemp() {
     }
 }
 
+const OLD_CACHE_DIR: string = global.CACHE_DIR
+
 beforeEach(() => {
-    global.OLD_CACHE_DIR = global.CACHE_DIR;
     global.CACHE_DIR = __dirname;
     cleanTemp();
 });
 
 afterEach(() => {
-    global.CACHE_DIR = global.OLD_CACHE_DIR;
+    global.CACHE_DIR = OLD_CACHE_DIR;
     cleanTemp();
 });
 

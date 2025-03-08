@@ -11,7 +11,7 @@ export default class Communicator {
     }
 
     /* istanbul ignore next */
-    noCallback(callbackValue) { }
+    noCallback(_callbackValue) { }
 
     async run(commandString, options, commandCallback, expectedResponse) {
         return this.commandRunner.run(commandString, options, commandCallback, expectedResponse);

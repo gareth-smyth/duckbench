@@ -1,11 +1,12 @@
+import EnvironmentSetup from "../../src/builder/EnvironmentSetup";
+import Runner from "../../src/builder/Runner";
+
 const MockEnvironment = jest.fn();
 const MockCommunicator = jest.fn();
-const MockEnvironmentSetup = jest.fn();
-const MockRunner = jest.fn();
 
 jest.mock('../../src/plugins/Setup');
-jest.mock('../../src/builder/Runner', () => MockRunner);
-jest.doMock('../../src/builder/EnvironmentSetup', () => MockEnvironmentSetup);
+jest.mock('../../src/builder/Runner');
+jest.mock('../../src/builder/EnvironmentSetup');
 
 import DuckbenchBuilder from '../../src/builder/DuckbenchBuilder';
 
@@ -32,14 +33,14 @@ const mockCommunicatorInstance = {
     close: jest.fn(),
 };
 
-let duckbenchBuilder;
+let duckbenchBuilder: DuckbenchBuilder;
 
 beforeEach(() => {
     jest.resetAllMocks();
     MockEnvironment.mockImplementation(() => mockEnvironmentInstance);
     MockCommunicator.mockImplementation(() => mockCommunicatorInstance);
-    MockEnvironmentSetup.mockImplementation(() => mockEnvironmentSetupInstance);
-    MockRunner.mockImplementation(() => mockRunnerInstance);
+    (EnvironmentSetup as jest.Mock).mockImplementation(() => mockEnvironmentSetupInstance);
+    (Runner as jest.Mock).mockImplementation(() => mockRunnerInstance);
     mockRunnerInstance.prepare.mockResolvedValue({});
     mockRunnerInstance.finalise.mockResolvedValue({});
     mockRunnerInstance.validate.mockReturnValue([]);
@@ -50,8 +51,8 @@ beforeEach(() => {
 it('creates and destroys an environment setup .', async () => {
     await duckbenchBuilder.build([], MockEnvironment, MockCommunicator, 'settings');
 
-    expect(MockEnvironmentSetup).toHaveBeenCalledTimes(1);
-    expect(MockEnvironmentSetup).toHaveBeenCalledWith('settings');
+    expect(EnvironmentSetup).toHaveBeenCalledTimes(1);
+    expect(EnvironmentSetup).toHaveBeenCalledWith('settings');
     expect(mockEnvironmentSetupInstance.destroy).toHaveBeenCalledTimes(1);
     expect(mockEnvironmentSetupInstance.destroy).toHaveBeenCalledWith();
 });
@@ -79,8 +80,8 @@ it('creates a communicator, connects to it and closes it', async () => {
 it('creates a runner, configures, prepares, installs and finalises', async () => {
     await duckbenchBuilder.build(['plugin_config1', 'plugin_config2'], MockEnvironment, MockCommunicator, 'settings');
 
-    expect(MockRunner).toHaveBeenCalledTimes(1);
-    expect(MockRunner).toHaveBeenCalledWith();
+    expect(Runner).toHaveBeenCalledTimes(1);
+    expect(Runner).toHaveBeenCalledWith();
     expect(mockRunnerInstance.configureAndSetup).toHaveBeenCalledTimes(1);
     expect(mockRunnerInstance.configureAndSetup).toHaveBeenCalledWith(
         {name: 'Setup'}, ['plugin_config1', 'plugin_config2'],
@@ -100,11 +101,11 @@ it('throws an exception when finalising the environment fails', async () => {
     });
 
     return duckbenchBuilder.build(['plugin_config1'], MockEnvironment, MockCommunicator, 'settings').then(() => {
-        jest.fail('Should throw an exception');
+        fail('Should throw an exception');
     }).catch((err) => {
         expect(err.message).toEqual('Some error');
-        expect(MockRunner).toHaveBeenCalledTimes(1);
-        expect(MockRunner).toHaveBeenCalledWith();
+        expect(Runner).toHaveBeenCalledTimes(1);
+        expect(Runner).toHaveBeenCalledWith();
         expect(mockRunnerInstance.configureAndSetup).toHaveBeenCalledTimes(1);
         expect(mockRunnerInstance.configureAndSetup).toHaveBeenCalledWith({name: 'Setup'}, ['plugin_config1']);
         expect(mockRunnerInstance.prepare).toHaveBeenCalledTimes(1);
@@ -123,7 +124,7 @@ it('throws an exception when starting the environment fails', async () => {
     });
 
     return duckbenchBuilder.build([], MockEnvironment, MockCommunicator, 'settings').then(() => {
-        jest.fail('Should throw an exception');
+        fail('Should throw an exception');
     }).catch((err) => {
         expect(err.message).toEqual('Some error');
         expect(MockEnvironment).toHaveBeenCalledTimes(1);
@@ -142,7 +143,7 @@ it('throws an exception when creating the environment fails', async () => {
     });
 
     return duckbenchBuilder.build([], MockEnvironment, MockCommunicator, 'settings').then(() => {
-        jest.fail('Should throw an exception');
+        fail('Should throw an exception');
     }).catch((err) => {
         expect(err.message).toEqual('Some error');
         expect(MockEnvironment).toHaveBeenCalledTimes(1);

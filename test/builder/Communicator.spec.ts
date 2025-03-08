@@ -1,11 +1,15 @@
 import Communicator from '../../src/builder/Communicator';
+import SocketCommunicator from "../../src/builder/SocketCommunicator";
+import CommandRunner from "../../src/builder/CommandRunner";
+jest.mock("../../src/builder/SocketCommunicator")
+jest.mock("../../src/builder/CommandRunner")
 
-let communicator;
-let socketCommunicator;
-let commandRunner;
+let communicator: Communicator;
+let socketCommunicator: jest.Mocked<SocketCommunicator>;
+let commandRunner: jest.Mocked<CommandRunner>;
 beforeEach(() => {
-    commandRunner = {run: jest.fn()};
-    socketCommunicator = {close: jest.fn(), connect: jest.fn()};
+    commandRunner = new CommandRunner() as jest.Mocked<CommandRunner>;
+    socketCommunicator = new SocketCommunicator() as jest.Mocked<SocketCommunicator>;
     communicator = new Communicator(undefined, socketCommunicator, commandRunner);
 });
 

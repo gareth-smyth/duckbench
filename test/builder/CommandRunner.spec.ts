@@ -1,11 +1,13 @@
 import CommandRunner from '../../src/builder/CommandRunner';
+import SocketCommunicator from "../../src/builder/SocketCommunicator";
+jest.mock('../../src/builder/SocketCommunicator');
 
-let socketCommunicator;
-let commandRunner;
+let socketCommunicator: jest.Mocked<SocketCommunicator>;
+let commandRunner: CommandRunner;
 const callback = () => {};
 
 beforeEach(() => {
-    socketCommunicator = {runCommand: jest.fn()};
+    socketCommunicator = new SocketCommunicator() as jest.Mocked<SocketCommunicator>;
     commandRunner = new CommandRunner(socketCommunicator);
 });
 

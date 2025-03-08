@@ -18,7 +18,7 @@ export default class SocketCommunicator {
         this.client.on('ready', this._readyEvent.bind(this));
     }
 
-    noCallback() { }
+    noCallback(event) { }
 
     async runCommand(commandString, commandCallback = this.noCallback) {
         this.commandRunning = `${commandString}`;

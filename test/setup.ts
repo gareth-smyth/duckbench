@@ -1,4 +1,5 @@
 import {Logger} from "pino";
+import {} from '../src/services/BaseDirService'
 
 global.Logger = {
     info: jest.fn(),
@@ -9,5 +10,6 @@ global.Logger = {
     debug: jest.fn(),
     silent: jest.fn(),
 } as unknown as Logger;
+global.CACHE_DIR = 'MyCacheDir:'
 global.CACHE_DIR = 'MyCacheDir:'
 

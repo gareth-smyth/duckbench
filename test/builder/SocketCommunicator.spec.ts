@@ -1,8 +1,7 @@
-import net from 'net';
+import {Socket} from 'net';
+jest.mock('net');
 
 import SocketCommunicator from '../../src/builder/SocketCommunicator';
-
-jest.mock('net');
 
 // As some functionality resolves promises with setTimeout we need to fake time passing and promise resolution cycle
 async function flushTimeoutsAndPromises() {
@@ -10,20 +9,23 @@ async function flushTimeoutsAndPromises() {
     await Promise.resolve();
 }
 
-let mockSocket;
+const mockedSocket = Socket as jest.Mocked<typeof Socket>;
+
+let mockSocket: Socket & {eventFunctions: Record<string, (data:string) => void>};
 beforeEach(() => {
     jest.useFakeTimers();
     mockSocket = {
-        eventFunctions: [],
+        eventFunctions: {},
         destroy: jest.fn(),
-        on: jest.fn().mockImplementation((event, func) => {
+        on: jest.fn((event, func) => {
             mockSocket.eventFunctions[event] = func;
         }),
         connect: jest.fn(),
         write: jest.fn(),
     };
-    net.Socket.mockImplementation(() => mockSocket);
+    (mockedSocket as unknown as jest.Mock).mockImplementation(() => mockSocket);
 });
+
 
 it('attaches methods to the client event emitter', () => {
     new SocketCommunicator();

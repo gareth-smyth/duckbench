@@ -17,7 +17,7 @@ export default class SettingsService {
                 let PluginSettings;
 
                 try {
-                    PluginSettings = await import(path.join(pluginPath, pluginDir.name, 'settings'));
+                    PluginSettings = (await import(path.join(pluginPath, pluginDir.name, 'settings'))).default;
                 } catch (error) {
                 /* istanbul ignore else */
                     if (error.code === 'MODULE_NOT_FOUND') {
@@ -62,7 +62,7 @@ export default class SettingsService {
 
     static async getDefault(pluginName, settingName) {
         const pluginPath = path.join(__dirname, '../', 'plugins');
-        const PluginSettings = await import(path.join(pluginPath, pluginName, 'settings'));
+        const PluginSettings = (await import(path.join(pluginPath, pluginName, 'settings'))).default;
         const settings = new PluginSettings();
 
         if (settings.default) {

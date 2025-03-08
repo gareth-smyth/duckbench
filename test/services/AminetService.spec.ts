@@ -1,5 +1,6 @@
 import fs from 'fs';
 jest.mock('fs');
+const mockedFs = fs as jest.Mocked<typeof fs>;
 import path from 'path';
 import request from 'request-promise';
 jest.mock('request');
@@ -8,7 +9,7 @@ import AminetService from '../../src/services/AminetService';
 
 
 it('does not download the file when it already exists', async () => {
-    fs.existsSync.mockReturnValueOnce(true);
+    mockedFs.existsSync.mockReturnValueOnce(true);
 
     await AminetService.download('net/path');
 
@@ -17,8 +18,8 @@ it('does not download the file when it already exists', async () => {
 });
 
 it('downloads the file when it does not exist', async () => {
-    fs.existsSync.mockReturnValueOnce(false);
-    request.mockResolvedValueOnce({body: 'myfile'});
+    mockedFs.existsSync.mockReturnValueOnce(false);
+    (request as unknown as jest.Mock).mockResolvedValueOnce({body: 'myfile'});
 
     await AminetService.download('net/path/mydownload.file');
 
@@ -31,8 +32,8 @@ it('downloads the file when it does not exist', async () => {
 });
 
 it('overrides the filename when supplied', async () => {
-    fs.existsSync.mockReturnValueOnce(false);
-    request.mockResolvedValueOnce({body: 'myfile'});
+    mockedFs.existsSync.mockReturnValueOnce(false);
+    (request as unknown as jest.Mock).mockResolvedValueOnce({body: 'myfile'});
 
     await AminetService.download('net/path/mydownload.file', 'myfilename.lha');
 
@@ -45,8 +46,8 @@ it('overrides the filename when supplied', async () => {
 });
 
 it('throws an error when downloading fails', async () => {
-    fs.existsSync.mockReturnValueOnce(false);
-    request.mockRejectedValue('request error');
+    mockedFs.existsSync.mockReturnValueOnce(false);
+    (request as unknown as jest.Mock).mockRejectedValue('request error');
 
     await expect(AminetService.download('net/path/mydownload.file')).rejects.toThrow('request error');
 });
