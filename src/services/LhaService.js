@@ -7,7 +7,6 @@ export default class LhaService {
     }
 
     /* This method is for debugging only */
-    /* eslint-disable */
     /* istanbul ignore next */
     static info(filename) {
         const lhaFile = new LhaFile(filename);
