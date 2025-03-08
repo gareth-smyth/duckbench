@@ -1,4 +1,4 @@
-class A500 {
+export default class A500 {
     structure() {
         return {
             name: 'Amiga500',
@@ -67,5 +67,3 @@ class A500 {
         environmentSetup.setFloppyDrive(true);
     }
 }
-
-module.exports = A500;

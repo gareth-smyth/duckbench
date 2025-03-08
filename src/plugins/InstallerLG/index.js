@@ -1,4 +1,4 @@
-class InstallerLG {
+export default class InstallerLG {
     constructor() {
         this.installed = {};
     }
@@ -27,7 +27,7 @@ class InstallerLG {
             this.installed[config.optionValues.location] = true;
         } else {
             const location = config.optionValues.location;
-            Logger.trace(`Not installing InstallerLG as it has already been installed to ${location}`);
+            global.Logger.trace(`Not installing InstallerLG as it has already been installed to ${location}`);
         }
     }
 
@@ -36,4 +36,4 @@ class InstallerLG {
     }
 }
 
-module.exports = InstallerLG;
+

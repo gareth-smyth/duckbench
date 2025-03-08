@@ -1,11 +1,11 @@
-const HardDrive = require('./blocks/HardDrive');
-const HardDriveConfig = require('./blocks/HardDriveConfig');
-const PartitionPopulator = require('./blocks/PartitionPopulator');
-const FileSystemPopulator = require('./blocks/FileSystemPopulator');
+import HardDrive from './blocks/HardDrive';
+import HardDriveConfig from './blocks/HardDriveConfig';
+import PartitionPopulator from './blocks/PartitionPopulator';
+import FileSystemPopulator from './blocks/FileSystemPopulator';
 
 const ONE_MEGABYTE = 0x100000;
 
-class HardDriveService {
+export default class HardDriveService {
     static info(filename) {
         const hardDrive = new HardDrive();
         hardDrive.read(filename);
@@ -41,4 +41,4 @@ class HardDriveService {
     }
 }
 
-module.exports = HardDriveService;
+

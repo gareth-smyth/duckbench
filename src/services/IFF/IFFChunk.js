@@ -1,4 +1,4 @@
-class IFFChunk {
+export default class IFFChunk {
     constructor(type, data) {
         this.type = type;
         this.data = data;
@@ -25,4 +25,4 @@ class IFFChunk {
     }
 }
 
-module.exports = IFFChunk;
+

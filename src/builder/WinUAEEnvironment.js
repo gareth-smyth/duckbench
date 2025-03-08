@@ -1,9 +1,9 @@
-const fs = require('fs');
-const path = require('path');
-const {spawn} = require('child_process');
-const SettingsService = require('../services/SettingsService');
+import fs from 'fs';
+import path from 'path';
+import {spawn} from 'child_process';
+import SettingsService from '../services/SettingsService';
 
-class WinUAEEnvironment {
+export default class WinUAEEnvironment {
     constructor(environment, settings) {
         this.settings = settings;
 
@@ -104,5 +104,3 @@ class WinUAEEnvironment {
         );
     }
 }
-
-module.exports = WinUAEEnvironment;

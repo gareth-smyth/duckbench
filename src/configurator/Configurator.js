@@ -1,17 +1,17 @@
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
-const URL = require('url').URL;
-const WebSocket = require('ws');
-const DuckbenchBuilder = require('../builder/DuckbenchBuilder');
-const PluginStore = require('../builder/PluginStore');
-const Communicator = require('../builder/Communicator');
-const SettingsService = require('../services/SettingsService');
-const WinUAEEnvironment = require('../builder/WinUAEEnvironment');
-const ValidationError = require('../errors/ValidationError');
+import http from 'http';
+import fs from 'fs';
+import path from 'path';
+import { URL } from 'url';
+import WebSocket from 'ws';
+import DuckbenchBuilder from '../builder/DuckbenchBuilder';
+import PluginStore from '../builder/PluginStore';
+import Communicator from '../builder/Communicator';
+import SettingsService from '../services/SettingsService';
+import WinUAEEnvironment from '../builder/WinUAEEnvironment';
+import ValidationError from '../errors/ValidationError';
 
 
-class Configurator {
+export default class Configurator {
     start() {
         this.startHTTPHandler();
         this.startSocketHandler();
@@ -21,11 +21,11 @@ class Configurator {
         const server = new WebSocket.Server({port: 8553});
         server.on('connection', (socket) => {
             socket.on('message', (message) => {
-                Logger.trace(`Message received - ${message}`);
+                global.Logger.trace(`Message received - ${message}`);
                 const payload = JSON.parse(message);
                 switch(payload.command) {
                 case 'RUN':
-                    Logger.trace('Running duckbench builder');
+                    global.Logger.trace('Running duckbench builder');
                     socket.send(JSON.stringify({ type: 'warning', text: 'Running builder' }));
                     new DuckbenchBuilder().build(payload.config, WinUAEEnvironment, Communicator, payload.settings).then(() => {
                         socket.send(JSON.stringify({ type: 'info', text: 'Build complete' }));
@@ -40,7 +40,7 @@ class Configurator {
                     });
                     break;
                 default:
-                    Logger.error('Received unknown command');
+                    global.Logger.error('Received unknown command');
                 }
             });
         });
@@ -49,29 +49,29 @@ class Configurator {
     startHTTPHandler() {
         const server = http.createServer();
         server.on('request', async (request, response) => {
-            Logger.debug(`Request for ${request.url}`);
+            global.Logger.debug(`Request for ${request.url}`);
             const url = new URL(request.url, 'http://localhost');
             if (url.pathname === '/plugins.json') {
-                Logger.trace('Getting plugins');
+                global.Logger.trace('Getting plugins');
                 const plugins = await PluginStore.getStructures();
                 response.writeHead(200, {'Content-Type': 'application/json'});
                 response.end(JSON.stringify(plugins), 'utf-8');
                 return;
             } else if (url.pathname === '/settings.json') {
-                Logger.trace('Getting settings');
+                global.Logger.trace('Getting settings');
                 const plugins = await SettingsService.getAvailable();
                 response.writeHead(200, {'Content-Type': 'application/json'});
                 response.end(JSON.stringify(plugins), 'utf-8');
                 return;
             } else if (url.pathname === '/currentSettings') {
                 if (request.method === 'GET') {
-                    Logger.trace('Getting settings');
+                    global.Logger.trace('Getting settings');
                     const currentSettings = await SettingsService.loadCurrent();
                     response.writeHead(200, {'Content-Type': 'application/json'});
                     response.end(JSON.stringify(currentSettings), 'utf-8');
                     return;
                 } else {
-                    Logger.trace('Saving settings');
+                    global.Logger.trace('Saving settings');
                     let body = '';
                     request.on('data', chunk => {
                         body += chunk.toString();
@@ -110,22 +110,22 @@ class Configurator {
             };
 
             const contentType = mimeTypes[extname] || 'application/octet-stream';
-            Logger.debug(`Reading file ${filePath}`);
+            global.Logger.debug(`Reading file ${filePath}`);
             fs.readFile(filePath, function(error, content) {
                 if (error) {
                     if (error.code === 'ENOENT') {
-                        Logger.error(`Did not find file ${filePath}`);
-                        Logger.debug(`${JSON.stringify(error)}`);
+                        global.Logger.error(`Did not find file ${filePath}`);
+                        global.Logger.debug(`${JSON.stringify(error)}`);
                         response.writeHead(404);
                         response.end();
                     } else {
-                        Logger.error(`Error reading ${filePath}`);
-                        Logger.debug(`${JSON.stringify(error)}`);
+                        global.Logger.error(`Error reading ${filePath}`);
+                        global.Logger.debug(`${JSON.stringify(error)}`);
                         response.writeHead(500);
                         response.end();
                     }
                 } else {
-                    Logger.trace('Responding with file');
+                    global.Logger.trace('Responding with file');
                     response.writeHead(200, {'Content-Type': contentType});
                     response.end(content, 'utf-8');
                 }
@@ -133,8 +133,6 @@ class Configurator {
 
         });
         server.listen(8552);
-        Logger.info('Browse http://127.0.0.1:8552/index.html');
+        global.Logger.info('Browse http://127.0.0.1:8552/index.html');
     }
 }
-
-module.exports = Configurator;

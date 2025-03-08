@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-class PluginStore {
+export default class PluginStore {
     constructor() {
         this.plugins = {};
     }
@@ -17,14 +17,14 @@ class PluginStore {
         plugins.sort();
         await pluginsDir.close();
         return Promise.all(plugins.filter((pluginDir) => pluginDir.isDirectory()).map(async (pluginDir) => {
-            const Plugin = require(path.join(pluginPath, pluginDir.name));
+            const Plugin = await import(path.join(pluginPath, pluginDir.name));
             const plugin = new Plugin();
             return plugin.structure();
         }));
     }
 
-    create(pluginName) {
-        const Plugin = require(`../plugins/${pluginName}`);
+    async create(pluginName) {
+        const Plugin = await import(`../plugins/${pluginName}`);
         return new Plugin();
     }
 
@@ -40,5 +40,3 @@ class PluginStore {
         return this.plugins[pluginName.toLocaleLowerCase()];
     }
 }
-
-module.exports = PluginStore;

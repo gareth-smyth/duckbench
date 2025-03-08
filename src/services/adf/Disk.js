@@ -1,11 +1,11 @@
-const fs = require('fs');
+import fs from 'fs';
 
-const Bitmap = require('./Bitmap');
-const DiskConfig = require('./DiskConfig');
-const BootBlock = require('./BootBlock');
-const RootBlock = require('./RootBlock');
+import Bitmap from './Bitmap';
+import DiskConfig from './DiskConfig';
+import BootBlock from './BootBlock';
+import RootBlock from './RootBlock';
 
-class Disk {
+export default class Disk {
     constructor(diskFile) {
         this.diskConfig = new DiskConfig(80, 2, 11, 512, 2);
 
@@ -84,4 +84,4 @@ class Disk {
     }
 }
 
-module.exports = Disk;
+

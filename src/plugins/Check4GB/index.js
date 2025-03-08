@@ -1,6 +1,6 @@
-const AminetService = require('../../services/AminetService');
+import AminetService from '../../services/AminetService';
 
-class Check4GB {
+export default class Check4GB {
     constructor() {
         this.installed = {};
     }
@@ -44,9 +44,9 @@ class Check4GB {
             await communicator.copy('duckbench:Check4GB.filesys', config.optionValues.location);
             this.installed[config.optionValues.location] = true;
         } else {
-            Logger.trace(`Not installing Check4GB as it has already been installed to ${config.optionValues.location}`);
+            global.Logger.trace(`Not installing Check4GB as it has already been installed to ${config.optionValues.location}`);
         }
     }
 }
 
-module.exports = Check4GB;
+

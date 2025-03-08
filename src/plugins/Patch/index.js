@@ -1,6 +1,6 @@
-const AminetService = require('../../services/AminetService');
+import AminetService from '../../services/AminetService';
 
-class Patch {
+export default class Patch {
     constructor() {
         this.installed = {};
     }
@@ -44,7 +44,7 @@ class Patch {
             await communicator.delete('duckbench:patch-2.1', {ALL: true});
             this.installed[config.optionValues.location] = true;
         } else {
-            Logger.trace(`Not installing patch as it has already been installed to ${config.optionValues.location}`);
+            global.Logger.trace(`Not installing patch as it has already been installed to ${config.optionValues.location}`);
         }
     }
 
@@ -55,4 +55,4 @@ class Patch {
     }
 }
 
-module.exports = Patch;
+

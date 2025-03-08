@@ -1,14 +1,12 @@
-require('./src/services/BaseDirService');
-require('./src/services/LoggerService');
-
-let configurator;
+import * as BaseDirService from './src/services/BaseDirService';
+import * as LoggerService from './src/services/LoggerService';
 
 try {
-    Logger.level = 'debug';
-    const Configurator = require('./src/configurator/Configurator');
-    configurator = new Configurator();
+    global.Logger.level = 'debug';
+    const Configurator = await import('./src/configurator/Configurator');
+    const configurator = new Configurator();
     configurator.start();
 } catch (error) {
-    Logger.error(error.message);
-    Logger.trace(error);
+    global.Logger.error(error.message);
+    global.Logger.trace(error);
 }

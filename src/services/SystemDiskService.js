@@ -1,11 +1,11 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const ADFService = require('./ADFService');
+import ADFService from './ADFService';
 
 /* This is quite complicated to test for little benefit. It's also quite likely to change a lot. */
 /* istanbul ignore next */
-class SystemDiskService {
+export default class SystemDiskService {
     static async find(os, disk, diskPath) {
         const diskDir = fs.opendirSync(diskPath);
         const disks = [];
@@ -40,7 +40,7 @@ class SystemDiskService {
 
     static examine(fileName) {
         if (path.extname(fileName).localeCompare('.adf', undefined, {sensitivity: 'accent'}) === 0) {
-            Logger.trace(`Examining disk ${fileName}.`);
+            global.Logger.trace(`Examining disk ${fileName}.`);
             const diskInfo = ADFService.info(fileName);
             switch (diskInfo.name) {
             case 'Install2.1':
@@ -93,10 +93,10 @@ class SystemDiskService {
                 return {};
             }
         } else {
-            Logger.trace(`Not trying file ${fileName} as it does not appear to be an adf.`);
+            global.Logger.trace(`Not trying file ${fileName} as it does not appear to be an adf.`);
             return {};
         }
     }
 }
 
-module.exports = SystemDiskService;
+

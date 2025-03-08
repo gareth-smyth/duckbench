@@ -1,6 +1,6 @@
-const fs = require('fs');
+import fs from 'fs';
 
-class FileSystem {
+export default class FileSystem {
     read(file, blockPointer, hardDriveConfig) {
         this.hardDriveConfig = hardDriveConfig;
         this.buffer = Buffer.alloc(256, 0);
@@ -95,4 +95,4 @@ class FileSystem {
     }
 }
 
-module.exports = FileSystem;
+

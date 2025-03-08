@@ -1,4 +1,4 @@
-class CD32 {
+export default class CD32 {
     structure() {
         return {
             name: 'CD32',
@@ -53,4 +53,4 @@ class CD32 {
     }
 }
 
-module.exports = CD32;
+

@@ -1,4 +1,4 @@
-class CheckSum {
+export default class CheckSum {
     constructor(buffer, offset, fixed = false) {
         this.buffer = buffer;
         this.offset = offset;
@@ -31,4 +31,4 @@ class CheckSum {
     }
 }
 
-module.exports = CheckSum;
+

@@ -1,6 +1,6 @@
-const fs = require('fs');
+import fs from 'fs';
 
-class FileSystemSegList {
+export default class FileSystemSegList {
     read(file, firstBlockPtr, hardDriveConfig) {
         this.hardDriveConfig = hardDriveConfig;
         this.firstBlockPointer = firstBlockPtr;
@@ -94,4 +94,4 @@ class FileSystemSegList {
     }
 }
 
-module.exports = FileSystemSegList;
+

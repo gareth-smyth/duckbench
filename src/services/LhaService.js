@@ -1,6 +1,6 @@
-const LhaFile = require('./lha/LhaFile.js');
+import LhaFile from './lha/LhaFile.js';
 
-class LhaService {
+export default class LhaService {
     static extract(filename, destination) {
         const lhaFile = new LhaFile(filename);
         lhaFile.extract(destination);
@@ -16,4 +16,4 @@ class LhaService {
     }
 }
 
-module.exports = LhaService;
+

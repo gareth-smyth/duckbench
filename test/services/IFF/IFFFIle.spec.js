@@ -1,6 +1,6 @@
-const IFFFIle = require('../../../src/services/IFF/IFFFile');
-const {HIRES_LACED} = require('../../../src/services/prefs/ScreenMode');
-const fs = require('fs');
+import IFFFIle from '../../../src/services/IFF/IFFFile';
+import {HIRES_LACED} from '../../../src/services/prefs/ScreenMode';
+import fs from 'fs';
 
 afterAll(() => {
     fs.unlinkSync('./test/services/IFF/testfile-test.iff');

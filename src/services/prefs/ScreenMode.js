@@ -1,11 +1,11 @@
-const IFFWrapperChunk = require('../IFF/IFFWrapperChunk');
-const IFFChunk = require('../IFF/IFFChunk');
-const IFFFile = require('../IFF/IFFFile');
+import IFFWrapperChunk from '../IFF/IFFWrapperChunk';
+import IFFChunk from '../IFF/IFFChunk';
+import IFFFile from '../IFF/IFFFile';
 
-const HIRES_LACED = 0x00029004;
-const LORES = 0x00029000;
+export const HIRES_LACED = 0x00029004;
+export const LORES = 0x00029000;
 
-class ScreenMode {
+export class ScreenMode {
     constructor(displayMode, depth) {
         this.displayMode = displayMode;
         this.depth = depth;
@@ -27,4 +27,4 @@ class ScreenMode {
     }
 }
 
-module.exports = {ScreenMode, HIRES_LACED, LORES};
+

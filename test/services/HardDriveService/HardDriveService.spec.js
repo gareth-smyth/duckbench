@@ -1,9 +1,9 @@
 /* TODO These tests are not really testing the disk being built correctly as they use the same code to test as to run */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const HardDriveService = require('../../../src/services/HardDriveService');
+import HardDriveService from '../../../src/services/HardDriveService';
 
 jest.mock('../../../src/services/AminetService');
 jest.mock('../../../src/services/LhaService');
@@ -70,5 +70,5 @@ it('throws an error when the filesystem does not exist', async () => {
         {driveName: 'DH0', fileSystem: 'ffs'},
         {driveName: 'DH1', fileSystem: 'pfs'},
         {driveName: 'DH2', fileSystem: 'sfs'},
-    ])).rejects.toThrowError('Can not install the selected file system');
+    ])).rejects.toThrow('Can not install the selected file system');
 });

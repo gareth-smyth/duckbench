@@ -1,4 +1,4 @@
-class HTree {
+export default class HTree {
     constructor(codeLengths) {
         this.tree = new Array(510).fill({leaf: true});
         this.nextEntry = 0;
@@ -43,11 +43,11 @@ class HTree {
     /* istanbul ignore next */
     displayTree(tree = this.tree, node = this.tree[0], inset = 0) {
         if (node.leaf) {
-            Logger.debug(`${' '.repeat(inset)}leaf ${node.value}`);
+            global.Logger.debug(`${' '.repeat(inset)}leaf ${node.value}`);
         } else {
-            Logger.debug(`${' '.repeat(inset)}0 ->`);
+            global.Logger.debug(`${' '.repeat(inset)}0 ->`);
             this.displayTree(tree, tree[node.value], inset + 4);
-            Logger.debug(`${' '.repeat(inset)}1 ->`);
+            global.Logger.debug(`${' '.repeat(inset)}1 ->`);
             this.displayTree(tree, tree[node.value + 1], inset + 4);
         }
     }
@@ -64,4 +64,4 @@ class HTree {
     }
 }
 
-module.exports = HTree;
+

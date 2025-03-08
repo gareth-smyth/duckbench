@@ -1,4 +1,4 @@
-const SettingsService = require('../../../src/services/SettingsService');
+import SettingsService from '../../../src/services/SettingsService';
 
 it('returns settings for all plugins', async () => {
     const settings = (await SettingsService.getAvailable());

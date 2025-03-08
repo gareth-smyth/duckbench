@@ -1,13 +1,13 @@
-/* eslint-disable no-use-before-define */
-const Bitmap = require('./Bitmap');
-const CheckSum = require('./CheckSum');
-const Name = require('./Name');
-const Type = require('./Type');
+
+import Bitmap from './Bitmap';
+import CheckSum from './CheckSum';
+import Name from './Name';
+import Type from './Type';
 
 const BLOCK_TYPE = 2;
 const SECONDARY_TYPE_DIRECTORY = 2;
 
-class Directory {
+export default class Directory {
     constructor(diskBuffer, directoryBuffer, diskConfig) {
         this.diskConfig = diskConfig;
         this.diskBuffer = diskBuffer;
@@ -126,8 +126,8 @@ class Directory {
     }
 }
 
-module.exports = Directory;
 
-const FileFactory = require('./FileFactory');
-const FileListItem = require('./FileListItem');
-const File = require('./File');
+
+import FileFactory from './FileFactory';
+import FileListItem from './FileListItem';
+import File from './File';

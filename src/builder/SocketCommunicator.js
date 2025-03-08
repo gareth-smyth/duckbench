@@ -1,4 +1,4 @@
-const net = require('net');
+import net from 'net';
 
 const CLOSE_EVENT = 'CLOSE_EVENT';
 const CONNECT_EVENT = 'CONNECT_EVENT';
@@ -6,7 +6,7 @@ const READY_EVENT = 'READY_EVENT';
 const DATA_EVENT = 'DATA_EVENT';
 const COMMAND_RECEIVED = 'COMMAND_RECEIVED';
 
-class SocketCommunicator {
+export default class SocketCommunicator {
     constructor(controlCallback = this.noCallback) {
         this.client = new net.Socket();
         this.currentLine = '';
@@ -24,7 +24,7 @@ class SocketCommunicator {
         this.commandRunning = `${commandString}`;
         this.commandCallback = commandCallback;
         this.status = 'SEND_COMMAND';
-        Logger.debug(`I am running the command "${commandString.trim()}" on the Amiga`);
+        global.Logger.debug(`I am running the command "${commandString.trim()}" on the Amiga`);
         this.client.write(`${commandString}\r`);
         this.runningCommandData = [];
         return new Promise((resolve) => {
@@ -37,7 +37,7 @@ class SocketCommunicator {
     }
 
     _dataEvent(data) {
-        Logger.trace(`Got data ${JSON.stringify(data.toString())}`);
+        global.Logger.trace(`Got data ${JSON.stringify(data.toString())}`);
         const dataString = data.toString();
 
         for (let charIdx = 0; charIdx <= dataString.length; charIdx++) {
@@ -55,17 +55,17 @@ class SocketCommunicator {
 
     _closeEvent() {
         this.controlCallback({message: CLOSE_EVENT});
-        Logger.debug('The Amiga has closed the connection');
+        global.Logger.debug('The Amiga has closed the connection');
     }
 
     _connectEvent() {
         this.controlCallback({message: CONNECT_EVENT});
-        Logger.debug('I am connected to the Amiga');
+        global.Logger.debug('I am connected to the Amiga');
     }
 
     _readyEvent() {
         this.controlCallback({message: READY_EVENT});
-        Logger.debug('I have opened communication with the Amiga');
+        global.Logger.debug('I have opened communication with the Amiga');
     }
 
     connect() {
@@ -78,17 +78,17 @@ class SocketCommunicator {
     }
 
     _processResponse(responseLine) {
-        Logger.trace(`While status is ${this.status} I got ${JSON.stringify(responseLine)}`);
+        global.Logger.trace(`While status is ${this.status} I got ${JSON.stringify(responseLine)}`);
 
         switch (this.status) {
         case 'CONNECTING':
             if (this._responseIsPrompt(responseLine)) {
-                Logger.debug('I have communication with the Amiga.');
+                global.Logger.debug('I have communication with the Amiga.');
                 this.status = 'CONNECTED';
                 setTimeout(this.connectedResolve, 1000);
             } else {
                 this.controlCallback({message: DATA_EVENT, data: responseLine});
-                Logger.debug(`While connecting I got this message: ${JSON.stringify(responseLine)}`);
+                global.Logger.debug(`While connecting I got this message: ${JSON.stringify(responseLine)}`);
             }
             break;
         case 'CONNECTED':
@@ -99,7 +99,7 @@ class SocketCommunicator {
             if (responseLine.match(this._escapeRegex(this.commandRunning))) {
                 this.status = 'COMMAND_RUNNING';
                 this.commandCallback({message: COMMAND_RECEIVED, data: responseLine});
-                Logger.debug(`The Amiga is executing the command "${this.commandRunning.trim()}"` +
+                global.Logger.debug(`The Amiga is executing the command "${this.commandRunning.trim()}"` +
                     ' and I am waiting for the response.');
             } else {
                 this.controlCallback({message: DATA_EVENT, data: responseLine});
@@ -109,9 +109,9 @@ class SocketCommunicator {
             break;
         case 'COMMAND_RUNNING':
             if (this._responseIsPrompt(responseLine)) {
-                Logger.debug(`I ran the command "${this.commandRunning.trim()}" and it has returned the values ` +
+                global.Logger.debug(`I ran the command "${this.commandRunning.trim()}" and it has returned the values ` +
                     `\r\n---\r\n${this.runningCommandData.join('\r\n')}\r\n---`);
-                Logger.debug(`I ran the command ${this.commandRunning.trim()} and it completed.`);
+                global.Logger.debug(`I ran the command ${this.commandRunning.trim()} and it completed.`);
                 this.status = 'CONNECTED';
                 setTimeout(() => {
                     this.runningCommandResolve(this.runningCommandData);
@@ -119,7 +119,7 @@ class SocketCommunicator {
                 }, 1000);
             } else {
                 this.commandCallback({message: DATA_EVENT, data: responseLine});
-                Logger.trace(`I ran the command ${this.commandRunning.trim()} and have received the ` +
+                global.Logger.trace(`I ran the command ${this.commandRunning.trim()} and have received the ` +
                     `response ${JSON.stringify(responseLine)}`);
                 this.runningCommandData.push(responseLine);
             }
@@ -135,5 +135,3 @@ class SocketCommunicator {
         return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     }
 }
-
-module.exports = SocketCommunicator;

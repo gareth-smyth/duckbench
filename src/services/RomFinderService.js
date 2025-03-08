@@ -1,17 +1,17 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 /* This is quite complicated to test for little benefit. It's also quite likely to change a lot. */
 /* istanbul ignore next */
-class RomFinderService {
-    static async find(romVersion, romPath) {
+export default class RomFinderService {
+    static find(romVersion, romPath) {
         const romDir = fs.opendirSync(romPath);
         const roms = [];
         let directoryEntry;
         while ((directoryEntry = romDir.readSync()) !== null) {
             roms.push(directoryEntry);
         }
-        await romDir.close();
+        romDir.closeSync();
 
         if (!this.romCache) {
             this.romCache = {};
@@ -38,7 +38,7 @@ class RomFinderService {
 
     static examine(fileName) {
         if (path.extname(fileName).localeCompare('.rom', undefined, {sensitivity: 'accent'}) === 0) {
-            Logger.trace(`Examining rom ${fileName}.`);
+            global.Logger.trace(`Examining rom ${fileName}.`);
             if ((fileName.includes('3.1') || fileName.includes('310')) &&
                 !fileName.includes('ext') &&
                 !fileName.includes('fmv')) {
@@ -47,10 +47,10 @@ class RomFinderService {
                 return {};
             }
         } else {
-            Logger.trace(`Not trying file ${fileName} as it does not appear to be a rom.`);
+            global.Logger.trace(`Not trying file ${fileName} as it does not appear to be a rom.`);
             return {};
         }
     }
 }
 
-module.exports = RomFinderService;
+

@@ -1,6 +1,6 @@
-const CheckSum = require('./CheckSum');
+import CheckSum from './CheckSum';
 
-class Bitmap {
+export default class Bitmap {
     constructor(diskBuffer, diskConfig) {
         this.diskConfig = diskConfig;
 
@@ -60,4 +60,4 @@ class Bitmap {
     }
 }
 
-module.exports = Bitmap;
+

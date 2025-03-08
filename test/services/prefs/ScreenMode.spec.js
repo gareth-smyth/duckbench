@@ -1,5 +1,5 @@
-const {ScreenMode, HIRES_LACED} = require('../../../src/services/prefs/ScreenMode');
-const IFFFile = require('../../../src/services/IFF/IFFFile');
+import {ScreenMode, HIRES_LACED} from '../../../src/services/prefs/ScreenMode';
+import IFFFile from '../../../src/services/IFF/IFFFile';
 
 jest.mock('../../../src/services/IFF/IFFFile');
 

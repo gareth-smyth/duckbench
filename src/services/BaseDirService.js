@@ -1,6 +1,6 @@
 /* istanbul ignore file */
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 global.BASE_DIR = path.join(__dirname, '../../');
 global.TOOLS_DIR = path.join(global.BASE_DIR, 'external_tools');

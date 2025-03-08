@@ -1,11 +1,11 @@
-class CommandRunner {
+export default class CommandRunner {
     constructor(socketCommunicator) {
         this.socketCommunicator = socketCommunicator;
     }
 
     async run(commandString, options, commandCallback, expectedResponse) {
         commandString = this.addOptions(commandString, options);
-        Logger.debug(`Running ${commandString}`);
+        global.Logger.debug(`Running ${commandString}`);
         return this.socketCommunicator.runCommand(commandString, commandCallback).then((response) => {
             if (this.checkResponse(expectedResponse, response)) {
                 if (!expectedResponse) {
@@ -14,7 +14,7 @@ class CommandRunner {
                     throw new Error(`Expected "${expectedResponse}" from "${commandString}" but got "${response}"`);
                 }
             }
-            Logger.debug(`Ran ${commandString}`);
+            global.Logger.debug(`Ran ${commandString}`);
         }).catch((err) => {
             throw new Error(err);
         });
@@ -71,5 +71,3 @@ class CommandRunner {
         return command;
     }
 }
-
-module.exports = CommandRunner;

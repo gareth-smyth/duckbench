@@ -3,7 +3,7 @@ const FileSystemDosTypeMap = {
     pfs: '0x50445303',
 };
 
-class PartitionPopulator {
+export default class PartitionPopulator {
     static populate(partitions, hardDriveConfig) {
         const reservedCylinders = hardDriveConfig.reservedCylinders;
         let partitionStart = reservedCylinders;
@@ -35,4 +35,4 @@ class PartitionPopulator {
     }
 }
 
-module.exports = PartitionPopulator;
+

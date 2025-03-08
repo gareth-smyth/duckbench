@@ -1,8 +1,8 @@
-const {when} = require('jest-when');
-const fs = require('fs');
-const path = require('path');
+import {when} from 'jest-when';
+import fs from 'fs';
+import path from 'path';
 
-const EnvironmentSetup = require('../../src/builder/EnvironmentSetup');
+import EnvironmentSetup from '../../src/builder/EnvironmentSetup';
 
 jest.mock('fs');
 

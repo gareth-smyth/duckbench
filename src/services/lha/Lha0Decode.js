@@ -1,4 +1,4 @@
-class Lha0Decode {
+export default class Lha0Decode {
     constructor(compressedBuffer) {
         this.compressedBuffer = compressedBuffer;
     }
@@ -8,4 +8,4 @@ class Lha0Decode {
     }
 }
 
-module.exports = Lha0Decode;
+

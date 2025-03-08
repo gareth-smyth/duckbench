@@ -1,6 +1,6 @@
-const AminetService = require('../../services/AminetService');
+import AminetService from '../../services/AminetService';
 
-class SysInfo {
+export default class SysInfo {
     constructor() {
         this.installed = {};
     }
@@ -47,9 +47,9 @@ class SysInfo {
             await communicator.delete('duckbench:SysInfo', {ALL: true});
             this.installed[config.optionValues.location] = true;
         } else {
-            Logger.trace(`Not installing SysInfo as it has already been installed to ${config.optionValues.location}`);
+            global.Logger.trace(`Not installing SysInfo as it has already been installed to ${config.optionValues.location}`);
         }
     }
 }
 
-module.exports = SysInfo;
+

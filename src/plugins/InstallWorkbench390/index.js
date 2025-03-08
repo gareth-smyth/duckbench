@@ -1,10 +1,10 @@
-const fs = require('fs-extra');
-const path = require('path');
+import fs from 'fs-extra';
+import path from 'path';
 
-const BaseInstall = require('../InstallWorkbench310');
-const SettingsService = require('../../services/SettingsService');
+import BaseInstall from '../InstallWorkbench310';
+import SettingsService from '../../services/SettingsService';
 
-class InstallWorkbench390 extends BaseInstall {
+export default class InstallWorkbench390 extends BaseInstall {
     constructor() {
         super();
         this.identifier = '3.9';
@@ -46,7 +46,7 @@ class InstallWorkbench390 extends BaseInstall {
     async installToCache(communicator, unADF, patch, installerLg) {
         const cacheMarkerPath = path.join(global.CACHE_DIR, this.cacheName);
         if (!fs.existsSync(cacheMarkerPath)) {
-            Logger.debug(`${this.readableName} not yet cached. Building cache.`);
+            global.Logger.debug(`${this.readableName} not yet cached. Building cache.`);
 
             await communicator.delete(`DB_CLIENT_CACHE:${this.name}`, {'ALL': true}, undefined, /.*/);
             await communicator.makedir(`DB_CLIENT_CACHE:${this.name}`);
@@ -69,4 +69,4 @@ class InstallWorkbench390 extends BaseInstall {
     }
 }
 
-module.exports = InstallWorkbench390;
+

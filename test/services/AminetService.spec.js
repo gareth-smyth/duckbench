@@ -1,11 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const request = require('request-promise');
-
-const AminetService = require('../../src/services/AminetService');
-
+import fs from 'fs';
 jest.mock('fs');
+import path from 'path';
+import request from 'request-promise';
 jest.mock('request');
+
+import AminetService from '../../src/services/AminetService';
+
 
 it('does not download the file when it already exists', async () => {
     fs.existsSync.mockReturnValueOnce(true);
@@ -48,5 +48,5 @@ it('throws an error when downloading fails', async () => {
     fs.existsSync.mockReturnValueOnce(false);
     request.mockRejectedValue('request error');
 
-    await expect(AminetService.download('net/path/mydownload.file')).rejects.toThrowError('request error');
+    await expect(AminetService.download('net/path/mydownload.file')).rejects.toThrow('request error');
 });

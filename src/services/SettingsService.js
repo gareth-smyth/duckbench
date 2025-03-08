@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-class SettingsService {
+export default class SettingsService {
     static async getAvailable() {
         const pluginPath = path.join(__dirname, '../', 'plugins');
         const pluginsDir = fs.opendirSync(pluginPath);
@@ -17,19 +17,19 @@ class SettingsService {
                 let PluginSettings;
 
                 try {
-                    PluginSettings = require(path.join(pluginPath, pluginDir.name, 'settings'));
+                    PluginSettings = await import(path.join(pluginPath, pluginDir.name, 'settings'));
                 } catch (error) {
                 /* istanbul ignore else */
                     if (error.code === 'MODULE_NOT_FOUND') {
-                        Logger.trace(`No settings for ${pluginDir.name}`);
+                        global.Logger.trace(`No settings for ${pluginDir.name}`);
                         return Promise.resolve(undefined);
                     } else {
-                        Logger.error(`No settings for ${pluginDir.name}`);
+                        global.Logger.error(`No settings for ${pluginDir.name}`);
                         throw new Error(`Could not load settings for plugin ${pluginDir.name} even though it exists.`);
                     }
                 }
 
-                Logger.trace(`Loading settings for ${pluginDir.name}`);
+                global.Logger.trace(`Loading settings for ${pluginDir.name}`);
                 const pluginSettings = new PluginSettings();
                 return pluginSettings.get();
             }),
@@ -62,7 +62,7 @@ class SettingsService {
 
     static async getDefault(pluginName, settingName) {
         const pluginPath = path.join(__dirname, '../', 'plugins');
-        const PluginSettings = require(path.join(pluginPath, pluginName, 'settings'));
+        const PluginSettings = await import(path.join(pluginPath, pluginName, 'settings'));
         const settings = new PluginSettings();
 
         if (settings.default) {
@@ -75,4 +75,4 @@ class SettingsService {
     }
 }
 
-module.exports = SettingsService;
+

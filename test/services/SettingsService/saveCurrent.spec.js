@@ -1,8 +1,8 @@
-const path = require('path');
-const fs = require('fs');
+import path from 'path';
+import fs from 'fs';
 jest.mock('fs');
 
-const SettingsService = require('../../../src/services/SettingsService');
+import SettingsService from '../../../src/services/SettingsService';
 
 it('calls write file with the received settings', () => {
     SettingsService.saveCurrent({a: 'one'});

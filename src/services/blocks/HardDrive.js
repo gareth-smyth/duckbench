@@ -1,11 +1,11 @@
-const fs = require('fs');
-const FileSystem = require('./FileSystem');
-const FileSystemSegList = require('./FileSystemSegList');
-const HardDriveConfig = require('./HardDriveConfig');
-const Partition = require('./Partition');
-const RigidDiskBlock = require('./RigidDiskBlock');
+import fs from 'fs';
+import FileSystem from './FileSystem';
+import FileSystemSegList from './FileSystemSegList';
+import HardDriveConfig from './HardDriveConfig';
+import Partition from './Partition';
+import RigidDiskBlock from './RigidDiskBlock';
 
-class HardDrive {
+export default class HardDrive {
     read(diskFile) {
         this.fileDescriptor = fs.openSync(diskFile, 'r');
         this.size = fs.statSync(diskFile).size;
@@ -137,4 +137,4 @@ class HardDrive {
     }
 }
 
-module.exports = HardDrive;
+

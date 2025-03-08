@@ -1,13 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const AminetService = require('../AminetService');
-const LhaService = require('../LhaService');
+import fs from 'fs';
+import path from 'path';
+import AminetService from '../AminetService';
+import LhaService from '../LhaService';
 
 const FileSystemDosTypeMap = {
     pfs: {dosType: '0x50445303', version: 0x00130002},
 };
 
-class FileSystemPopulator {
+export default class FileSystemPopulator {
     static async getFileSystemConfigs(blockSize, partitions) {
         const fileSystemConfigs = [];
         for (let partitionIndex = 0; partitionIndex < partitions.length; partitionIndex++) {
@@ -70,4 +70,4 @@ class FileSystemPopulator {
     }
 }
 
-module.exports = FileSystemPopulator;
+

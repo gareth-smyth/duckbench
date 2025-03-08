@@ -1,8 +1,8 @@
-const fs = require('fs');
-
-const RomConversionService = require('../../src/services/RomConversionService');
-
+import fs from 'fs';
 jest.mock('fs');
+
+import RomConversionService from '../../src/services/RomConversionService';
+
 
 describe('realToEmulator', () => {
     it('fails and closes open files when an input file does not exist', () => {

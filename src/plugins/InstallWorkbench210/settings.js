@@ -1,6 +1,6 @@
-const BaseSettings = require('../InstallWorkbench310/settings');
+import BaseSettings from '../InstallWorkbench310/settings';
 
-class Settings extends BaseSettings {
+export default class Settings extends BaseSettings {
     constructor() {
         super();
         this.identifier = '2.1';
@@ -17,4 +17,4 @@ class Settings extends BaseSettings {
     }
 }
 
-module.exports = Settings;
+

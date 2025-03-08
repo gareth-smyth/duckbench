@@ -1,6 +1,6 @@
-const AminetService = require('../../services/AminetService');
+import AminetService from '../../services/AminetService';
 
-class UnADF {
+export default class UnADF {
     constructor() {
         this.installed = {};
     }
@@ -42,7 +42,7 @@ class UnADF {
             await lha.run('DB_HOST_CACHE:UnADF.lha', config.optionValues.location, 'duckbench:c/', {}, communicator);
             this.installed[config.optionValues.location] = true;
         } else {
-            Logger.trace(`Not extracting unadf as it has already been extracted to ${config.optionValues.location}`);
+            global.Logger.trace(`Not extracting unadf as it has already been extracted to ${config.optionValues.location}`);
         }
     }
 
@@ -56,4 +56,4 @@ class UnADF {
     }
 }
 
-module.exports = UnADF;
+

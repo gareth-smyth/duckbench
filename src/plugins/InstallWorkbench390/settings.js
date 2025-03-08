@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-class Settings {
+export default class Settings {
     get() {
         const cacheMarkerPath = path.join(global.CACHE_DIR, 'wb390_cached');
         return {
@@ -17,4 +17,4 @@ class Settings {
     }
 }
 
-module.exports = Settings;
+

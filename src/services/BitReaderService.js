@@ -1,4 +1,4 @@
-class BitReaderService {
+export default class BitReaderService {
     constructor(buffer) {
         this.buffer = buffer;
         this.currentBit = 0;
@@ -44,4 +44,4 @@ class BitReaderService {
     }
 }
 
-module.exports = BitReaderService;
+

@@ -1,5 +1,5 @@
-/* eslint-disable no-use-before-define */
-class FileListItem {
+
+export default class FileListItem {
     constructor(diskBuffer, buffer, diskConfig) {
         this.diskConfig = diskConfig;
         this.diskBuffer = diskBuffer;
@@ -33,6 +33,6 @@ class FileListItem {
     }
 }
 
-module.exports = FileListItem;
 
-const FileFactory = require('./FileFactory');
+
+import FileFactory from './FileFactory';

@@ -1,7 +1,7 @@
-const CommandBuilder = require('./CommandRunner');
-const SocketCommunicator = require('./SocketCommunicator');
+import CommandBuilder from './CommandRunner';
+import SocketCommunicator from './SocketCommunicator';
 
-class Communicator {
+export default class Communicator {
     /* istanbul ignore next */
     constructor(controlCallback = this.noCallback,
                 socketCommunicator = new SocketCommunicator(controlCallback),
@@ -11,7 +11,7 @@ class Communicator {
     }
 
     /* istanbul ignore next */
-    noCallback() { }
+    noCallback(callbackValue) { }
 
     async run(commandString, options, commandCallback, expectedResponse) {
         return this.commandRunner.run(commandString, options, commandCallback, expectedResponse);
@@ -65,5 +65,3 @@ class Communicator {
         return this.socketCommunicator.connect();
     }
 }
-
-module.exports = Communicator;

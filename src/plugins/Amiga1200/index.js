@@ -1,4 +1,4 @@
-class A1200 {
+export default class A1200 {
     structure() {
         return {
             name: 'Amiga1200',
@@ -55,4 +55,4 @@ class A1200 {
     }
 }
 
-module.exports = A1200;
+

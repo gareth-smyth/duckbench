@@ -1,9 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const SystemDiskService = require('../../services/SystemDiskService');
+import SystemDiskService from '../../services/SystemDiskService';
 
-class Settings {
+export default class Settings {
     constructor() {
         this.identifier = '3.2';
         this.name = 'InstallWorkbench320';
@@ -42,16 +42,16 @@ class Settings {
     }
 
     async default(settingName) {
-        Logger.trace(`Looking for ${this.readableName} disks`);
+        global.Logger.trace(`Looking for ${this.readableName} disks`);
         if (process.env.DUCKBENCH_DISKS) {
-            Logger.trace('Found disk path using environment var...');
+            global.Logger.trace('Found disk path using environment var...');
             return SystemDiskService.find(this.identifier, settingName, process.env.DUCKBENCH_DISKS);
         } else if (process.env.AMIGAFOREVERDATA) {
-            Logger.trace('Found disk paths using Amiga Forever environment var...');
+            global.Logger.trace('Found disk paths using Amiga Forever environment var...');
             const diskPath = path.join(process.env.AMIGAFOREVERDATA, 'Shared', 'adf');
             return SystemDiskService.find(this.identifier, settingName, diskPath);
         } else {
-            Logger.trace('Cannot find required path. Either AMIGAFOREVERDATA or DUCKBENCH_DISKS shoule be set. ' +
+            global.Logger.trace('Cannot find required path. Either AMIGAFOREVERDATA or DUCKBENCH_DISKS shoule be set. ' +
                 'AMIGAFOREVERDATA: "${process.env.AMIGAFOREVERDATA}", ' +
                 'DUCKBENCH_DISKS: "${process.env.DUCKBENCH_DISKS}"');
             return {};
@@ -59,4 +59,4 @@ class Settings {
     }
 }
 
-module.exports = Settings;
+

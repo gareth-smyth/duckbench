@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-class EnvironmentSetup {
+export default class EnvironmentSetup {
     constructor() {
         this.disks = {};
 
@@ -71,5 +71,3 @@ class EnvironmentSetup {
         fs.rmdirSync(this.executionFolder, {recursive: true});
     }
 }
-
-module.exports = EnvironmentSetup;

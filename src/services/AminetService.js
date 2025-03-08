@@ -1,12 +1,12 @@
-const fs = require('fs');
-const path = require('path');
-const request = require('request-promise');
+import fs from 'fs';
+import path from 'path';
+import request from 'request-promise';
 
-class AminetService {
+export default class AminetService {
     static async download(netPath, filename = path.basename(netPath)) {
         const fullSavePath = path.join(global.CACHE_DIR, filename);
         if (!fs.existsSync(fullSavePath)) {
-            Logger.debug(`Downloading ${filename} from http://aminet.net/${netPath}`);
+            global.Logger.debug(`Downloading ${filename} from http://aminet.net/${netPath}`);
             const response = await request({
                 uri: `http://aminet.net/${netPath}`,
                 resolveWithFullResponse: true,
@@ -16,10 +16,10 @@ class AminetService {
             });
             fs.writeFileSync(fullSavePath, response.body);
         } else {
-            Logger.debug(`Using cached version of ${filename}`);
+            global.Logger.debug(`Using cached version of ${filename}`);
         }
         return fullSavePath;
     }
 }
 
-module.exports = AminetService;
+

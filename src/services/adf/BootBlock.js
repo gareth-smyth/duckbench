@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const CheckSum = require('./CheckSum');
+import CheckSum from './CheckSum';
 
 const BOOT_TYPE = {
     OFS: 0,
@@ -12,7 +12,7 @@ const BOOT_TYPE = {
     FFS_INTL_DIRC: 5,
 };
 
-class RootBlock {
+export default class RootBlock {
     constructor(diskBuffer, diskConfig) {
         this.diskBuffer = diskBuffer;
         this.diskConfig = diskConfig;
@@ -38,4 +38,4 @@ class RootBlock {
     }
 }
 
-module.exports = RootBlock;
+

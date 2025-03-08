@@ -1,5 +1,5 @@
-const BitReader = require('../BitReaderService');
-const HTree = require('./HTree');
+import BitReader from '../BitReaderService';
+import HTree from './HTree';
 
 const COPY_THRESHOLD = 3;
 const HISTORY_BITS = 14;
@@ -7,7 +7,7 @@ const OFFSET_BITS = 4;
 const NUM_CODES = 510;
 const RING_BUFFER_SIZE = 1 << HISTORY_BITS;
 
-class Lha5Decode {
+export default class Lha5Decode {
     constructor(compressedBuffer, outSize) {
         this.ringBufPos = 0;
         this.ringBuffer = [];
@@ -187,4 +187,4 @@ class Lha5Decode {
     }
 }
 
-module.exports = Lha5Decode;
+

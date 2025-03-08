@@ -1,8 +1,8 @@
-const moment = require('moment');
+import moment from 'moment';
 
 const START_OF_TIME = [1979, 1, 1];
 
-class CheckSum {
+export default class CheckSum {
     constructor(buffer) {
         this.buffer = buffer;
     }
@@ -18,4 +18,4 @@ class CheckSum {
     }
 }
 
-module.exports = CheckSum;
+

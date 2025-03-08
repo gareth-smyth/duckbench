@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 const LevelBaseSize = {
     '0': 23,
@@ -10,7 +10,7 @@ const LevelBaseSize = {
  * TODO - Handle archives with extended headers including folders
  * TODO - Perform CRCs
  */
-class LhaHeader {
+export default class LhaHeader {
     constructor(file, offset) {
         const headerBuffer = Buffer.alloc(21, 0);
         fs.readSync(file, headerBuffer, 0, 21, offset);
@@ -54,4 +54,4 @@ class LhaHeader {
     }
 }
 
-module.exports = LhaHeader;
+

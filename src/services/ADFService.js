@@ -1,6 +1,6 @@
-const Disk = require('./adf/Disk');
+import Disk from './adf/Disk';
 
-class ADFService {
+export default class ADFService {
     static createBootableADF(diskFileName, name) {
         const disk = new Disk();
         disk.format(name);
@@ -31,4 +31,4 @@ class ADFService {
     }
 }
 
-module.exports = ADFService;
+

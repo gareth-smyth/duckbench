@@ -1,4 +1,4 @@
-class RedirectInputFile {
+export default class RedirectInputFile {
     structure() {
         return {
             name: 'RedirectInputFile',
@@ -15,4 +15,4 @@ class RedirectInputFile {
     }
 }
 
-module.exports = RedirectInputFile;
+

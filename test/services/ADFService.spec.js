@@ -1,8 +1,8 @@
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 
-const adfService = require('../../src/services/ADFService');
+import adfService from '../../src/services/ADFService';
 
 const createdFiles = [];
 const littleTempFileName = path.join(os.tmpdir(), 'testfile.txt');

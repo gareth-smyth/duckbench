@@ -1,7 +1,7 @@
-const Runner = require('./Runner');
-const EnvironmentSetup = require('./EnvironmentSetup');
+import Runner from './Runner';
+import EnvironmentSetup from './EnvironmentSetup';
 
-class DuckbenchBuilder {
+export default class DuckbenchBuilder {
     constructor() {
         this.environment = undefined;
         this.communicator = undefined;
@@ -12,12 +12,12 @@ class DuckbenchBuilder {
 
         const runner = new Runner();
         try {
-            runner.configureAndSetup({name: 'Setup'}, config);
+            await runner.configureAndSetup({name: 'Setup'}, config);
             runner.validate(environmentSetup, settings);
             await runner.prepare(environmentSetup, settings);
             await this.executeBuild(Environment, environmentSetup, settings, Communicator, runner);
         } catch (err) {
-            Logger.trace(err);
+            global.Logger.trace(err);
             throw err;
         } finally {
             if (this.communicator) {
@@ -27,7 +27,7 @@ class DuckbenchBuilder {
                 this.environment.stop();
             }
             environmentSetup.destroy();
-            Logger.info('Build complete.');
+            global.Logger.info('Build complete.');
         }
     };
 
@@ -42,11 +42,11 @@ class DuckbenchBuilder {
 
         this.communicator.close();
 
-        Logger.info('Pausing before shutting down the emulator.');
+        global.Logger.info('Pausing before shutting down the emulator.');
         await this.sleep(20000);
         this.environment.stop();
 
-        Logger.info('Pausing to let the emulator shutdown.');
+        global.Logger.info('Pausing to let the emulator shutdown.');
         await this.sleep(1000);
 
         await runner.finalise(environmentSetup);
@@ -57,5 +57,3 @@ class DuckbenchBuilder {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 }
-
-module.exports = DuckbenchBuilder;

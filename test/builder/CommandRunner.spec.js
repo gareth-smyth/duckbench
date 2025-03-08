@@ -1,4 +1,4 @@
-const CommandRunner = require('../../src/builder/CommandRunner');
+import CommandRunner from '../../src/builder/CommandRunner';
 
 let socketCommunicator;
 let commandRunner;
@@ -12,7 +12,7 @@ beforeEach(() => {
 it('throws an error when the socket communicator throws an error', async () => {
     socketCommunicator.runCommand.mockRejectedValue('run command error');
 
-    await expect(commandRunner.run('aCommand', {}, callback)).rejects.toThrowError('run command error');
+    await expect(commandRunner.run('aCommand', {}, callback)).rejects.toThrow('run command error');
 });
 
 it('runs the command without options when none are supplied', async () => {
@@ -53,7 +53,7 @@ it('rejects when the expected response does not contain expected string', async 
 
     const expectedError = 'Expected "some third response" from "aCommand" but got "a response,some other a response"';
     await expect(commandRunner.run('aCommand', {}, callback, 'some third response'))
-        .rejects.toThrowError(expectedError);
+        .rejects.toThrow(expectedError);
 });
 
 it('resolves when the expected response matches expected regex', async () => {
@@ -71,7 +71,7 @@ it('rejects when the expected response does not match expected regex', async () 
     const regExpExpected = /some third .* response/;
     const expectedError = `Expected "${regExpExpected}" from "aCommand" but got "a response,some other a response"`;
     await expect(commandRunner.run('aCommand', {}, callback, regExpExpected))
-        .rejects.toThrowError(expectedError);
+        .rejects.toThrow(expectedError);
 });
 
 it('resolves when the expected response matches all expectations', async () => {
@@ -90,12 +90,12 @@ it('rejects when the expected response does not match all expectations', async (
     const expectedError = `Expected "${regExpExpected},some other" from "aCommand" ` +
         'but got "a response,some other a response"';
     await expect(commandRunner.run('aCommand', {}, callback, [regExpExpected, 'some other']))
-        .rejects.toThrowError(expectedError);
+        .rejects.toThrow(expectedError);
 });
 
 it('rejects when the expected response does not match expectation of no response', async () => {
     socketCommunicator.runCommand.mockResolvedValue(['a response', 'some other a response']);
 
     const expectedError = 'Expected no response from "aCommand" but got "a response,some other a response"';
-    await expect(commandRunner.run('aCommand', {}, callback, undefined)).rejects.toThrowError(expectedError);
+    await expect(commandRunner.run('aCommand', {}, callback, undefined)).rejects.toThrow(expectedError);
 });

@@ -1,4 +1,4 @@
-const PluginStore = require('../../src/builder/PluginStore');
+import PluginStore from '../../src/builder/PluginStore';
 
 describe('access plugin store', () => {
     it('adds plugins to store', () => {
@@ -37,13 +37,13 @@ describe('access plugin store', () => {
     });
 });
 
-it('creates new plugins', () => {
+it('creates new plugins', async () => {
     class MockPlugin {}
 
     jest.mock('../../src/plugins/MockPlugin', () => MockPlugin, {virtual: true});
 
     const pluginStore = new PluginStore();
-    const newPlugin = pluginStore.create('MockPlugin');
+    const newPlugin = await pluginStore.create('MockPlugin');
     expect(newPlugin).toBeInstanceOf(MockPlugin);
 });
 

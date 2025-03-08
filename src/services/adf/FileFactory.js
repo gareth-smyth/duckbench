@@ -1,7 +1,7 @@
-/* eslint-disable no-use-before-define */
+
 const BLOCK_SIZE = 512;
 
-class FileFactory {
+export default class FileFactory {
     static build(diskBuffer, address, diskConfig) {
         this.diskConfig = diskConfig;
         const block = diskBuffer.slice(address, address + BLOCK_SIZE);
@@ -13,8 +13,8 @@ class FileFactory {
     }
 }
 
-module.exports = FileFactory;
 
-const Directory = require('./Directory');
-const Type = require('./Type');
-const File = require('./File');
+
+import Directory from './Directory';
+import Type from './Type';
+import File from './File';

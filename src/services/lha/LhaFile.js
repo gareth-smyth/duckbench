@@ -1,10 +1,10 @@
-const fs = require('fs');
-const path = require('path');
-const LhaHeader = require('./LhaHeader');
-const Decoder5 = require('./Lha5Decode');
-const Decoder0 = require('./Lha0Decode');
+import fs from 'fs';
+import path from 'path';
+import LhaHeader from './LhaHeader';
+import Decoder5 from './Lha5Decode';
+import Decoder0 from './Lha0Decode';
 
-class LhaFile {
+export default class LhaFile {
     constructor(filename) {
         this.decoders = {
             '-lh0-': Decoder0,
@@ -43,4 +43,4 @@ class LhaFile {
     }
 }
 
-module.exports = LhaFile;
+

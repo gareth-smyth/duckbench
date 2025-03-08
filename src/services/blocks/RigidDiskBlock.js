@@ -1,8 +1,8 @@
-const fs = require('fs');
+import fs from 'fs';
 
 const RIGID_DISK_BLOCK_SIZE = 256;
 
-class RigidDiskBlock {
+export default class RigidDiskBlock {
     constructor(file) {
         this.buffer = Buffer.alloc(RIGID_DISK_BLOCK_SIZE, 0);
         if (file) {
@@ -207,4 +207,4 @@ class RigidDiskBlock {
     }
 }
 
-module.exports = RigidDiskBlock;
+

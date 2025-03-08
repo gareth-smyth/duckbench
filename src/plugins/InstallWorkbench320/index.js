@@ -1,7 +1,7 @@
-const fs = require('fs-extra');
-const path = require('path');
+import fs from 'fs-extra';
+import path from 'path';
 
-class InstallWorkbench320 {
+export default class InstallWorkbench320 {
     constructor() {
         this.identifier = '3.2';
         this.dirName = __dirname;
@@ -67,13 +67,13 @@ class InstallWorkbench320 {
     copyInstallKey(environmentSetup) {
         const installKeySource = path.join(this.dirName, 'files', `wb${this.identifier}_install_key`);
         const installKeyDestination = path.join(environmentSetup.executionFolder, `wb${this.identifier}_install_key`);
-        Logger.debug(`Copying ${this.readableName} install script redirected input file from "${installKeySource}" ` +
+        global.Logger.debug(`Copying ${this.readableName} install script redirected input file from "${installKeySource}" ` +
             `to "${installKeyDestination}".`);
         fs.copyFileSync(installKeySource, installKeyDestination);
     }
 
     prepareDisks(settings, environmentSetup) {
-        Logger.debug(`Copying ${this.readableName} disks`);
+        global.Logger.debug(`Copying ${this.readableName} disks`);
         for (let diskIndex = 0; diskIndex < this.disks.length; diskIndex++) {
             const diskName = this.disks[diskIndex].name;
             const fileSetting = settings[this.name].find((setting) => setting.name === diskName);
@@ -86,7 +86,7 @@ class InstallWorkbench320 {
             const patchFileName = `wb${this.identifier}_no_floppy_startup.patch`;
             const floppyPatchSource = path.join(this.dirName, 'files', patchFileName);
             const floppyPatchDestination = path.join(environmentSetup.executionFolder, patchFileName);
-            Logger.debug(`Copying startup sequence no floppy patch file from "${floppyPatchSource}" ` +
+            global.Logger.debug(`Copying startup sequence no floppy patch file from "${floppyPatchSource}" ` +
                 `to "${floppyPatchDestination}".`);
             fs.copyFileSync(floppyPatchSource, floppyPatchDestination);
         }
@@ -95,7 +95,7 @@ class InstallWorkbench320 {
     copyPatchFile(environmentSetup) {
         const patchSource = path.join(this.dirName, 'files', `wb${this.identifier}_install.patch`);
         const patchDestination = path.join(environmentSetup.executionFolder, `wb${this.identifier}_install.patch`);
-        Logger.debug(`Copying ${this.readableName} install patch file from "${patchSource}" to "${patchDestination}".`);
+        global.Logger.debug(`Copying ${this.readableName} install patch file from "${patchSource}" to "${patchDestination}".`);
         fs.copyFileSync(patchSource, patchDestination);
     }
 
@@ -107,7 +107,7 @@ class InstallWorkbench320 {
 
         await this.installToCache(communicator, unADF, patch, installerLg);
 
-        Logger.debug(`Copying ${this.readableName} files from cache.`);
+        global.Logger.debug(`Copying ${this.readableName} files from cache.`);
         await communicator.copy(`DB_CLIENT_CACHE:${this.name}/wb`, 'DH0:',
             {'ALL': true, 'CLONE': true}, undefined, 'copied');
 
@@ -134,7 +134,7 @@ class InstallWorkbench320 {
     async installToCache(communicator, unADF, patch, installerLg) {
         const cacheMarkerPath = path.join(global.CACHE_DIR, this.cacheName);
         if (!fs.existsSync(cacheMarkerPath)) {
-            Logger.debug(`${this.readableName} not yet cached. Building cache.`);
+            global.Logger.debug(`${this.readableName} not yet cached. Building cache.`);
 
             await communicator.delete(`DB_CLIENT_CACHE:${this.name}`, {'ALL': true}, undefined, /.*/);
             await communicator.makedir(`DB_CLIENT_CACHE:${this.name}`);
@@ -176,9 +176,9 @@ class InstallWorkbench320 {
 
     handleInstallUpdates(event) {
         if (event.message === 'DATA_EVENT' && event.data.substr(0, 9) === 'Progress:') {
-            Logger.info(event.data.substr(10));
+            global.Logger.info(event.data.substr(10));
         } else {
-            Logger.trace(JSON.stringify(event));
+            global.Logger.trace(JSON.stringify(event));
         }
     }
 
@@ -189,4 +189,4 @@ class InstallWorkbench320 {
     }
 }
 
-module.exports = InstallWorkbench320;
+

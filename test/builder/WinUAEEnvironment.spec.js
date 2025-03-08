@@ -1,8 +1,8 @@
-const {spawn} = require('child_process');
-const path = require('path');
-const fs = require('fs');
+import {spawn} from 'child_process';
+import path from 'path';
+import fs from 'fs';
 
-const WinUAEEnvironment = require('../../src/builder/WinUAEEnvironment');
+import WinUAEEnvironment from '../../src/builder/WinUAEEnvironment';
 
 jest.mock('child_process');
 jest.mock('fs');

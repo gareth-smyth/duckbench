@@ -1,31 +1,31 @@
-const PluginStore = require('./PluginStore');
-const ValidationError = require('../errors/ValidationError');
+import PluginStore from './PluginStore';
+import ValidationError from '../errors/ValidationError';
 
-class Runner {
+export default class Runner {
     constructor() {
         this.configs = [];
         this.pluginStore = new PluginStore();
     }
 
-    configureAndSetup(setupConfig, configs) {
+    async configureAndSetup(setupConfig, configs) {
         this.setupConfig = setupConfig;
-        this.setupPlugin = this.pluginStore.create(setupConfig.name);
+        this.setupPlugin = await this.pluginStore.create(setupConfig.name);
         this.pluginStore.add(setupConfig.name, this.setupPlugin);
-        this.configure(configs);
+        await this.configure(configs);
     }
 
-    configure(configs) {
-        configs.forEach((config) => {
+    async configure(configs) {
+        for (const config of configs) {
             if (!this.pluginStore.hasPlugin(config.name)) {
-                const plugin = this.pluginStore.create(config.name);
+                const plugin = await this.pluginStore.create(config.name);
                 const childConfigs = plugin.configure && plugin.configure(config);
                 if (childConfigs) {
-                    this.configure(childConfigs);
+                    await this.configure(childConfigs);
                 }
                 this.pluginStore.add(config.name, plugin);
             }
             this.configs.push(config);
-        });
+        }
     }
 
     validate(environmentSetup, settings) {
@@ -76,5 +76,3 @@ class Runner {
         }
     }
 }
-
-module.exports = Runner;

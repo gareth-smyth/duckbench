@@ -1,7 +1,7 @@
-const fs = require('fs');
+import fs from 'fs';
 jest.mock('fs');
 
-const SettingsService = require('../../../src/services/SettingsService');
+import SettingsService from '../../../src/services/SettingsService';
 
 it('returns an empty object when settings file does not exist', () => {
     fs.existsSync.mockReturnValueOnce(false);

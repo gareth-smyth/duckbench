@@ -1,6 +1,6 @@
-const fs = require('fs');
+import fs from 'fs';
 
-class Partition {
+export default class Partition {
     read(file, blockPointer, hardDriveConfig) {
         this.hardDriveConfig = hardDriveConfig;
         this.buffer = Buffer.alloc(256, 0);
@@ -150,4 +150,4 @@ class Partition {
     }
 }
 
-module.exports = Partition;
+

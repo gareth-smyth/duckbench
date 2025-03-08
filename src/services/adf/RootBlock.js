@@ -1,16 +1,16 @@
-const moment = require('moment');
+import moment from 'moment';
 
-const CheckSum = require('./CheckSum');
-const Directory = require('./Directory');
-const Name = require('./Name');
-const Timestamp = require('./Timestamp');
-const Type = require('./Type');
+import CheckSum from './CheckSum';
+import Directory from './Directory';
+import Name from './Name';
+import Timestamp from './Timestamp';
+import Type from './Type';
 
 const BLOCK_TYPE = 2;
 const SECONDARY_TYPE_ROOT = 1;
 const VALID = -1;
 
-class RootBlock {
+export default class RootBlock {
     constructor(diskBuffer, diskConfig) {
         this.diskBuffer = diskBuffer;
         this.diskConfig = diskConfig;
@@ -66,4 +66,4 @@ class RootBlock {
     }
 }
 
-module.exports = RootBlock;
+

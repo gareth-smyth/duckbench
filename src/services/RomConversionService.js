@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 const OUTPUT_SIZE_MAP = {
     '64kb': 0.25,
@@ -10,7 +10,7 @@ const OUTPUT_SIZE_MAP = {
     '2mb': 8,
 };
 
-class RomConversionService {
+export default class RomConversionService {
     static realToEmulator(inputFiles, outputFile, force, outputSize, twoFiveSixKb) {
         const inFiles = [];
         let outFile;
@@ -36,9 +36,9 @@ class RomConversionService {
                 }
             }
         } catch (err) {
-            Logger.error(err.message);
-            Logger.debug(JSON.stringify(err));
-            Logger.trace(err.stack);
+            global.Logger.error(err.message);
+            global.Logger.debug(JSON.stringify(err));
+            global.Logger.trace(err.stack);
         } finally {
             if (outFile) {
                 fs.closeSync(outFile);
@@ -84,9 +84,9 @@ class RomConversionService {
                 }
             }
         } catch (err) {
-            Logger.error(err.message);
-            Logger.debug(JSON.stringify(err));
-            Logger.trace(err.stack);
+            global.Logger.error(err.message);
+            global.Logger.debug(JSON.stringify(err));
+            global.Logger.trace(err.stack);
         } finally {
             outFileContents.forEach((outFile) => {
                 fs.closeSync(outFile);
@@ -95,4 +95,4 @@ class RomConversionService {
     }
 }
 
-module.exports = RomConversionService;
+

@@ -6,3 +6,5 @@
 /*.hdf
 /cache/
 db_settings.json
+dist
+/dist/

@@ -1,4 +1,4 @@
-class IFFWrapperChunk {
+export default class IFFWrapperChunk {
     constructor(type, groupType) {
         this.type = type;
         this.groupType = groupType;
@@ -28,4 +28,4 @@ class IFFWrapperChunk {
     }
 }
 
-module.exports = IFFWrapperChunk;
+

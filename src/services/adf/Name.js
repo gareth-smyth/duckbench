@@ -1,4 +1,4 @@
-class Name {
+export default class Name {
     constructor(buffer, diskConfig) {
         this.diskConfig = diskConfig;
         this.buffer = buffer;
@@ -32,4 +32,4 @@ class Name {
     }
 }
 
-module.exports = Name;
+

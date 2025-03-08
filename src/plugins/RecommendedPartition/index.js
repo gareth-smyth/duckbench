@@ -1,7 +1,7 @@
-const path = require('path');
-const HardDriveService = require('../../services/HardDriveService');
+import path from 'path';
+import HardDriveService from '../../services/HardDriveService';
 
-class RecommendedPartition {
+export default class RecommendedPartition {
     structure() {
         return {
             name: 'RecommendedPartition',
@@ -57,4 +57,4 @@ class RecommendedPartition {
     }
 }
 
-module.exports = RecommendedPartition;
+

@@ -1,4 +1,4 @@
-class HardDriveConfig {
+export default class HardDriveConfig {
     constructor(byteSize, heads, sectors, blockSize, reservedBlocks) {
         this.byteSize = byteSize;
         this.cylinders = Math.floor(byteSize / blockSize / sectors / heads);
@@ -11,4 +11,4 @@ class HardDriveConfig {
     }
 }
 
-module.exports = HardDriveConfig;
+

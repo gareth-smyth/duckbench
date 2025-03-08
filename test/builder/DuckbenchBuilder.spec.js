@@ -7,7 +7,7 @@ jest.mock('../../src/plugins/Setup');
 jest.mock('../../src/builder/Runner', () => MockRunner);
 jest.doMock('../../src/builder/EnvironmentSetup', () => MockEnvironmentSetup);
 
-const DuckbenchBuilder = require('../../src/builder/DuckbenchBuilder');
+import DuckbenchBuilder from '../../src/builder/DuckbenchBuilder';
 
 const mockEnvironmentSetupInstance = {
     destroy: jest.fn(),

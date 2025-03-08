@@ -1,8 +1,8 @@
-const fs = require('fs');
-const IFFWrapperChunk = require('./IFFWrapperChunk');
-const IFFChunk = require('./IFFChunk');
+import fs from 'fs';
+import IFFWrapperChunk from './IFFWrapperChunk';
+import IFFChunk from './IFFChunk';
 
-class IFFFile {
+export default class IFFFile {
     static readChunk(buffer, initialPos = 0) {
         const chunkType = buffer.slice(initialPos, initialPos + 4).toString();
         const dataSize = buffer.readUInt32BE(initialPos + 4);
@@ -42,4 +42,4 @@ class IFFFile {
     }
 }
 
-module.exports = IFFFile;
+

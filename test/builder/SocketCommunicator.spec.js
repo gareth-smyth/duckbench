@@ -1,6 +1,6 @@
-const net = require('net');
+import net from 'net';
 
-const SocketCommunicator = require('../../src/builder/SocketCommunicator');
+import SocketCommunicator from '../../src/builder/SocketCommunicator';
 
 jest.mock('net');
 
@@ -130,7 +130,7 @@ it('calls the control callback when output is received without sending a command
     await flushTimeoutsAndPromises();
 
     expect(() => mockSocket.eventFunctions.data('This is the sent line\n\r'))
-        .toThrowError('While connected but not waiting on a command to finish I got this message: ' +
+        .toThrow('While connected but not waiting on a command to finish I got this message: ' +
             '"This is the sent line"');
     await flushTimeoutsAndPromises();
     expect(dataEvent.message).toEqual('DATA_EVENT');
@@ -151,7 +151,7 @@ it('calls the control callback when a command has been sent but not yet received
     await flushTimeoutsAndPromises();
 
     expect(() => mockSocket.eventFunctions.data('This is the sent line\n\r'))
-        .toThrowError('I ran the command "copy afile adir" and have received the response "This is the sent line" ' +
+        .toThrow('I ran the command "copy afile adir" and have received the response "This is the sent line" ' +
             'but I expected an echo');
     await flushTimeoutsAndPromises();
     expect(dataEvent.message).toEqual('DATA_EVENT');
@@ -172,7 +172,7 @@ it('calls the control callback when a command has been sent but not yet received
     await flushTimeoutsAndPromises();
 
     expect(() => mockSocket.eventFunctions.data('This is the sent line\n\r'))
-        .toThrowError('I ran the command "copy afile adir" and have received the response "This is the sent line" ' +
+        .toThrow('I ran the command "copy afile adir" and have received the response "This is the sent line" ' +
             'but I expected an echo');
     await flushTimeoutsAndPromises();
     expect(dataEvent.message).toEqual('DATA_EVENT');

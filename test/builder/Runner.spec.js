@@ -10,40 +10,40 @@ beforeEach(() => {
     MockPluginStore.mockImplementation(() => mockPluginStoreInstance);
 });
 
-const Runner = require('../../src/builder/Runner');
+import Runner from '../../src/builder/Runner';
 
 describe('setupAndConfigure', () => {
-    it('adds all passed in configs', () => {
+    it('adds all passed in configs', async () => {
         mockPluginStoreInstance.create.mockReturnValue({});
         const runner = new Runner();
 
-        runner.configureAndSetup({name: 'Setup'}, [{name: 'config a'}, {name: 'config b'}]);
+        await runner.configureAndSetup({name: 'Setup'}, [{name: 'config a'}, {name: 'config b'}]);
 
         expect(runner.configs.length).toEqual(2);
         expect(runner.configs[0]).toEqual({name: 'config a'});
         expect(runner.configs[1]).toEqual({name: 'config b'});
     });
 
-    it('adds the setup config', () => {
+    it('adds the setup config', async () => {
         mockPluginStoreInstance.create.mockReturnValue({});
         const runner = new Runner();
 
-        runner.configureAndSetup({name: 'Setup'}, [{name: 'config a'}, {name: 'config b'}]);
+        await runner.configureAndSetup({name: 'Setup'}, [{name: 'config a'}, {name: 'config b'}]);
 
         expect(runner.setupConfig).toEqual({name: 'Setup'});
     });
 
-    it('adds the setup plugin', () => {
+    it('adds the setup plugin', async () => {
         mockPluginStoreInstance.create.mockReturnValue({name: 'SetupPlugin'});
         const runner = new Runner();
 
-        runner.configureAndSetup({name: 'Setup'}, [{name: 'config a'}, {name: 'config b'}]);
+        await runner.configureAndSetup({name: 'Setup'}, [{name: 'config a'}, {name: 'config b'}]);
 
         expect(runner.setupPlugin).toEqual({name: 'SetupPlugin'});
         expect(mockPluginStoreInstance.add).toHaveBeenCalledWith('Setup', {name: 'SetupPlugin'});
     });
 
-    it('adds child configs', () => {
+    it('adds child configs', async () => {
         mockPluginStoreInstance.create.mockImplementation((pluginName) => {
             if ('a' === pluginName) {
                 return {configure: () => [{name: 'c'}, {name: 'd'}]};
@@ -55,7 +55,7 @@ describe('setupAndConfigure', () => {
         });
         const runner = new Runner();
 
-        runner.configureAndSetup({name: 'Setup'}, [{name: 'a'}, {name: 'b'}]);
+        await runner.configureAndSetup({name: 'Setup'}, [{name: 'a'}, {name: 'b'}]);
 
         expect(runner.configs.length).toEqual(6);
         expect(runner.configs[0]).toEqual({name: 'e'});
@@ -66,7 +66,7 @@ describe('setupAndConfigure', () => {
         expect(runner.configs[5]).toEqual({name: 'b'});
     });
 
-    it('adds plugins to the store', () => {
+    it('adds plugins to the store', async () => {
         mockPluginStoreInstance.create.mockImplementation((pluginName) => {
             if ('a' === pluginName) {
                 return {name: pluginName, configure: () => [{name: 'c'}, {name: 'd'}]};
@@ -78,7 +78,7 @@ describe('setupAndConfigure', () => {
         });
         const runner = new Runner();
 
-        runner.configureAndSetup({name: 'Setup'}, [{name: 'a'}, {name: 'b'}]);
+        await runner.configureAndSetup({name: 'Setup'}, [{name: 'a'}, {name: 'b'}]);
 
         expect(mockPluginStoreInstance.add).toHaveBeenCalledTimes(7);
         expect(mockPluginStoreInstance.add).toHaveBeenCalledWith('a', {name: 'a', configure: expect.any(Function)});
@@ -89,17 +89,17 @@ describe('setupAndConfigure', () => {
         expect(mockPluginStoreInstance.add).toHaveBeenCalledWith('f', {name: 'f'});
     });
 
-    it('only adds child configs once ', () => {
+    it('only adds child configs once ', async () => {
         mockPluginStoreInstance.create
             .mockReturnValueOnce({})
             .mockReturnValueOnce({configure: () => [{name: 'config c'}, {name: 'config d'}]})
-            .mockReturnValueOnce({ })
-            .mockReturnValueOnce({ })
+            .mockReturnValueOnce({})
+            .mockReturnValueOnce({})
             .mockReturnValueOnce({configure: () => [{name: 'config c'}, {name: 'config d'}]});
         mockPluginStoreInstance.hasPlugin.mockReturnValueOnce(false).mockReturnValueOnce(true);
         const runner = new Runner();
 
-        runner.configureAndSetup({name: 'Setup'}, [{name: 'config a'}, {name: 'config b'}]);
+        await runner.configureAndSetup({name: 'Setup'}, [{name: 'config a'}, {name: 'config b'}]);
 
         expect(runner.configs.length).toEqual(4);
         expect(runner.configs[0]).toEqual({name: 'config c'});

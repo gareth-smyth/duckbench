@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-class WinUAETools {
+export default class WinUAETools {
     constructor() {
         this.installed = {};
     }
@@ -33,10 +33,10 @@ class WinUAETools {
 
     async install(config, communicator, pluginStore, environmentSetup, settings) {
         if (!this.installed[config.optionValues.location]) {
-            Logger.trace(`Installing win uae tools to ${config.optionValues.location}`);
+            global.Logger.trace(`Installing win uae tools to ${config.optionValues.location}`);
             if (!fs.existsSync(path.join(global.CACHE_DIR, 'uae-configuration')) ||
                 !fs.existsSync(path.join(global.CACHE_DIR, 'uaectrl'))) {
-                Logger.trace('Installing win uae tools to cache');
+                global.Logger.trace('Installing win uae tools to cache');
 
                 const emuRoot = settings['Setup'].find((setting) => setting.name === 'emulatorRoot');
                 const configurationPath = path.join(emuRoot.value.folder, 'Amiga Programs', 'uae-configuration');
@@ -45,13 +45,13 @@ class WinUAETools {
                 fs.copyFileSync(configurationPath, path.join(global.CACHE_DIR, 'uae-configuration'));
                 fs.copyFileSync(ctrlPath, path.join(global.CACHE_DIR, 'uaectrl'));
             } else {
-                Logger.trace('Not installing win uae tools to cache - they have already been installed');
+                global.Logger.trace('Not installing win uae tools to cache - they have already been installed');
             }
             await communicator.copy('DB_HOST_CACHE:uae-configuration', `${config.optionValues.location}`);
             await communicator.copy('DB_HOST_CACHE:uaectrl', `${config.optionValues.location}`);
             this.installed[config.optionValues.location] = true;
         } else {
-            Logger.trace(`Not installing win uae tools - they have been installed to ${config.optionValues.location}`);
+            global.Logger.trace(`Not installing win uae tools - they have been installed to ${config.optionValues.location}`);
         }
     }
 
@@ -70,4 +70,4 @@ class WinUAETools {
     }
 }
 
-module.exports = WinUAETools;
+

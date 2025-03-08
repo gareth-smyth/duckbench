@@ -1,6 +1,6 @@
-const AminetService = require('../../services/AminetService');
+import AminetService from '../../services/AminetService';
 
-class Lha {
+export default class Lha {
     constructor() {
         this.installed = {};
     }
@@ -33,7 +33,7 @@ class Lha {
             await communicator.run(commandString, {}, undefined, 'Extracting: lha_68k');
             this.installed[config.optionValues.location] = true;
         } else {
-            Logger.trace(`Not installing LHA as it has already been installed to ${config.optionValues.location}`);
+            global.Logger.trace(`Not installing LHA as it has already been installed to ${config.optionValues.location}`);
         }
     }
 
@@ -43,4 +43,4 @@ class Lha {
     }
 }
 
-module.exports = Lha;
+

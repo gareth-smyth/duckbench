@@ -1,4 +1,4 @@
 /* istanbul ignore file */
-const log = require('pino')();
+import log from 'pino';
 
-global.Logger = log;
+global.Logger = log();

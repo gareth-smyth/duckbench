@@ -1,6 +1,6 @@
-const BaseInstall = require('../InstallWorkbench310');
+import BaseInstall from '../InstallWorkbench310';
 
-class InstallWorkbench300 extends BaseInstall {
+export default class InstallWorkbench300 extends BaseInstall {
     constructor() {
         super();
         this.identifier = '3.0';
@@ -21,4 +21,4 @@ class InstallWorkbench300 extends BaseInstall {
     }
 }
 
-module.exports = InstallWorkbench300;
+

@@ -1,6 +1,6 @@
-const AminetService = require('../../services/AminetService');
+import AminetService from '../../services/AminetService';
 
-class MMULib {
+export default class MMULib {
     constructor() {
         this.installed = {};
     }
@@ -53,9 +53,9 @@ class MMULib {
             await communicator.delete('duckbench:MMULib', {ALL: true});
             this.installed[config.optionValues.location] = true;
         } else {
-            Logger.trace(`Not installing MMULib as it has already been installed to ${config.optionValues.location}`);
+            global.Logger.trace(`Not installing MMULib as it has already been installed to ${config.optionValues.location}`);
         }
     }
 }
 
-module.exports = MMULib;
+

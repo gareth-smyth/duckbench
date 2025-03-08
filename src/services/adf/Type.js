@@ -1,4 +1,4 @@
-class Type {
+export default class Type {
     constructor(buffer, diskConfig) {
         this.diskConfig = diskConfig;
         this.buffer = buffer;
@@ -14,4 +14,4 @@ class Type {
     }
 }
 
-module.exports = Type;
+

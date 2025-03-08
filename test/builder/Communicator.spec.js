@@ -1,4 +1,4 @@
-const Communicator = require('../../src/builder/Communicator');
+import Communicator from '../../src/builder/Communicator';
 
 let communicator;
 let socketCommunicator;

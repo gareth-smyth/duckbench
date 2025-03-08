@@ -1,6 +1,6 @@
-const LhaService = require('../../../src/services/LhaService');
-const path = require('path');
-const fs = require('fs');
+import LhaService from '../../../src/services/LhaService';
+import path from 'path';
+import fs from 'fs';
 
 const TEMP_FILE_PATH = __dirname;
 

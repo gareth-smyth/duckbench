@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /* eslint-disable */
-require('../services/BaseDirService');
-require('../services/LoggerService');
-const RomConversionService = require('../services/RomConversionService');
-const yargs = require('yargs');
+import('../services/BaseDirService');
+import('../services/LoggerService');
+import RomConversionService from '../services/RomConversionService';
+import yargs from 'yargs';
 
 yargs.command({
     command: 'real-to-emulated',
@@ -36,7 +36,7 @@ yargs.command({
             .demandOption('output-size');
     },
     handler: (args) => {
-        Logger.level = args.logLevel;
+        global.Logger.level = args.logLevel;
         RomConversionService.realToEmulator(args.input, args.output, args.force, args.outputSize, 262144)
     }
 }).command({
@@ -72,7 +72,7 @@ yargs.command({
             .demandOption('o');
     },
     handler: (args) => {
-        Logger.level = args.logLevel;
+        global.Logger.level = args.logLevel;
         RomConversionService.emulatorToReal(args.input, args.output, args.force, args.outputSize, args.split, 262144)
     }
 })

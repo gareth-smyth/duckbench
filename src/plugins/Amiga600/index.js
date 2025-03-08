@@ -1,4 +1,4 @@
-class A600 {
+export default class A600 {
     structure() {
         return {
             name: 'Amiga600',
@@ -67,4 +67,4 @@ class A600 {
     }
 }
 
-module.exports = A600;
+

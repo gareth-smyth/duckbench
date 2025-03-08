@@ -1,4 +1,4 @@
-class DiskConfig {
+export default class DiskConfig {
     constructor(cylinders, heads, sectors, blockSize, bootBlocksReserved) {
         this.CYLINDERS = cylinders;
         this.HEADS = heads;
@@ -16,4 +16,4 @@ class DiskConfig {
     }
 }
 
-module.exports = DiskConfig;
+
