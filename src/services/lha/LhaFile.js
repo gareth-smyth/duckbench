@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import LhaHeader from './LhaHeader';
-import Decoder5 from './Lha5Decode';
-import Decoder0 from './Lha0Decode';
+import LhaHeader  from './LhaHeader.js';
+import Decoder5  from './Lha5Decode.js';
+import Decoder0  from './Lha0Decode.js';
 
 export default class LhaFile {
     constructor(filename) {

@@ -1,5 +1,5 @@
-import Runner from './Runner';
-import EnvironmentSetup from './EnvironmentSetup';
+import Runner from './Runner.js';
+import EnvironmentSetup from './EnvironmentSetup.js';
 
 export default class DuckbenchBuilder {
     constructor() {

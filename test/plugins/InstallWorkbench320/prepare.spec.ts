@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
-import InstallWorkbench320 from "../../../src/plugins/InstallWorkbench320";
+import InstallWorkbench320  from '../../../src/plugins/InstallWorkbench320/index.js';
 
 const pluginBasePath = '../../../src/plugins/InstallWorkbench320';
 
-jest.mock('fs');
+vi.mock('fs');
 
 const settings = {InstallWorkbench320: [
     {name: 'workbench', value: {file: 'wb'}},
@@ -24,7 +24,7 @@ it('copies the installer patch', async () => {
     const installWorkbench320 = new InstallWorkbench320();
     installWorkbench320.prepare({}, {floppyDrive: true, executionFolder: 'aFolder'}, settings);
 
-    const expectedCopyFrom = path.join(__dirname, pluginBasePath, 'files', 'wb3.2_install.patch');
+    const expectedCopyFrom = path.join(import.meta.dirname, pluginBasePath, 'files', 'wb3.2_install.patch');
     const expectedCopyTo = path.join('aFolder', 'wb3.2_install.patch');
     expect(fs.copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });
@@ -33,7 +33,7 @@ it('copies the install key', async () => {
     const installWorkbench320 = new InstallWorkbench320();
     installWorkbench320.prepare({}, {floppyDrive: true, executionFolder: 'aFolder'}, settings);
 
-    const expectedCopyFrom = path.join(__dirname, pluginBasePath, 'files', 'wb3.2_install_key');
+    const expectedCopyFrom = path.join(import.meta.dirname, pluginBasePath, 'files', 'wb3.2_install_key');
     const expectedCopyTo = path.join('aFolder', 'wb3.2_install_key');
     expect(fs.copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });
@@ -42,7 +42,7 @@ it('copies the startup sequence patch when floppy is false', async () => {
     const installWorkbench320 = new InstallWorkbench320();
     installWorkbench320.prepare({}, {floppyDrive: false, executionFolder: 'aFolder'}, settings);
 
-    const expectedCopyFrom = path.join(__dirname, pluginBasePath, 'files', 'wb3.2_no_floppy_startup.patch');
+    const expectedCopyFrom = path.join(import.meta.dirname, pluginBasePath, 'files', 'wb3.2_no_floppy_startup.patch');
     const expectedCopyTo = path.join('aFolder', 'wb3.2_no_floppy_startup.patch');
     expect(fs.copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });

@@ -1,8 +1,8 @@
-import Check4GB from '../../../src/plugins/Check4GB';
+import Check4GB  from '../../../src/plugins/Check4GB/index.js';
 
-const pluginStore = {getPlugin: jest.fn()};
-const lha = {run: jest.fn()};
-const communicator = {copy: jest.fn(), delete: jest.fn()};
+const pluginStore = {getPlugin: vi.fn()};
+const lha = {run: vi.fn()};
+const communicator = {copy: vi.fn(), delete: vi.fn()};
 
 beforeEach(() => {
     pluginStore.getPlugin.mockReturnValue(lha);

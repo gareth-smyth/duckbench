@@ -1,6 +1,6 @@
-import WinUAETools from '../../../src/plugins/WinUAETools';
+import WinUAETools  from '../../../src/plugins/WinUAETools/index.js';
 
-const communicator = {run: jest.fn()};
+const communicator = {run: vi.fn()};
 
 it('runs the winUAETools command', async ()=> {
     const pluginStore = {getPlugin: () => ({createInput: () => 'ram:some_file.txt'})};

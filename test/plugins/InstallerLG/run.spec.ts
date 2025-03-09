@@ -1,6 +1,6 @@
-import InstallerLG from '../../../src/plugins/InstallerLG';
+import InstallerLG  from '../../../src/plugins/InstallerLG/index.js';
 
-const communicator = {run: jest.fn()};
+const communicator = {run: vi.fn()};
 const callback = 'aCallback';
 const options = 'options';
 

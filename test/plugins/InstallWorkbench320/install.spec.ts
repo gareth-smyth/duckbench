@@ -1,36 +1,37 @@
 import fs from 'fs';
-import InstallWorkbench320 from '../../../src/plugins/InstallWorkbench320';
+import InstallWorkbench320  from '../../../src/plugins/InstallWorkbench320';
 
-import Communicator from '../../../src/builder/Communicator';
-import PluginStore from '../../../src/builder/PluginStore';
-import InstallLG from '../../../src/plugins/InstallerLG';
-import Patch from '../../../src/plugins/Patch';
-import UnADF from '../../../src/plugins/UnADF';
-import WinUAETools from '../../../src/plugins/WinUAETools';
+import Communicator  from '../../../src/builder/Communicator';
+import PluginStore  from '../../../src/builder/PluginStore';
+import InstallLG  from '../../../src/plugins/InstallerLG/index.js';
+import Patch  from '../../../src/plugins/Patch/index.js';
+import UnADF  from '../../../src/plugins/UnADF/index.js';
+import WinUAETools  from '../../../src/plugins/WinUAETools';
+import {MockedObject} from "vitest";
 
-jest.mock('fs');
-jest.mock('../../../src/builder/Communicator');
-jest.mock('../../../src/builder/PluginStore');
-jest.mock('../../../src/plugins/InstallerLG');
-jest.mock('../../../src/plugins/Patch');
-jest.mock('../../../src/plugins/UnADF');
-jest.mock('../../../src/plugins/WinUAETools');
+vi.mock('fs');
+vi.mock('../../../src/builder/Communicator');
+vi.mock('../../../src/builder/PluginStore');
+vi.mock('../../../src/plugins/InstallerLG');
+vi.mock('../../../src/plugins/Patch');
+vi.mock('../../../src/plugins/UnADF');
+vi.mock('../../../src/plugins/WinUAETools');
 
-let communicator: jest.Mocked<Communicator>;
-let pluginStore: jest.Mocked<PluginStore>;
-let installerLG: jest.Mocked<InstallLG>;
-let winUAETools: jest.Mocked<WinUAETools>;
-let patch: jest.Mocked<Patch>;
-let unADF: jest.Mocked<UnADF>;
-const mockedFs = fs as jest.Mocked<typeof fs>;
+let communicator: MockedObject<Communicator>;
+let pluginStore: MockedObject<PluginStore>;
+let installerLG: MockedObject<InstallLG>;
+let winUAETools: MockedObject<WinUAETools>;
+let patch: MockedObject<Patch>;
+let unADF: MockedObject<UnADF>;
+const mockedFs = vi.mocked(fs);
 
 beforeEach(() => {
-    communicator = new Communicator() as jest.Mocked<Communicator>;
-    pluginStore = new PluginStore() as jest.Mocked<PluginStore>;
-    installerLG = new InstallLG() as jest.Mocked<InstallLG>;
-    patch = new Patch() as jest.Mocked<Patch>;
-    unADF = new UnADF() as jest.Mocked<UnADF>;
-    winUAETools = new WinUAETools() as jest.Mocked<WinUAETools>;
+    communicator = vi.mocked(new Communicator());
+    pluginStore = vi.mocked(new PluginStore());
+    installerLG = vi.mocked(new InstallLG());
+    patch = vi.mocked(new Patch());
+    unADF = vi.mocked(new UnADF());
+    winUAETools = vi.mocked(new WinUAETools());
     pluginStore.getPlugin.mockReturnValueOnce(patch)
         .mockReturnValueOnce(unADF)
         .mockReturnValueOnce(installerLG)

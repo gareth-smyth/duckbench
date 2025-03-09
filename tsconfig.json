@@ -12,6 +12,9 @@
     "paths": {
       "*": ["*"]
     },
+    "types": [
+      "vitest/globals"
+    ],
     "typeRoots": [
       "./node_modules/@types",
       "./src/"
@@ -19,5 +22,11 @@
     "allowSyntheticDefaultImports": true,
     "allowJs": true
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "test/**/*.ts", "test/**/*.d.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "test/**/*.ts",
+    "test/**/*.d.ts",
+    "node_modules/vitest/globals.d.ts"
+  ]
 }

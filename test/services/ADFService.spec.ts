@@ -2,7 +2,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-import adfService from '../../src/services/ADFService';
+import adfService  from '../../src/services/ADFService.js';
 
 const createdFiles: string[] = [];
 const littleTempFileName = path.join(os.tmpdir(), 'testfile.txt');

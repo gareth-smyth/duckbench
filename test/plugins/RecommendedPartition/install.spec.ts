@@ -1,7 +1,7 @@
-import RecommendedPartition from '../../../src/plugins/RecommendedPartition';
+import RecommendedPartition  from '../../../src/plugins/RecommendedPartition/index.js';
 
 it('calls the communicator to format the workbench partition', async () => {
-    const communicator = {format: jest.fn(), assign: jest.fn()};
+    const communicator = {format: vi.fn(), assign: vi.fn()};
     const pluginStore = {getPlugin: () => ({createInput: () => 'ram:some file.txt'})};
 
     const partition = new RecommendedPartition();
@@ -14,7 +14,7 @@ it('calls the communicator to format the workbench partition', async () => {
 });
 
 it('assigns work: to dh1:', async () => {
-    const communicator = {format: jest.fn(), assign: jest.fn()};
+    const communicator = {format: vi.fn(), assign: vi.fn()};
     const pluginStore = {getPlugin: () => ({createInput: () => 'ram:some file.txt'})};
 
     const partition = new RecommendedPartition();
@@ -26,7 +26,7 @@ it('assigns work: to dh1:', async () => {
 
 describe('large hard drive set up', () => {
     it('calls the communicator to format the workbench partition', async () => {
-        const communicator = {format: jest.fn(), assign: jest.fn()};
+        const communicator = {format: vi.fn(), assign: vi.fn()};
         const pluginStore = {getPlugin: () => ({createInput: () => 'ram:some file.txt'})};
 
         const partition = new RecommendedPartition();
@@ -39,7 +39,7 @@ describe('large hard drive set up', () => {
     });
 
     it('calls the communicator to format the work partition', async () => {
-        const communicator = {format: jest.fn(), assign: jest.fn()};
+        const communicator = {format: vi.fn(), assign: vi.fn()};
         const pluginStore = {getPlugin: () => ({createInput: () => 'ram:some file.txt'})};
 
         const partition = new RecommendedPartition();

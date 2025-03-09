@@ -1,5 +1,5 @@
-import PluginStore from './PluginStore';
-import ValidationError from '../errors/ValidationError';
+import PluginStore from './PluginStore.js';
+import ValidationError from '../errors/ValidationError.js';
 
 export default class Runner {
     constructor() {

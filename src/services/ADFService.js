@@ -1,4 +1,4 @@
-import Disk from './adf/Disk';
+import Disk from './adf/Disk.js';
 
 export default class ADFService {
     static createBootableADF(diskFileName, name) {

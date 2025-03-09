@@ -1,12 +1,13 @@
-import {spawn} from 'child_process';
+import {ChildProcess, spawn} from 'child_process';
 import path from 'path';
 import fs from 'fs';
 
-import WinUAEEnvironment from '../../src/builder/WinUAEEnvironment';
+import WinUAEEnvironment  from '../../src/builder/WinUAEEnvironment.js';
+import {MockedObject} from "vitest";
 
-jest.mock('child_process');
-jest.mock('fs');
-const mockedFs = fs as jest.Mocked<typeof fs>;
+vi.mock('child_process');
+vi.mock('fs');
+const mockedFs = fs as MockedObject<typeof fs>;
 
 const settings = {'Setup': [
     {name: 'emulatorRoot', value: {folder: '/path/to/winuae/'}},
@@ -19,7 +20,7 @@ it('spawns a new winuae 32 bit process', () => {
             getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
         settings,
     );
-    fs.existsSync = jest.fn().mockReturnValue(true);
+    fs.existsSync = vi.fn().mockReturnValue(true);
     environment.start();
     const configFileLocation = path.join('/some/folder/', 'amiga.uae');
     expect(spawn).toHaveBeenCalledWith(path.join('/path/to/winuae/', 'WinUAE.exe'), ['-f', configFileLocation]);
@@ -31,7 +32,7 @@ it('spawns a new winuae 64 bit process', () => {
             getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
         settings,
     );
-    fs.existsSync = jest.fn().mockReturnValue(false);
+    fs.existsSync = vi.fn().mockReturnValue(false);
     environment.start();
     const configFileLocation = path.join('/some/folder/', 'amiga.uae');
     expect(spawn).toHaveBeenCalledWith(path.join('/path/to/winuae/', 'WinUAE64.exe'), ['-f', configFileLocation]);
@@ -43,8 +44,8 @@ it('kills the winuae process', () => {
             getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
         settings,
     );
-    const process = {kill: jest.fn()};
-    (spawn as jest.Mock).mockReturnValueOnce(process);
+    const process = {kill: vi.fn()} as unknown as ChildProcess;
+    vi.mocked(spawn).mockReturnValueOnce(process);
     environment.start();
     environment.stop();
     expect(process.kill).toHaveBeenCalledTimes(1);
@@ -56,7 +57,7 @@ it('does not kill the winuae process when it does not exist', () => {
             getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
         settings,
     );
-    (spawn as jest.Mock).mockReturnValueOnce(undefined);
+    vi.mocked(spawn).mockReturnValueOnce(undefined as unknown as ChildProcess);
     environment.start();
     environment.stop();
 });

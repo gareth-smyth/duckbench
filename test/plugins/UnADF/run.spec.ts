@@ -1,6 +1,6 @@
-import UnADF from '../../../src/plugins/UnADF';
+import UnADF  from '../../../src/plugins/UnADF/index.js';
 
-const communicator = {copy: jest.fn(), cd: jest.fn(), run: jest.fn(), delete: jest.fn(), protect: jest.fn()};
+const communicator = {copy: vi.fn(), cd: vi.fn(), run: vi.fn(), delete: vi.fn(), protect: vi.fn()};
 const callback = 'aCallback';
 const options = 'options';
 

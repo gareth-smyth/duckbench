@@ -1,7 +1,7 @@
-import UnADF from '../../../src/plugins/UnADF';
+import UnADF  from '../../../src/plugins/UnADF/index.js';
 
-const pluginStore = {getPlugin: jest.fn()};
-const lha = {run: jest.fn()};
+const pluginStore = {getPlugin: vi.fn()};
+const lha = {run: vi.fn()};
 const communicator = 'aCommunicator';
 
 beforeEach(() => {

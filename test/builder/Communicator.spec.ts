@@ -1,15 +1,16 @@
-import Communicator from '../../src/builder/Communicator';
-import SocketCommunicator from "../../src/builder/SocketCommunicator";
-import CommandRunner from "../../src/builder/CommandRunner";
-jest.mock("../../src/builder/SocketCommunicator")
-jest.mock("../../src/builder/CommandRunner")
+import Communicator  from '../../src/builder/Communicator.js';
+import SocketCommunicator  from '../../src/builder/SocketCommunicator.js';
+import CommandRunner  from '../../src/builder/CommandRunner.js';
+import {MockedObject} from "vitest";
+vi.mock("../../src/builder/SocketCommunicator")
+vi.mock("../../src/builder/CommandRunner")
 
 let communicator: Communicator;
-let socketCommunicator: jest.Mocked<SocketCommunicator>;
-let commandRunner: jest.Mocked<CommandRunner>;
+let socketCommunicator: MockedObject<SocketCommunicator>;
+let commandRunner: MockedObject<CommandRunner>;
 beforeEach(() => {
-    commandRunner = new CommandRunner() as jest.Mocked<CommandRunner>;
-    socketCommunicator = new SocketCommunicator() as jest.Mocked<SocketCommunicator>;
+    commandRunner = vi.mocked(new CommandRunner());
+    socketCommunicator = vi.mocked(new SocketCommunicator());
     communicator = new Communicator(undefined, socketCommunicator, commandRunner);
 });
 

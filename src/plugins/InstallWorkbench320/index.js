@@ -1,10 +1,10 @@
-import fs from 'fs-extra';
+import fs from 'fs';
 import path from 'path';
 
 export default class InstallWorkbench320 {
     constructor() {
         this.identifier = '3.2';
-        this.dirName = __dirname;
+        this.dirName = import.meta.dirname;
         this.name = 'InstallWorkbench320';
         this.cacheName = 'wb320_cached';
         this.readableName = 'Workbench 3.2';

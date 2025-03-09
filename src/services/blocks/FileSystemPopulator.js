@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import AminetService from '../AminetService';
-import LhaService from '../LhaService';
+import AminetService  from '../AminetService.js';
+import LhaService  from '../LhaService.js';
 
 const FileSystemDosTypeMap = {
     pfs: {dosType: '0x50445303', version: 0x00130002},

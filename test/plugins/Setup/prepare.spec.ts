@@ -1,17 +1,18 @@
 import fs from 'fs';
 import path from 'path';
 
-import EnvironmentSetup from '../../../src/builder/EnvironmentSetup';
-import ADFService from '../../../src/services/ADFService';
-import HardDriveService from '../../../src/services/HardDriveService';
+import EnvironmentSetup  from '../../../src/builder/EnvironmentSetup.js';
+import ADFService  from '../../../src/services/ADFService.js';
+import HardDriveService  from '../../../src/services/HardDriveService.js';
 
-jest.mock('fs');
-const mockedFs = fs as jest.Mocked<typeof fs>;
-jest.mock('../../../src/builder/EnvironmentSetup');
-jest.mock('../../../src/services/ADFService');
-jest.mock('../../../src/services/HardDriveService');
+vi.mock('fs');
+const mockedFs = fs as MockedObject<typeof fs>;
+vi.mock('../../../src/builder/EnvironmentSetup');
+vi.mock('../../../src/services/ADFService');
+vi.mock('../../../src/services/HardDriveService');
 
-import Setup from '../../../src/plugins/Setup';
+import Setup  from '../../../src/plugins/Setup/index.js';
+import {MockedObject} from "vitest";
 
 const settings = {
     InstallWorkbench310: [{name: 'workbench', value: {file: 'aFile'}}],
@@ -100,11 +101,11 @@ it('creates the boot ADF with the required setup files', async () => {
 
     expect(ADFService.createBootableADF).toHaveBeenCalledWith(path.join('some folder', 'boot.adf'), 'DuckBoot');
     expect(ADFService.createFile).toHaveBeenCalledTimes(2);
-    const auxFileLocation = path.join(__dirname, '../../../src/plugins/Setup/', 'amigaFiles/file_AUX');
+    const auxFileLocation = path.join(import.meta.dirname, '../../../src/plugins/Setup/', 'amigaFiles/file_AUX');
     expect(ADFService.createFile)
         .toHaveBeenCalledWith(path.join('some folder', 'boot.adf'), 'AUX', auxFileLocation);
     const startupSequenceLocation =
-        path.join(__dirname, '../../../src/plugins/Setup/', 'amigaFiles/s/file_startup-sequence');
+        path.join(import.meta.dirname, '../../../src/plugins/Setup/', 'amigaFiles/s/file_startup-sequence');
     expect(ADFService.createFile)
         .toHaveBeenCalledWith(path.join('some folder', 'boot.adf'), 's/startup-sequence', startupSequenceLocation);
     expect(ADFService.createDirectory).toHaveBeenCalledTimes(2);

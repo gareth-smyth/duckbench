@@ -1,4 +1,4 @@
-import CheckSum from './CheckSum';
+import CheckSum  from './CheckSum.js';
 
 export default class Bitmap {
     constructor(diskBuffer, diskConfig) {

@@ -1,20 +1,21 @@
-import Communicator from '../../../src/builder/Communicator';
-import PluginStore from '../../../src/builder/PluginStore';
-import RedirectInputFile from '../../../src/plugins/RedirectInputFile';
+import Communicator  from '../../../src/builder/Communicator.js';
+import PluginStore  from '../../../src/builder/PluginStore.js';
+import RedirectInputFile  from '../../../src/plugins/RedirectInputFile/index.js';
 
-jest.mock('../../../src/builder/Communicator');
-jest.mock('../../../src/builder/PluginStore');
-jest.mock('../../../src/plugins/RedirectInputFile');
+vi.mock('../../../src/builder/Communicator');
+vi.mock('../../../src/builder/PluginStore');
+vi.mock('../../../src/plugins/RedirectInputFile');
 
-import Setup from '../../../src/plugins/Setup';
+import Setup  from '../../../src/plugins/Setup/index.js';
+import {MockedObject} from "vitest";
 
-let communicator: jest.Mocked<Communicator>;
-let pluginStore: jest.Mocked<PluginStore>;
-let mockRedirectInputFile: jest.Mocked<RedirectInputFile>;
+let communicator: MockedObject<Communicator>;
+let pluginStore: MockedObject<PluginStore>;
+let mockRedirectInputFile: MockedObject<RedirectInputFile>;
 beforeEach(() => {
-    communicator = new Communicator() as jest.Mocked<Communicator>;
-    pluginStore = new PluginStore() as jest.Mocked<PluginStore>;
-    mockRedirectInputFile = new RedirectInputFile() as jest.Mocked<RedirectInputFile>;
+    communicator = vi.mocked(new Communicator());
+    pluginStore = vi.mocked(new PluginStore());
+    mockRedirectInputFile = vi.mocked(new RedirectInputFile());
     pluginStore.getPlugin.mockReturnValue(mockRedirectInputFile);
     mockRedirectInputFile.createInput.mockResolvedValueOnce('ram:some file.txt');
 });

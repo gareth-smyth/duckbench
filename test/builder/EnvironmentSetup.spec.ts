@@ -3,9 +3,9 @@ import {when} from 'jest-when';
 import fs from 'fs';
 import path from 'path';
 
-import EnvironmentSetup from '../../src/builder/EnvironmentSetup';
+import EnvironmentSetup  from '../../src/builder/EnvironmentSetup.js';
 
-jest.mock('fs');
+vi.mock('fs');
 
 let RealDate: typeof Date;
 
@@ -20,7 +20,7 @@ afterEach(() => {
 it('creates the execution root folder and execution folder if it does not exist', () => {
     when(fs.existsSync).expectCalledWith(path.join(global.BASE_DIR, 'execution')).mockReturnValueOnce(false);
 
-    Date = jest.fn(() => new RealDate('2020-04-01T17:29:30.235Z')) as unknown as typeof Date;
+    Date = vi.fn(() => new RealDate('2020-04-01T17:29:30.235Z')) as unknown as typeof Date;
 
     new EnvironmentSetup();
 
@@ -32,7 +32,7 @@ it('creates the execution root folder and execution folder if it does not exist'
 it('deletes the execution folder when destroy is called.', () => {
     when(fs.existsSync).expectCalledWith(path.join(global.BASE_DIR, 'execution')).mockReturnValueOnce(false);
 
-    Date = jest.fn(() => new RealDate('2020-04-01T17:29:30.235Z')) as unknown as typeof Date;
+    Date = vi.fn(() => new RealDate('2020-04-01T17:29:30.235Z')) as unknown as typeof Date;
 
     const environmentSetup = new EnvironmentSetup();
     environmentSetup.destroy();
@@ -45,7 +45,7 @@ it('deletes the execution folder when destroy is called.', () => {
 it('creates only the execution folder if the root folder exists', () => {
     when(fs.existsSync).expectCalledWith(path.join(global.BASE_DIR, 'execution')).mockReturnValueOnce(true);
 
-    Date = jest.fn(() => new RealDate('2020-04-01T18:29:30.235Z')) as unknown as typeof Date;
+    Date = vi.fn(() => new RealDate('2020-04-01T18:29:30.235Z')) as unknown as typeof Date;
 
     new EnvironmentSetup();
 
@@ -128,7 +128,7 @@ it('maps folders to drives', () => {
 });
 
 it('inserts amiga and non-amiga os ADFs', () => {
-    Date = jest.fn(() => new RealDate('2020-04-01T20:29:30.235Z')) as unknown as typeof Date;
+    Date = vi.fn(() => new RealDate('2020-04-01T20:29:30.235Z')) as unknown as typeof Date;
     const environmentSetup = new EnvironmentSetup();
 
     environmentSetup.insertDisk('df0', {location: '/home/disk1.adf'});
@@ -143,7 +143,7 @@ it('inserts amiga and non-amiga os ADFs', () => {
 });
 
 it('sets disk permissions for non amiga os disks', () => {
-    Date = jest.fn(() => new RealDate('2020-04-01T20:29:30.235Z')) as unknown as typeof Date;
+    Date = vi.fn(() => new RealDate('2020-04-01T20:29:30.235Z')) as unknown as typeof Date;
     const environmentSetup = new EnvironmentSetup();
 
     environmentSetup.insertDisk('df0', {location: '/home/disk1.adf'});
@@ -153,7 +153,7 @@ it('sets disk permissions for non amiga os disks', () => {
 });
 
 it('copies disks and sets permissions', () => {
-    Date = jest.fn(() => new RealDate('2020-04-01T20:29:30.235Z')) as unknown as typeof Date;
+    Date = vi.fn(() => new RealDate('2020-04-01T20:29:30.235Z')) as unknown as typeof Date;
     const environmentSetup = new EnvironmentSetup();
     const wbSourceLocation = '/home/os_disks/amiga-os-310-workbench.adf';
     const wbDestLocation = path.join(global.BASE_DIR, 'execution', '20200401202930235', 'df1.adf');

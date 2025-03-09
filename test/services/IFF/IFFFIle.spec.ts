@@ -1,7 +1,7 @@
-import IFFFIle from '../../../src/services/IFF/IFFFile';
-import {HIRES_LACED} from '../../../src/services/prefs/ScreenMode';
+import IFFFIle  from '../../../src/services/IFF/IFFFile.js';
+import {HIRES_LACED}  from '../../../src/services/prefs/ScreenMode.js';
 import fs from 'fs';
-import IFFWrapperChunk from "../../../src/services/IFF/IFFWrapperChunk";
+import IFFWrapperChunk  from '../../../src/services/IFF/IFFWrapperChunk.js';
 
 afterAll(() => {
     fs.unlinkSync('./test/services/IFF/testfile-test.iff');

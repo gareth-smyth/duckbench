@@ -1,7 +1,7 @@
-import InstallerLG from '../../../src/plugins/InstallerLG';
+import InstallerLG  from '../../../src/plugins/InstallerLG/index.js';
 
 it('calls the communicator to install installerLG once in each location requested', async () => {
-    const communicator = {copy: jest.fn()};
+    const communicator = {copy: vi.fn()};
     communicator.copy.mockResolvedValue('');
 
     const installerLG = new InstallerLG();
@@ -15,7 +15,7 @@ it('calls the communicator to install installerLG once in each location requeste
 });
 
 it('throws an error when copying throws', async () => {
-    const communicator = {copy: jest.fn()};
+    const communicator = {copy: vi.fn()};
     communicator.copy.mockImplementation(() => {
         throw new Error('copy error');
     });

@@ -1,7 +1,7 @@
-import AminetService from '../../../src/services/AminetService';
-jest.mock('../../../src/services/AminetService');
+import AminetService  from '../../../src/services/AminetService.js';
+vi.mock('../../../src/services/AminetService');
 
-import Check4GB from '../../../src/plugins/Check4GB';
+import Check4GB  from '../../../src/plugins/Check4GB/index.js';
 
 it('downloads the check4GB archive', async () => {
     const check4GB = new Check4GB();

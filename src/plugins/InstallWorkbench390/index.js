@@ -1,14 +1,14 @@
-import fs from 'fs-extra';
+import fs from 'fs';
 import path from 'path';
 
-import BaseInstall from '../InstallWorkbench310';
-import SettingsService from '../../services/SettingsService';
+import BaseInstall  from '../InstallWorkbench310/index.js';
+import SettingsService  from '../../services/SettingsService.js';
 
 export default class InstallWorkbench390 extends BaseInstall {
     constructor() {
         super();
         this.identifier = '3.9';
-        this.dirName = __dirname;
+        this.dirName = import.meta.dirname;
         this.name = 'InstallWorkbench390';
         this.cacheName = 'wb390_cached';
         this.readableName = 'Workbench 3.9';

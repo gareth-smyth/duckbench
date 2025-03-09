@@ -1,17 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 
-import Communicator from '../../../src/builder/Communicator';
+import Communicator  from '../../../src/builder/Communicator.js';
 
-jest.mock('fs');
-const mockedFs = fs as jest.Mocked<typeof fs>;
-jest.mock('../../../src/builder/Communicator');
+vi.mock('fs');
+const mockedFs = fs as MockedObject<typeof fs>;
+vi.mock('../../../src/builder/Communicator');
 
-import WinUAETools from '../../../src/plugins/WinUAETools';
+import WinUAETools  from '../../../src/plugins/WinUAETools/index.js';
 
-let communicator: jest.Mocked<Communicator>;
+let communicator: MockedObject<Communicator>;
 beforeEach(() => {
-    communicator = new Communicator() as jest.Mocked<Communicator>;
+    communicator = vi.mocked(new Communicator());
 });
 
 const environmentSetup = {};

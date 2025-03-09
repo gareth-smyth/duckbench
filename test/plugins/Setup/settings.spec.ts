@@ -1,12 +1,13 @@
-import RomFinderService from '../../../src/services/RomFinderService';
-jest.mock('../../../src/services/RomFinderService');
+import RomFinderService  from '../../../src/services/RomFinderService.js';
+vi.mock('../../../src/services/RomFinderService');
 import fs from 'fs';
 import path from 'path';
-jest.mock('fs');
-const mockedFs = fs as jest.Mocked<typeof fs>;
-RomFinderService.find = jest.fn();
+vi.mock('fs');
+const mockedFs = fs as MockedObject<typeof fs>;
+RomFinderService.find = vi.fn();
 
-import Settings from '../../../src/plugins/Setup/settings';
+import Settings  from '../../../src/plugins/Setup/settings.js';
+import {MockedObject} from "vitest";
 
 describe('emulatorRoot', () => {
     it('defaults emulator root to DUCKBENCH_EMU when it is set', () => {
@@ -50,7 +51,7 @@ describe('rom310', function() {
 
     it('calls system disk service when DUCKBENCH_ROMS is set', async () => {
         process.env.DUCKBENCH_ROMS = 'somePlace';
-        (RomFinderService.find as jest.Mock).mockReturnValueOnce({file: 'theValue'});
+        vi.mocked(RomFinderService.find).mockReturnValueOnce({file: 'theValue'});
 
         const settings = new Settings();
         const def = settings.default('rom310');
@@ -62,7 +63,7 @@ describe('rom310', function() {
     it('calls system disk service when AMIGAFOREVERDATA is set', async () => {
         delete process.env.DUCKBENCH_ROMS;
         process.env.AMIGAFOREVERDATA = 'somePlace';
-        (RomFinderService.find as jest.Mock).mockReturnValueOnce({file: 'theValue'});
+        vi.mocked(RomFinderService.find).mockReturnValueOnce({file: 'theValue'});
 
         const settings = new Settings();
         const def = settings.default('rom310');

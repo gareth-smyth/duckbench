@@ -1,8 +1,8 @@
-import LhaService from '../../../src/services/LhaService';
+import LhaService  from '../../../src/services/LhaService.js';
 import path from 'path';
 import fs from 'fs';
 
-const TEMP_FILE_PATH = __dirname;
+const TEMP_FILE_PATH = import.meta.dirname;
 
 function cleanTemp() {
     for (let index = 1; index < 4; index++) {
@@ -22,7 +22,7 @@ afterEach(() => {
 });
 
 it('extracts a file', () => {
-    LhaService.extract(path.join(__dirname, 'test.lha'), __dirname);
+    LhaService.extract(path.join(import.meta.dirname, 'test.lha'), import.meta.dirname);
 
     const buffer1 = fs.readFileSync(path.join(TEMP_FILE_PATH, 'test1.txt'));
     expect(buffer1.toString()).toEqual('\n');
@@ -36,12 +36,12 @@ it('extracts a file', () => {
 
 it('does not extract -lh1- method file', () => {
     expect(() => {
-        LhaService.extract(path.join(__dirname, 'test-no-good-method.lha'), __dirname);
+        LhaService.extract(path.join(import.meta.dirname, 'test-no-good-method.lha'), import.meta.dirname);
     }).toThrow('Could not decode method -lh1- on file test1.txt');
 });
 
 it('does not extract header level 0', () => {
     expect(() => {
-        LhaService.extract(path.join(__dirname, 'test-no-good-header-level.lha'), __dirname);
+        LhaService.extract(path.join(import.meta.dirname, 'test-no-good-header-level.lha'), import.meta.dirname);
     }).toThrow('Could not decode header level 0');
 });

@@ -1,12 +1,12 @@
 import fs from 'fs';
 import path from 'path';
-import {ScreenMode} from '../../../src/services/prefs/ScreenMode';
-import InstallWorkbench310 from "../../../src/plugins/InstallWorkbench310";
+import {ScreenMode}  from '../../../src/services/prefs/ScreenMode.js';
+import InstallWorkbench310  from '../../../src/plugins/InstallWorkbench310/index.js';
 
 const pluginBasePath = '../../../src/plugins/InstallWorkbench310';
 
-jest.mock('fs');
-jest.mock('../../../src/services/prefs/ScreenMode');
+vi.mock('fs');
+vi.mock('../../../src/services/prefs/ScreenMode');
 
 const settings = {InstallWorkbench310: [
     {name: 'workbench', value: {file: 'wb'}},
@@ -24,7 +24,7 @@ it('copies the installer patch', async () => {
     const installWorkbench310 = new InstallWorkbench310();
     installWorkbench310.prepare(config, environmentSetup, settings);
 
-    const expectedCopyFrom = path.join(__dirname, pluginBasePath, 'files', 'wb3.1_install.patch');
+    const expectedCopyFrom = path.join(import.meta.dirname, pluginBasePath, 'files', 'wb3.1_install.patch');
     const expectedCopyTo = path.join('aFolder', 'wb3.1_install.patch');
     expect(fs.copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });
@@ -33,7 +33,7 @@ it('copies the install key', async () => {
     const installWorkbench310 = new InstallWorkbench310();
     installWorkbench310.prepare(config, environmentSetup, settings);
 
-    const expectedCopyFrom = path.join(__dirname, pluginBasePath, 'files', 'wb3.1_install_key');
+    const expectedCopyFrom = path.join(import.meta.dirname, pluginBasePath, 'files', 'wb3.1_install_key');
     const expectedCopyTo = path.join('aFolder', 'wb3.1_install_key');
     expect(fs.copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });
@@ -42,7 +42,7 @@ it('copies the startup sequence patch when floppy is false', async () => {
     const installWorkbench310 = new InstallWorkbench310();
     installWorkbench310.prepare(config, {floppyDrive: false, executionFolder: 'aFolder'}, settings);
 
-    const expectedCopyFrom = path.join(__dirname, pluginBasePath, 'files', 'wb3.1_no_floppy_startup.patch');
+    const expectedCopyFrom = path.join(import.meta.dirname, pluginBasePath, 'files', 'wb3.1_no_floppy_startup.patch');
     const expectedCopyTo = path.join('aFolder', 'wb3.1_no_floppy_startup.patch');
     expect(fs.copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });

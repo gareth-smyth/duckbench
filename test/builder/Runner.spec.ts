@@ -1,21 +1,23 @@
-import PluginStore from "../../src/builder/PluginStore";
+import PluginStore  from '../../src/builder/PluginStore.js';
 
-jest.mock('../../src/builder/PluginStore');
+vi.mock('../../src/builder/PluginStore');
 const mockPluginStoreInstance = {
-    hasPlugin: jest.fn(),
-    create: jest.fn(),
-    add: jest.fn(),
-    getPlugin: jest.fn(),
-};
+    hasPlugin: vi.fn(),
+    create: vi.fn(),
+    add: vi.fn(),
+    getPlugin: vi.fn(),
+} as MockedObject<PluginStore>;
+
 beforeEach(() => {
-    (PluginStore as unknown as jest.Mock).mockImplementation(() => mockPluginStoreInstance);
+    vi.mocked(PluginStore).mockImplementation(() => mockPluginStoreInstance);
 });
 
-import Runner from '../../src/builder/Runner';
+import Runner  from '../../src/builder/Runner.js';
+import {MockedObject} from "vitest";
 
 describe('setupAndConfigure', () => {
     it('adds all passed in configs', async () => {
-        mockPluginStoreInstance.create.mockReturnValue({});
+        mockPluginStoreInstance.create.mockResolvedValue({});
         const runner = new Runner();
 
         await runner.configureAndSetup({name: 'Setup'}, [{name: 'config a'}, {name: 'config b'}]);
@@ -26,7 +28,7 @@ describe('setupAndConfigure', () => {
     });
 
     it('adds the setup config', async () => {
-        mockPluginStoreInstance.create.mockReturnValue({});
+        mockPluginStoreInstance.create.mockResolvedValue({});
         const runner = new Runner();
 
         await runner.configureAndSetup({name: 'Setup'}, [{name: 'config a'}, {name: 'config b'}]);
@@ -35,7 +37,7 @@ describe('setupAndConfigure', () => {
     });
 
     it('adds the setup plugin', async () => {
-        mockPluginStoreInstance.create.mockReturnValue({name: 'SetupPlugin'});
+        mockPluginStoreInstance.create.mockResolvedValue({name: 'SetupPlugin'});
         const runner = new Runner();
 
         await runner.configureAndSetup({name: 'Setup'}, [{name: 'config a'}, {name: 'config b'}]);
@@ -45,7 +47,7 @@ describe('setupAndConfigure', () => {
     });
 
     it('adds child configs', async () => {
-        mockPluginStoreInstance.create.mockImplementation((pluginName) => {
+        mockPluginStoreInstance.create.mockImplementation(async (pluginName) => {
             if ('a' === pluginName) {
                 return {configure: () => [{name: 'c'}, {name: 'd'}]};
             } else if ('c' === pluginName) {
@@ -68,7 +70,7 @@ describe('setupAndConfigure', () => {
     });
 
     it('adds plugins to the store', async () => {
-        mockPluginStoreInstance.create.mockImplementation((pluginName) => {
+        mockPluginStoreInstance.create.mockImplementation(async (pluginName) => {
             if ('a' === pluginName) {
                 return {name: pluginName, configure: () => [{name: 'c'}, {name: 'd'}]};
             } else if ('c' === pluginName) {
@@ -112,9 +114,9 @@ describe('setupAndConfigure', () => {
 
 describe('validate', () => {
     it('calls validate on all configs with a validate method', () => {
-        const validateFunc1 = jest.fn().mockReturnValueOnce([]);
-        const validateFunc2 = jest.fn().mockReturnValueOnce([]);
-        const setupValidateFunc = jest.fn().mockReturnValueOnce([]);
+        const validateFunc1 = vi.fn().mockReturnValueOnce([]);
+        const validateFunc2 = vi.fn().mockReturnValueOnce([]);
+        const setupValidateFunc = vi.fn().mockReturnValueOnce([]);
         mockPluginStoreInstance.getPlugin.mockReturnValueOnce({validate: validateFunc1})
             .mockReturnValueOnce({})
             .mockReturnValueOnce({validate: validateFunc2});
@@ -135,9 +137,9 @@ describe('validate', () => {
     });
 
     it('throws an error when a plugin returns a validation error', () => {
-        const validateFunc1 = jest.fn().mockReturnValueOnce([{err: 'an error'}]);
-        const validateFunc2 = jest.fn().mockReturnValueOnce([]);
-        const setupValidateFunc = jest.fn().mockReturnValueOnce([]);
+        const validateFunc1 = vi.fn().mockReturnValueOnce([{err: 'an error'}]);
+        const validateFunc2 = vi.fn().mockReturnValueOnce([]);
+        const setupValidateFunc = vi.fn().mockReturnValueOnce([]);
         mockPluginStoreInstance.getPlugin.mockReturnValueOnce({validate: validateFunc1})
             .mockReturnValueOnce({})
             .mockReturnValueOnce({validate: validateFunc2});
@@ -154,15 +156,15 @@ describe('validate', () => {
 
 describe('prepare', () => {
     it('calls prepare on all configs with a prepare method', async () => {
-        const prepareFunc1 = jest.fn();
-        const prepareFunc2 = jest.fn();
+        const prepareFunc1 = vi.fn();
+        const prepareFunc2 = vi.fn();
         mockPluginStoreInstance.getPlugin.mockReturnValueOnce({prepare: prepareFunc1})
             .mockReturnValueOnce({})
             .mockReturnValueOnce({prepare: prepareFunc2});
 
         const runner = new Runner();
         runner.configs = [{name: 'a'}, {name: 'b'}, {name: 'c'}];
-        runner.setupPlugin = {prepare: jest.fn()};
+        runner.setupPlugin = {prepare: vi.fn()};
         const env = {};
         await runner.prepare(env, 'settings');
 
@@ -176,7 +178,7 @@ describe('prepare', () => {
         const runner = new Runner();
         runner.configs = [];
         runner.setupConfig = {name: 'Setup'};
-        runner.setupPlugin = {prepare: jest.fn()};
+        runner.setupPlugin = {prepare: vi.fn()};
         const env = {};
         await runner.prepare(env, 'settings');
 
@@ -187,8 +189,8 @@ describe('prepare', () => {
 
 describe('install', () => {
     it('calls install on all plugins with a install method', async () => {
-        const installFunc1 = jest.fn();
-        const installFunc2 = jest.fn();
+        const installFunc1 = vi.fn();
+        const installFunc2 = vi.fn();
         mockPluginStoreInstance.getPlugin.mockReturnValueOnce({install: installFunc1})
             .mockReturnValueOnce({})
             .mockReturnValueOnce({install: installFunc2});
@@ -196,7 +198,7 @@ describe('install', () => {
         const runner = new Runner();
         runner.configs = [{name: 'a'}, {name: 'b'}, {name: 'c'}];
         runner.setupConfig = {name: 'Setup'};
-        runner.setupPlugin = {install: jest.fn()};
+        runner.setupPlugin = {install: vi.fn()};
         const communicator = {};
         const environmentSetup = {};
         await runner.install(communicator, environmentSetup, 'settings');
@@ -213,7 +215,7 @@ describe('install', () => {
         const runner = new Runner();
         runner.configs = [];
         runner.setupConfig = {name: 'Setup'};
-        runner.setupPlugin = {install: jest.fn()};
+        runner.setupPlugin = {install: vi.fn()};
         const communicator = {};
         const environmentSetup = {};
         await runner.install(communicator, environmentSetup, 'settings');
@@ -226,8 +228,8 @@ describe('install', () => {
 
 describe('finalise', () => {
     it('calls finalise on all plugins with a finalise method', async () => {
-        const finaliseFunc1 = jest.fn();
-        const finaliseFunc2 = jest.fn();
+        const finaliseFunc1 = vi.fn();
+        const finaliseFunc2 = vi.fn();
         mockPluginStoreInstance.getPlugin.mockReturnValueOnce({finalise: finaliseFunc1})
             .mockReturnValueOnce({})
             .mockReturnValueOnce({finalise: finaliseFunc2});

@@ -2,7 +2,7 @@
 /* eslint-disable */
 import('../services/BaseDirService');
 import('../services/LoggerService');
-import RomConversionService from '../services/RomConversionService';
+import RomConversionService  from '../services/RomConversionService.js';
 import yargs from 'yargs';
 
 yargs.command({

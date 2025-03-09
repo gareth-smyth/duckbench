@@ -2,7 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 
-global.BASE_DIR = path.join(__dirname, '../../');
+global.BASE_DIR = path.join(import.meta.dirname, '../../');
 global.TOOLS_DIR = path.join(global.BASE_DIR, 'external_tools');
 global.CACHE_DIR = path.join(global.BASE_DIR, 'cache');
 

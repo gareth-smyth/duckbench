@@ -1,15 +1,15 @@
 import path from 'path';
 
-import RecommendedPartition from '../../../src/plugins/RecommendedPartition';
+import RecommendedPartition  from '../../../src/plugins/RecommendedPartition/index.js';
 
-jest.mock('../../../src/services/HardDriveService');
+vi.mock('../../../src/services/HardDriveService');
 
-import HardDriveService from '../../../src/services/HardDriveService';
+import HardDriveService  from '../../../src/services/HardDriveService.js';
 
 it('creates an RDB and attaches it to the environment', async () => {
     const environmentSetup = {
         executionFolder: 'some folder',
-        attachHDF: jest.fn(),
+        attachHDF: vi.fn(),
     };
     const partition = new RecommendedPartition();
     await partition.prepare({optionValues: {size: 100}}, environmentSetup);
@@ -28,7 +28,7 @@ describe('large hard drive set up', () => {
     it('creates an RDB and attaches it to the environment', async () => {
         const environmentSetup = {
             executionFolder: 'some folder',
-            attachHDF: jest.fn(),
+            attachHDF: vi.fn(),
         };
         const partition = new RecommendedPartition();
         await partition.prepare({optionValues: {size: 5000}}, environmentSetup);

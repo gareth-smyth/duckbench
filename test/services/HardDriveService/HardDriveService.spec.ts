@@ -3,12 +3,12 @@
 import fs from 'fs';
 import path from 'path';
 
-import HardDriveService from '../../../src/services/HardDriveService';
+import HardDriveService  from '../../../src/services/HardDriveService.js';
 
-jest.mock('../../../src/services/AminetService');
-jest.mock('../../../src/services/LhaService');
+vi.mock('../../../src/services/AminetService');
+vi.mock('../../../src/services/LhaService');
 
-const TEMP_FILE_PATH = __dirname;
+const TEMP_FILE_PATH = import.meta.dirname;
 
 function cleanTemp() {
     for (let index = 1; index <= 3; index++) {
@@ -22,7 +22,7 @@ function cleanTemp() {
 const OLD_CACHE_DIR: string = global.CACHE_DIR
 
 beforeEach(() => {
-    global.CACHE_DIR = __dirname;
+    global.CACHE_DIR = import.meta.dirname;
     cleanTemp();
 });
 

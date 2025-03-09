@@ -1,10 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 
-jest.mock('fs');
-const mockedFs = fs as jest.Mocked<typeof fs>;
+vi.mock('fs');
+const mockedFs = fs as MockedObject<typeof fs>;
 
-import Setup from '../../../src/plugins/Setup';
+import Setup  from '../../../src/plugins/Setup/index.js';
+import {MockedObject} from "vitest";
 
 let settings;
 const config = undefined;
@@ -66,17 +67,19 @@ it('returns an error when winUAE path is not set', () => {
     mockedFs.existsSync.mockReturnValueOnce(true);
     settings['Setup'][0].value.folder = '';
     const errors = new Setup().validate(config, environmentSetup, settings);
-    expect(errors).toContainEqual({type: 'error', text: 'Path to WinUAE is not set'});
+    expect(errors).toContainEqual({type: 'error', text: 'Path to emulator is not set'});
 });
 
 it('returns an error when emulator path is set but can not find either executable', () => {
     mockedFs.existsSync.mockReturnValueOnce(true);
     mockedFs.existsSync.mockReturnValueOnce(false);
     mockedFs.existsSync.mockReturnValueOnce(false);
+    mockedFs.existsSync.mockReturnValueOnce(false);
     const errors = new Setup().validate(config, environmentSetup, settings);
-    expect(errors).toContainEqual({type: 'error', text: 'Could not find WinUAE executable at /path/to/a/'});
+    expect(errors).toContainEqual({type: 'error', text: 'Could not find emulator executable at /path/to/a/'});
     expect(fs.existsSync).toHaveBeenCalledWith(path.join('/path/to/a/', 'WinUAE.exe'));
     expect(fs.existsSync).toHaveBeenCalledWith(path.join('/path/to/a/', 'WinUAE64.exe'));
+    expect(fs.existsSync).toHaveBeenCalledWith(path.join('/path/to/a/', 'FS-UAE.app'));
 });
 
 it('returns an error when rom file is not set', () => {

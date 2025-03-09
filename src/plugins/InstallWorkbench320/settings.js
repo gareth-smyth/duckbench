@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import SystemDiskService from '../../services/SystemDiskService';
+import SystemDiskService  from '../../services/SystemDiskService.js';
 
 export default class Settings {
     constructor() {

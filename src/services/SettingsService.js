@@ -3,7 +3,7 @@ import path from 'path';
 
 export default class SettingsService {
     static async getAvailable() {
-        const pluginPath = path.join(__dirname, '../', 'plugins');
+        const pluginPath = path.join(import.meta.dirname, '../', 'plugins');
         const pluginsDir = fs.opendirSync(pluginPath);
         const plugins = [];
         let directoryEntry;
@@ -16,19 +16,12 @@ export default class SettingsService {
             plugins.filter((pluginDir) => pluginDir.isDirectory()).map(async (pluginDir) => {
                 let PluginSettings;
 
-                try {
-                    PluginSettings = (await import(path.join(pluginPath, pluginDir.name, 'settings'))).default;
-                } catch (error) {
-                /* istanbul ignore else */
-                    if (error.code === 'MODULE_NOT_FOUND') {
-                        global.Logger.trace(`No settings for ${pluginDir.name}`);
-                        return Promise.resolve(undefined);
-                    } else {
-                        global.Logger.error(`No settings for ${pluginDir.name}`);
-                        throw new Error(`Could not load settings for plugin ${pluginDir.name} even though it exists.`);
-                    }
+                const settingsFile = path.join(pluginPath, pluginDir.name, 'settings.js');
+                if(!fs.existsSync(settingsFile)) {
+                    return Promise.resolve(undefined);
                 }
 
+                PluginSettings = (await import(settingsFile)).default;
                 global.Logger.trace(`Loading settings for ${pluginDir.name}`);
                 const pluginSettings = new PluginSettings();
                 return pluginSettings.get();
@@ -61,8 +54,8 @@ export default class SettingsService {
     }
 
     static async getDefault(pluginName, settingName) {
-        const pluginPath = path.join(__dirname, '../', 'plugins');
-        const PluginSettings = (await import(path.join(pluginPath, pluginName, 'settings'))).default;
+        const pluginPath = path.join(import.meta.dirname, '../', 'plugins');
+        const PluginSettings = (await import(path.join(pluginPath, pluginName, 'settings.js'))).default;
         const settings = new PluginSettings();
 
         if (settings.default) {

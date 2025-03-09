@@ -7,7 +7,7 @@ export default class PluginStore {
     }
 
     static async getStructures() {
-        const pluginPath = path.join(__dirname, '../', 'plugins');
+        const pluginPath = path.join(import.meta.dirname, '../', 'plugins');
         const pluginsDir = fs.opendirSync(pluginPath);
         const plugins = [];
         let directoryEntry;
@@ -17,7 +17,7 @@ export default class PluginStore {
         plugins.sort();
         await pluginsDir.close();
         return Promise.all(plugins.filter((pluginDir) => pluginDir.isDirectory()).map(async (pluginDir) => {
-            const Plugin = (await import(path.join(pluginPath, pluginDir.name))).default;
+            const Plugin = (await import(path.join(pluginPath, pluginDir.name, "index.js"))).default;
             console.log(Plugin)
             const plugin = new Plugin();
             return plugin.structure();
@@ -25,7 +25,7 @@ export default class PluginStore {
     }
 
     async create(pluginName) {
-        const Plugin = (await import(`../plugins/${pluginName}`)).default;
+        const Plugin = (await import(path.join(`../plugins/${pluginName}`, 'index.js'))).default;
         return new Plugin();
     }
 

@@ -1,4 +1,4 @@
-import ValidationError from '../../src/errors/ValidationError';
+import ValidationError  from '../../src/errors/ValidationError.js';
 
 it('creates an error', () => {
     const validationError = new ValidationError('some thing');

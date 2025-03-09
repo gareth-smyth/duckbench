@@ -1,4 +1,4 @@
-import BaseSettings from '../InstallWorkbench310/settings';
+import BaseSettings  from '../InstallWorkbench310/settings.js';
 
 export default class Settings extends BaseSettings {
     constructor() {

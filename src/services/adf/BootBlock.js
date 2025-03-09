@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import CheckSum from './CheckSum';
+import CheckSum  from './CheckSum.js';
 
 const BOOT_TYPE = {
     OFS: 0,
@@ -28,7 +28,7 @@ export default class RootBlock {
     }
 
     makeBootable() {
-        const bootCode = fs.readFileSync(path.resolve(__dirname, 'bootcode.bin'));
+        const bootCode = fs.readFileSync(path.resolve(import.meta.dirname, 'bootcode.bin'));
         bootCode.copy(this.buffer, 12, 0, bootCode.length);
         this.checkSum.write();
     }

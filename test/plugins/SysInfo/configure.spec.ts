@@ -1,4 +1,4 @@
-import SysInfo from '../../../src/plugins/SysInfo';
+import SysInfo  from '../../../src/plugins/SysInfo/index.js';
 
 it('returns Lha as a dependency', () => {
     const sysInfo = new SysInfo();

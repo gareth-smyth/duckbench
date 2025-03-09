@@ -15,6 +15,6 @@ export default class FileFactory {
 
 
 
-import Directory from './Directory';
-import Type from './Type';
-import File from './File';
+import Directory  from './Directory.js';
+import Type  from './Type.js';
+import File  from './File.js';

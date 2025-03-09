@@ -1,5 +1,5 @@
 import path from 'path';
-import HardDriveService from '../../services/HardDriveService';
+import HardDriveService from '../../services/HardDriveService.js';
 
 export default class RecommendedPartition {
     structure() {

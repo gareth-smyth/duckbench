@@ -1,4 +1,4 @@
-import AminetService from '../../services/AminetService';
+import AminetService  from '../../services/AminetService.js';
 
 export default class UnADF {
     constructor() {

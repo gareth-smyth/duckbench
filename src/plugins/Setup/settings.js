@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import RomFinderService from '../../services/RomFinderService';
+import RomFinderService  from '../../services/RomFinderService.js';
 
 export default class Settings {
     get() {
@@ -42,7 +42,11 @@ export default class Settings {
         } else if (fs.existsSync('C:/Program Files (x86)/WinUAE')) {
             global.Logger.trace('Found WinUAE paths at "C:/Program Files (x86)/WinUAE".');
             return {folder: 'C:/Program Files (x86)/WinUAE'};
+        }  else if (fs.existsSync('/Applications/FS-UAE.app')) {
+            global.Logger.trace('Found FS-UAE path at "/Applications".');
+            return {folder: '/Applications'};
         } else {
+            global.Logger.trace('Emulator not found');
             return {};
         }
     }

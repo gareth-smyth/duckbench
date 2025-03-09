@@ -1,8 +1,9 @@
 import fs from 'fs';
-jest.mock('fs');
-const mockedFs = fs as jest.Mocked<typeof fs>;
+vi.mock('fs');
+const mockedFs = fs as MockedObject<typeof fs>;
 
-import RomConversionService from '../../src/services/RomConversionService';
+import RomConversionService  from '../../src/services/RomConversionService.js';
+import {MockedObject} from "vitest";
 
 
 describe('realToEmulator', () => {

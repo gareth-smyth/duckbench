@@ -1,4 +1,4 @@
-import WinUAETools from '../../../src/plugins/WinUAETools';
+import WinUAETools  from '../../../src/plugins/WinUAETools/index.js';
 
 it('returns RedirectInputFile as a dependency', () => {
     const patch = new WinUAETools();

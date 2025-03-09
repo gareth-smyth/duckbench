@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import ADFService from '../../services/ADFService';
-import HardDriveService from '../../services/HardDriveService';
-import SettingsService from '../../services/SettingsService';
+import ADFService  from '../../services/ADFService.js';
+import HardDriveService  from '../../services/HardDriveService.js';
+import SettingsService  from '../../services/SettingsService.js';
 
 export default class Setup {
     structure() {
@@ -22,14 +22,15 @@ export default class Setup {
             validationErrors.push({type: 'error', text: errorText});
         }
 
-        const winuaePath = SettingsService.getValue(settings, 'Setup', 'emulatorRoot').folder;
-        if (!winuaePath) {
-            validationErrors.push({type: 'error', text: 'Path to WinUAE is not set'});
+        const emulatorPath = SettingsService.getValue(settings, 'Setup', 'emulatorRoot').folder;
+        if (!emulatorPath) {
+            validationErrors.push({type: 'error', text: 'Path to emulator is not set'});
         } else {
-            const path32 = path.join(winuaePath, 'WinUAE.exe');
-            const path64 = path.join(winuaePath, 'WinUAE64.exe');
-            if (!fs.existsSync(path32) && !fs.existsSync(path64)) {
-                validationErrors.push({type: 'error', text: `Could not find WinUAE executable at ${winuaePath}`});
+            const path32 = path.join(emulatorPath, 'WinUAE.exe');
+            const path64 = path.join(emulatorPath, 'WinUAE64.exe');
+            const pathFsUae = path.join(emulatorPath, 'FS-UAE.app');
+            if (!fs.existsSync(path32) && !fs.existsSync(path64) && !fs.existsSync(pathFsUae)) {
+                validationErrors.push({type: 'error', text: `Could not find emulator executable at ${emulatorPath}`});
             }
         }
 
@@ -47,10 +48,10 @@ export default class Setup {
         const bootDiskFileName = path.join(environmentSetup.executionFolder, 'boot.adf');
         global.Logger.info(`Creating boot disk at ${bootDiskFileName}`);
         ADFService.createBootableADF(bootDiskFileName, 'DuckBoot');
-        ADFService.createFile(bootDiskFileName, 'AUX', path.join(__dirname, 'amigaFiles/file_AUX'));
+        ADFService.createFile(bootDiskFileName, 'AUX', path.join(import.meta.dirname, 'amigaFiles/file_AUX'));
         ADFService.createDirectory(bootDiskFileName, '', 's');
         ADFService.createDirectory(bootDiskFileName, '', 't');
-        const startupSequenceFile = path.join(__dirname, 'amigaFiles/s/file_startup-sequence');
+        const startupSequenceFile = path.join(import.meta.dirname, 'amigaFiles/s/file_startup-sequence');
         ADFService.createFile(bootDiskFileName, 's/startup-sequence', startupSequenceFile);
 
         global.Logger.debug('Inserting boot disk in DF0 and workbench disk in DF1.');

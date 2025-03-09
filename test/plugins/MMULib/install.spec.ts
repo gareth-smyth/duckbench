@@ -1,8 +1,8 @@
-import MMULib from '../../../src/plugins/MMULib';
+import MMULib  from '../../../src/plugins/MMULib/index.js';
 
-const pluginStore = {getPlugin: jest.fn()};
-const lha = {run: jest.fn()};
-const communicator = {copy: jest.fn(), delete: jest.fn(), echo: jest.fn()};
+const pluginStore = {getPlugin: vi.fn()};
+const lha = {run: vi.fn()};
+const communicator = {copy: vi.fn(), delete: vi.fn(), echo: vi.fn()};
 
 beforeEach(() => {
     pluginStore.getPlugin.mockReturnValue(lha);

@@ -1,11 +1,11 @@
-import fs from 'fs-extra';
+import fs from 'fs';
 import path from 'path';
-import {ScreenMode, HIRES_LACED} from '../../services/prefs/ScreenMode';
+import {ScreenMode, HIRES_LACED}  from '../../services/prefs/ScreenMode.js';
 
 export default class InstallWorkbench310 {
     constructor() {
         this.identifier = '3.1';
-        this.dirName = __dirname;
+        this.dirName = import.meta.dirname;
         this.name = 'InstallWorkbench310';
         this.cacheName = 'wb310_cached';
         this.readableName = 'Workbench 3.1';

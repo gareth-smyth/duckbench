@@ -1,7 +1,7 @@
-import Amiga600 from '../../../src/plugins/Amiga600';
-import EnvironmentSetup from "../../../src/builder/EnvironmentSetup";
+import Amiga600  from '../../../src/plugins/Amiga600/index.js';
+import EnvironmentSetup  from '../../../src/builder/EnvironmentSetup.js';
 
-jest.mock('../../../src/builder/EnvironmentSetup');
+vi.mock('../../../src/builder/EnvironmentSetup');
 
 const environmentSetup = new EnvironmentSetup();
 

@@ -1,5 +1,5 @@
-import BitReader from '../BitReaderService';
-import HTree from './HTree';
+import BitReader  from '../BitReaderService.js';
+import HTree  from './HTree.js';
 
 const COPY_THRESHOLD = 3;
 const HISTORY_BITS = 14;

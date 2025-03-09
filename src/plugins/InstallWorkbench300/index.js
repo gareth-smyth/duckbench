@@ -1,10 +1,10 @@
-import BaseInstall from '../InstallWorkbench310';
+import BaseInstall  from '../InstallWorkbench310/index.js';
 
 export default class InstallWorkbench300 extends BaseInstall {
     constructor() {
         super();
         this.identifier = '3.0';
-        this.dirName = __dirname;
+        this.dirName = import.meta.dirname;
         this.name = 'InstallWorkbench300';
         this.cacheName = 'wb300_cached';
         this.readableName = 'Workbench 3.0';

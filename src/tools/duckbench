@@ -24,9 +24,9 @@ yargs.command({
         await import('../services/LoggerService');
         global.Logger.level = args.logLevel;
         await import('../services/BaseDirService');
-        import Communicator from '../builder/Communicator';
-        import DuckbenchBuilder from '../builder/DuckbenchBuilder';
-        import WinUAEEnvironment from '../builder/WinUAEEnvironment';
+        import Communicator from '../builder/Communicator.js';
+        import DuckbenchBuilder from '../builder/DuckbenchBuilder.js';
+        import WinUAEEnvironment from '../builder/WinUAEEnvironment.js';
 
         const duckbenchBuilder = new DuckbenchBuilder();
         await duckbenchBuilder.build(JSON.parse(fs.readFileSync(args.db)), WinUAEEnvironment, Communicator);
@@ -46,7 +46,7 @@ yargs.command({
         await import('../services/LoggerService');
         global.Logger.level = args.logLevel;
         await import('../services/BaseDirService');
-        import Configurator from '../configurator/Configurator';
+        import Configurator  from '../configurator/Configurator.js';
 
         const configurator = new Configurator();
         configurator.start();

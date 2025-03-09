@@ -1,6 +1,6 @@
-import Lha from '../../../src/plugins/Lha';
+import Lha  from '../../../src/plugins/Lha/index.js';
 
-const communicator = {run: jest.fn()};
+const communicator = {run: vi.fn()};
 const callback = 'aCallback';
 const options = 'options';
 

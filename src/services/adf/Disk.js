@@ -1,9 +1,9 @@
 import fs from 'fs';
 
-import Bitmap from './Bitmap';
-import DiskConfig from './DiskConfig';
-import BootBlock from './BootBlock';
-import RootBlock from './RootBlock';
+import Bitmap  from './Bitmap.js';
+import DiskConfig  from './DiskConfig.js';
+import BootBlock  from './BootBlock.js';
+import RootBlock  from './RootBlock.js';
 
 export default class Disk {
     constructor(diskFile) {

@@ -1,9 +1,10 @@
 import fs from 'fs';
 
-jest.mock('fs');
-const mockedFs = fs as jest.Mocked<typeof fs>;
+vi.mock('fs');
+const mockedFs = fs as MockedObject<typeof fs>;
 
-import Setup from '../../../src/plugins/InstallWorkbench390';
+import Setup  from '../../../src/plugins/InstallWorkbench390/index.js';
+import {MockedObject} from "vitest";
 
 let settings;
 const config = undefined;

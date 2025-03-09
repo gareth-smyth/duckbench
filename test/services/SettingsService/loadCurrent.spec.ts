@@ -1,8 +1,9 @@
 import fs from 'fs';
-jest.mock('fs');
-const mockedFs = fs as jest.Mocked<typeof fs>;
+vi.mock('fs');
+const mockedFs = fs as MockedObject<typeof fs>;
 
-import SettingsService from '../../../src/services/SettingsService';
+import SettingsService  from '../../../src/services/SettingsService.js';
+import {MockedObject} from "vitest";
 
 it('returns an empty object when settings file does not exist', () => {
     mockedFs.existsSync.mockReturnValueOnce(false);

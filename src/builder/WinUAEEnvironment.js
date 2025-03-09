@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import {spawn} from 'child_process';
-import SettingsService from '../services/SettingsService';
+import SettingsService from '../services/SettingsService.js';
 
 export default class WinUAEEnvironment {
     constructor(environment, settings) {

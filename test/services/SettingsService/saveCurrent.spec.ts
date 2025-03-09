@@ -1,8 +1,8 @@
 import path from 'path';
 import fs from 'fs';
-jest.mock('fs');
+vi.mock('fs');
 
-import SettingsService from '../../../src/services/SettingsService';
+import SettingsService  from '../../../src/services/SettingsService.js';
 
 it('calls write file with the received settings', () => {
     SettingsService.saveCurrent({a: 'one'});

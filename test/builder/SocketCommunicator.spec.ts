@@ -1,29 +1,30 @@
 import {Socket} from 'net';
-jest.mock('net');
+vi.mock('net');
 
-import SocketCommunicator from '../../src/builder/SocketCommunicator';
+import SocketCommunicator  from '../../src/builder/SocketCommunicator.js';
+import {MockedObject} from "vitest";
 
 // As some functionality resolves promises with setTimeout we need to fake time passing and promise resolution cycle
 async function flushTimeoutsAndPromises() {
-    jest.runAllTimers();
+    vi.runAllTimers();
     await Promise.resolve();
 }
 
-const mockedSocket = Socket as jest.Mocked<typeof Socket>;
+const mockedSocket = Socket as unknown as MockedObject<typeof Socket>;
 
 let mockSocket: Socket & {eventFunctions: Record<string, (data:string) => void>};
 beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     mockSocket = {
         eventFunctions: {},
-        destroy: jest.fn(),
-        on: jest.fn((event, func) => {
+        destroy: vi.fn(),
+        on: vi.fn((event, func) => {
             mockSocket.eventFunctions[event] = func;
         }),
-        connect: jest.fn(),
-        write: jest.fn(),
+        connect: vi.fn(),
+        write: vi.fn(),
     };
-    (mockedSocket as unknown as jest.Mock).mockImplementation(() => mockSocket);
+    vi.mocked(mockedSocket).mockImplementation(() => mockSocket);
 });
 
 

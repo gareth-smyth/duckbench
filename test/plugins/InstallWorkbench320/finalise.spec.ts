@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 
-import InstallWorkbench320 from '../../../src/plugins/InstallWorkbench320';
+import InstallWorkbench320  from '../../../src/plugins/InstallWorkbench320/index.js';
 
-jest.mock('fs');
+vi.mock('fs');
 
 it('copies the hard drive after installation is complete', async () => {
     const installWorkbench320 = new InstallWorkbench320();

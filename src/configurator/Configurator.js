@@ -2,13 +2,13 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { URL } from 'url';
-import WebSocket from 'ws';
-import DuckbenchBuilder from '../builder/DuckbenchBuilder';
-import PluginStore from '../builder/PluginStore';
-import Communicator from '../builder/Communicator';
-import SettingsService from '../services/SettingsService';
-import WinUAEEnvironment from '../builder/WinUAEEnvironment';
-import ValidationError from '../errors/ValidationError';
+import {WebSocketServer} from 'ws';
+import DuckbenchBuilder from '../builder/DuckbenchBuilder.js';
+import PluginStore from '../builder/PluginStore.js';
+import Communicator from '../builder/Communicator.js';
+import SettingsService from '../services/SettingsService.js';
+import WinUAEEnvironment from '../builder/WinUAEEnvironment.js';
+import ValidationError from '../errors/ValidationError.js';
 
 
 export default class Configurator {
@@ -18,7 +18,7 @@ export default class Configurator {
     }
 
     startSocketHandler() {
-        const server = new WebSocket.Server({port: 8553});
+        const server = new WebSocketServer({port: 8553});
         server.on('connection', (socket) => {
             socket.on('message', (message) => {
                 global.Logger.trace(`Message received - ${message}`);
@@ -92,9 +92,9 @@ export default class Configurator {
                 return;
             }
 
-            let filePath = path.join(__dirname, './static', url.pathname);
+            let filePath = path.join(import.meta.dirname, './static', url.pathname);
             if (filePath === './' || url.pathname === '/') {
-                filePath = path.join(__dirname, './static/index.html');
+                filePath = path.join(import.meta.dirname, './static/index.html');
             }
 
             const extname = String(path.extname(filePath)).toLowerCase();

@@ -1,13 +1,14 @@
-import CommandRunner from '../../src/builder/CommandRunner';
-import SocketCommunicator from "../../src/builder/SocketCommunicator";
-jest.mock('../../src/builder/SocketCommunicator');
+import CommandRunner  from '../../src/builder/CommandRunner.js';
+import SocketCommunicator  from '../../src/builder/SocketCommunicator.js';
+import {MockedObject} from "vitest";
+vi.mock('../../src/builder/SocketCommunicator');
 
-let socketCommunicator: jest.Mocked<SocketCommunicator>;
+let socketCommunicator: MockedObject<SocketCommunicator>;
 let commandRunner: CommandRunner;
 const callback = () => {};
 
 beforeEach(() => {
-    socketCommunicator = new SocketCommunicator() as jest.Mocked<SocketCommunicator>;
+    socketCommunicator = vi.mocked(new SocketCommunicator());
     commandRunner = new CommandRunner(socketCommunicator);
 });
 

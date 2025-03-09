@@ -1,7 +1,7 @@
-import CD32 from '../../../src/plugins/CD32';
-import EnvironmentSetup from "../../../src/builder/EnvironmentSetup";
+import CD32  from '../../../src/plugins/CD32/index.js';
+import EnvironmentSetup  from '../../../src/builder/EnvironmentSetup.js';
 
-jest.mock('../../../src/builder/EnvironmentSetup');
+vi.mock('../../../src/builder/EnvironmentSetup');
 
 const environmentSetup = new EnvironmentSetup();
 

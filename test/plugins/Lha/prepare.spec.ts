@@ -1,7 +1,7 @@
-import AminetService from '../../../src/services/AminetService';
-jest.mock('../../../src/services/AminetService');
+import AminetService  from '../../../src/services/AminetService.js';
+vi.mock('../../../src/services/AminetService');
 
-import Lha from '../../../src/plugins/Lha';
+import Lha from '../../../src/plugins/Lha/index.js';
 
 it('downloads the lha.run file', async () => {
     const lha = new Lha();

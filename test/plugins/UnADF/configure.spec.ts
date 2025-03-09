@@ -1,4 +1,4 @@
-import UnADF from '../../../src/plugins/UnADF';
+import UnADF  from '../../../src/plugins/UnADF/index.js';
 
 it('returns Lha as a dependency', () => {
     const unADF = new UnADF();

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import ADFService from './ADFService';
+import ADFService  from './ADFService.js';
 
 /* This is quite complicated to test for little benefit. It's also quite likely to change a lot. */
 /* istanbul ignore next */

@@ -1,4 +1,4 @@
-export default class HostFolder {
+export default class HostFile {
     view(node) {
         const setting = node.attrs.setting;
         const currentSetting = node.attrs.currentSetting;

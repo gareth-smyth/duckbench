@@ -1,7 +1,7 @@
-import AminetService from '../../../src/services/AminetService';
-jest.mock('../../../src/services/AminetService');
+import AminetService  from '../../../src/services/AminetService.js';
+vi.mock('../../../src/services/AminetService');
 
-import UnADF from '../../../src/plugins/UnADF';
+import UnADF  from '../../../src/plugins/UnADF/index.js';
 
 it('downloads the patch archive', async () => {
     const unADF = new UnADF();

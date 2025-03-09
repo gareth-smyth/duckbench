@@ -1,14 +1,14 @@
 import path from 'path';
 
 import fs from 'fs';
-jest.mock('fs');
-const mockedFs = fs as jest.Mocked<typeof fs>;
+vi.mock('fs');
+const mockedFs = fs as MockedObject<typeof fs>;
 
-import SystemDiskService from '../../../src/services/SystemDiskService';
-jest.mock('../../../src/services/SystemDiskService');
-const mockedSystemDiskService = SystemDiskService as jest.Mocked<typeof SystemDiskService>;
+import SystemDiskService  from '../../../src/services/SystemDiskService.js';
+vi.mock('../../../src/services/SystemDiskService');
+const mockedSystemDiskService = SystemDiskService as MockedObject<typeof SystemDiskService>;
 
-import Settings from '../../../src/plugins/InstallWorkbench320/settings';
+import Settings  from '../../../src/plugins/InstallWorkbench320/settings.js';
 
 describe('get', () => {
     it('returns the top level details', () => {

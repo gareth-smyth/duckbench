@@ -1,7 +1,7 @@
-import Lha from '../../../src/plugins/Lha';
+import Lha  from '../../../src/plugins/Lha/index.js';
 
 it('calls the communicator to install lha once in each location requested', async () => {
-    const communicator = {run: jest.fn()};
+    const communicator = {run: vi.fn()};
 
     const lha = new Lha();
     await lha.install({optionValues: {location: 'A:'}}, communicator);
@@ -15,7 +15,7 @@ it('calls the communicator to install lha once in each location requested', asyn
 });
 
 it('throws an error when send command rejects', async () => {
-    const communicator = {run: jest.fn()};
+    const communicator = {run: vi.fn()};
     communicator.run.mockImplementation(() => {
         throw new Error('lha.run error');
     });

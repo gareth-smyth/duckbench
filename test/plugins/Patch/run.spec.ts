@@ -1,6 +1,6 @@
-import Patch from '../../../src/plugins/Patch';
+import Patch  from '../../../src/plugins/Patch/index.js';
 
-const communicator = {run: jest.fn()};
+const communicator = {run: vi.fn()};
 const callback = 'aCallback';
 const options = 'options';
 

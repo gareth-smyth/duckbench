@@ -35,4 +35,4 @@ export default class FileListItem {
 
 
 
-import FileFactory from './FileFactory';
+import FileFactory  from './FileFactory.js';

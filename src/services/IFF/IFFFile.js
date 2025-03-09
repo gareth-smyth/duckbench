@@ -1,6 +1,6 @@
 import fs from 'fs';
-import IFFWrapperChunk from './IFFWrapperChunk';
-import IFFChunk from './IFFChunk';
+import IFFWrapperChunk  from './IFFWrapperChunk.js';
+import IFFChunk  from './IFFChunk.js';
 
 export default class IFFFile {
     static readChunk(buffer, initialPos = 0) {

@@ -1,49 +1,50 @@
-import EnvironmentSetup from "../../src/builder/EnvironmentSetup";
-import Runner from "../../src/builder/Runner";
+import EnvironmentSetup  from '../../src/builder/EnvironmentSetup.js';
+import Runner  from '../../src/builder/Runner.js';
 
-const MockEnvironment = jest.fn();
-const MockCommunicator = jest.fn();
+const MockEnvironment = vi.fn();
+const MockCommunicator = vi.fn();
 
-jest.mock('../../src/plugins/Setup');
-jest.mock('../../src/builder/Runner');
-jest.mock('../../src/builder/EnvironmentSetup');
+vi.mock('../../src/plugins/Setup');
+vi.mock('../../src/builder/Runner');
+vi.mock('../../src/builder/EnvironmentSetup');
 
-import DuckbenchBuilder from '../../src/builder/DuckbenchBuilder';
+import DuckbenchBuilder  from '../../src/builder/DuckbenchBuilder.js';
+import {MockedObject} from "vitest";
 
 const mockEnvironmentSetupInstance = {
-    destroy: jest.fn(),
-};
+    destroy: vi.fn(),
+} as unknown as EnvironmentSetup;
 
 const mockRunnerInstance = {
-    configureAndSetup: jest.fn(),
-    validate: jest.fn(),
-    prepare: jest.fn(),
-    install: jest.fn(),
-    finalise: jest.fn(),
-};
+    configureAndSetup: vi.fn(),
+    validate: vi.fn(),
+    prepare: vi.fn(),
+    install: vi.fn(),
+    finalise: vi.fn(),
+} as unknown as MockedObject<Runner>;
 
 const mockEnvironmentInstance = {
-    start: jest.fn(),
-    stop: jest.fn(),
-    finalise: jest.fn(),
+    start: vi.fn(),
+    stop: vi.fn(),
+    finalise: vi.fn(),
 };
 
 const mockCommunicatorInstance = {
-    connect: jest.fn(),
-    close: jest.fn(),
+    connect: vi.fn(),
+    close: vi.fn(),
 };
 
 let duckbenchBuilder: DuckbenchBuilder;
 
 beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
     MockEnvironment.mockImplementation(() => mockEnvironmentInstance);
     MockCommunicator.mockImplementation(() => mockCommunicatorInstance);
-    (EnvironmentSetup as jest.Mock).mockImplementation(() => mockEnvironmentSetupInstance);
-    (Runner as jest.Mock).mockImplementation(() => mockRunnerInstance);
-    mockRunnerInstance.prepare.mockResolvedValue({});
-    mockRunnerInstance.finalise.mockResolvedValue({});
-    mockRunnerInstance.validate.mockReturnValue([]);
+    vi.mocked(EnvironmentSetup).mockImplementation(() => mockEnvironmentSetupInstance);
+    vi.mocked(Runner).mockImplementation(() => mockRunnerInstance);
+    mockRunnerInstance.prepare.mockResolvedValue();
+    mockRunnerInstance.finalise.mockResolvedValue();
+    mockRunnerInstance.validate.mockReturnValue();
     duckbenchBuilder = new DuckbenchBuilder();
     duckbenchBuilder.sleep = () => Promise.resolve();
 });
