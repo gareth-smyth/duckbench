@@ -35,4 +35,8 @@ export type Plugin = {
     environmentSetup: EnvironmentSetup,
     settings: Settings,
   ) => Promise<void>;
+  finalise: (
+    config: PluginConfig,
+    environmentSetup: EnvironmentSetup,
+  ) => Promise<void>;
 };

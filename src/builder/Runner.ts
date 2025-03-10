@@ -12,7 +12,7 @@ export default class Runner {
 
   async configureAndSetup(configs: PluginConfig[]) {
     this.setupPlugin = await this.pluginStore.create(this.setupConfig.name);
-    this.pluginStore.add(this.setupConfig.name, this.setupPlugin);
+    this.pluginStore.add(this.setupConfig.name, this.setupPlugin!);
     await this.configure(configs);
   }
 
