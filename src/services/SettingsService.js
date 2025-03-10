@@ -1,71 +1,78 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 export default class SettingsService {
-    static async getAvailable() {
-        const pluginPath = path.join(import.meta.dirname, '../', 'plugins');
-        const pluginsDir = fs.opendirSync(pluginPath);
-        const plugins = [];
-        let directoryEntry;
-        while ((directoryEntry = pluginsDir.readSync()) !== null) {
-            plugins.push(directoryEntry);
-        }
-        plugins.sort();
-        await pluginsDir.close();
-        const settings = await Promise.all(
-            plugins.filter((pluginDir) => pluginDir.isDirectory()).map(async (pluginDir) => {
-                let PluginSettings;
+  static async getAvailable() {
+    const pluginPath = path.join(import.meta.dirname, "../", "plugins");
+    const pluginsDir = fs.opendirSync(pluginPath);
+    const plugins = [];
+    let directoryEntry;
+    while ((directoryEntry = pluginsDir.readSync()) !== null) {
+      plugins.push(directoryEntry);
+    }
+    plugins.sort();
+    await pluginsDir.close();
+    const settings = await Promise.all(
+      plugins
+        .filter((pluginDir) => pluginDir.isDirectory())
+        .map(async (pluginDir) => {
+          let PluginSettings;
 
-                const settingsFile = path.join(pluginPath, pluginDir.name, 'settings.js');
-                if(!fs.existsSync(settingsFile)) {
-                    return Promise.resolve(undefined);
-                }
+          const settingsFile = path.join(
+            pluginPath,
+            pluginDir.name,
+            "settings.js",
+          );
+          if (!fs.existsSync(settingsFile)) {
+            return Promise.resolve(undefined);
+          }
 
-                PluginSettings = (await import(settingsFile)).default;
-                global.Logger.trace(`Loading settings for ${pluginDir.name}`);
-                const pluginSettings = new PluginSettings();
-                return pluginSettings.get();
-            }),
-        );
+          PluginSettings = (await import(settingsFile)).default;
+          global.Logger.trace(`Loading settings for ${pluginDir.name}`);
+          const pluginSettings = new PluginSettings();
+          return pluginSettings.get();
+        }),
+    );
 
-        /* Only two plugins have settings as yet and tests use real plugins so can't test sort fully */
-        /* istanbul ignore next */
-        return settings.filter((settings) => settings !== undefined)
-            .sort((plugin1, plugin2) => {
-                if (plugin1.name === 'Setup') return -1;
-                if (plugin2.name === 'Setup') return 1;
-                return 0;
-            });
+    /* Only two plugins have settings as yet and tests use real plugins so can't test sort fully */
+    /* istanbul ignore next */
+    return settings
+      .filter((settings) => settings !== undefined)
+      .sort((plugin1, plugin2) => {
+        if (plugin1.name === "Setup") return -1;
+        if (plugin2.name === "Setup") return 1;
+        return 0;
+      });
+  }
+
+  static loadCurrent() {
+    const settingsPath = path.join(global.BASE_DIR, "db_settings.json");
+    if (fs.existsSync(settingsPath)) {
+      return JSON.parse(fs.readFileSync(settingsPath).toString());
     }
 
+    return {};
+  }
 
-    static loadCurrent() {
-        const settingsPath = path.join(global.BASE_DIR, 'db_settings.json');
-        if (fs.existsSync(settingsPath)) {
-            return JSON.parse(fs.readFileSync(settingsPath).toString());
-        }
+  static saveCurrent(settings) {
+    const settingsPath = path.join(global.BASE_DIR, "db_settings.json");
+    fs.writeFileSync(settingsPath, JSON.stringify(settings));
+  }
 
-        return {};
+  static async getDefault(pluginName, settingName) {
+    const pluginPath = path.join(import.meta.dirname, "../", "plugins");
+    const PluginSettings = (
+      await import(path.join(pluginPath, pluginName, "settings.js"))
+    ).default;
+    const settings = new PluginSettings();
+
+    if (settings.default) {
+      return { value: await settings.default(settingName) };
     }
+  }
 
-    static saveCurrent(settings) {
-        const settingsPath = path.join(global.BASE_DIR, 'db_settings.json');
-        fs.writeFileSync(settingsPath, JSON.stringify(settings));
-    }
-
-    static async getDefault(pluginName, settingName) {
-        const pluginPath = path.join(import.meta.dirname, '../', 'plugins');
-        const PluginSettings = (await import(path.join(pluginPath, pluginName, 'settings.js'))).default;
-        const settings = new PluginSettings();
-
-        if (settings.default) {
-            return {value: await settings.default(settingName)};
-        }
-    }
-
-    static getValue(settings, pluginName, settingName) {
-        return settings[pluginName].find((setting) => setting.name === settingName).value;
-    }
+  static getValue(settings, pluginName, settingName) {
+    return settings[pluginName].find((setting) => setting.name === settingName)
+      .value;
+  }
 }
-
-

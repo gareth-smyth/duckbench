@@ -1,8 +1,8 @@
-import WinUAETools  from '../../../src/plugins/WinUAETools/index.js';
+import WinUAETools from "../../../src/plugins/WinUAETools/index.js";
 
-it('returns RedirectInputFile as a dependency', () => {
-    const patch = new WinUAETools();
-    const config = patch.configure();
+it("returns RedirectInputFile as a dependency", () => {
+  const patch = new WinUAETools();
+  const config = patch.configure();
 
-    expect(config).toEqual([{name: 'RedirectInputFile'}]);
+  expect(config).toEqual([{ name: "RedirectInputFile" }]);
 });

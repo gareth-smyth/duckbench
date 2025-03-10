@@ -1,30 +1,42 @@
-import Patch  from '../../../src/plugins/Patch/index.js';
+import Patch from "../../../src/plugins/Patch/index.js";
 
-const communicator = {run: vi.fn()};
-const callback = 'aCallback';
-const options = 'options';
+const communicator = { run: vi.fn() };
+const callback = "aCallback";
+const options = "options";
 
-it('runs the patch command', async ()=> {
-    const patch = new Patch();
-    await patch.run('A', 'B', 'C:', options, communicator, callback, ['some response']);
+it("runs the patch command", async () => {
+  const patch = new Patch();
+  await patch.run("A", "B", "C:", options, communicator, callback, [
+    "some response",
+  ]);
 
-    expect(communicator.run)
-        .toHaveBeenCalledWith('C:patch A B', options, callback, ['some response']);
+  expect(communicator.run).toHaveBeenCalledWith(
+    "C:patch A B",
+    options,
+    callback,
+    ["some response"],
+  );
 });
 
-it('defaults the expected response when not supplied', async ()=> {
-    const patch = new Patch();
-    await patch.run('A', 'B', 'C:', options, communicator, callback);
+it("defaults the expected response when not supplied", async () => {
+  const patch = new Patch();
+  await patch.run("A", "B", "C:", options, communicator, callback);
 
-    expect(communicator.run)
-        .toHaveBeenCalledWith('C:patch A B', options, callback, ['succeeded', 'done']);
+  expect(communicator.run).toHaveBeenCalledWith(
+    "C:patch A B",
+    options,
+    callback,
+    ["succeeded", "done"],
+  );
 });
 
-it('throws an error when the patch command throws an error', async () => {
-    communicator.run.mockImplementation(() => {
-        throw new Error('patch error');
-    });
+it("throws an error when the patch command throws an error", async () => {
+  communicator.run.mockImplementation(() => {
+    throw new Error("patch error");
+  });
 
-    const patch = new Patch();
-    await expect(patch.run('A', 'B', 'C:', options, communicator, callback)).rejects.toThrow('patch error');
+  const patch = new Patch();
+  await expect(
+    patch.run("A", "B", "C:", options, communicator, callback),
+  ).rejects.toThrow("patch error");
 });

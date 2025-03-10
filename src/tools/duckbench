@@ -1,59 +1,83 @@
 #!/usr/bin/env node
 /* eslint-disable */
-import fs from 'fs';
-import yargs from 'yargs';
+import fs from "fs";
+import yargs from "yargs";
 
-yargs.command({
-    command: 'build-workbench',
-    aliases: ['build'],
-    desc: 'Build a workbench in WinUAE based on the provided duckbench file',
+yargs
+  .command({
+    command: "build-workbench",
+    aliases: ["build"],
+    desc: "Build a workbench in WinUAE based on the provided duckbench file",
     builder: (yargs) => {
-        yargs.option('duckbench-file', {
-            alias: 'db',
-            description: 'The ".db" file describing the Workbench install.',
-            type: 'string',
-        }).option('logLevel', {
-            alias: 'l',
-            description: 'Log level for the execution',
-            choices: ['all', 'trace', 'debug', 'info', 'warn', 'error', 'fatal', 'none'],
-            default: 'info',
+      yargs
+        .option("duckbench-file", {
+          alias: "db",
+          description: 'The ".db" file describing the Workbench install.',
+          type: "string",
         })
-            .demandOption('duckbench-file');
+        .option("logLevel", {
+          alias: "l",
+          description: "Log level for the execution",
+          choices: [
+            "all",
+            "trace",
+            "debug",
+            "info",
+            "warn",
+            "error",
+            "fatal",
+            "none",
+          ],
+          default: "info",
+        })
+        .demandOption("duckbench-file");
     },
     handler: async (args) => {
-        await import('../services/LoggerService');
-        global.Logger.level = args.logLevel;
-        await import('../services/BaseDirService');
-        import Communicator from '../builder/Communicator.js';
-        import DuckbenchBuilder from '../builder/DuckbenchBuilder.ts';
-        import WinUAEEnvironment from '../builder/WinUAEEnvironment.js';
+      await import("../services/LoggerService");
+      global.Logger.level = args.logLevel;
+      await import("../services/BaseDirService");
+      import Communicator from "../builder/Communicator.js";
+      import DuckbenchBuilder from "../builder/DuckbenchBuilder.ts";
+      import WinUAEEnvironment from "../builder/WinUAEEnvironment.js";
 
-        const duckbenchBuilder = new DuckbenchBuilder();
-        await duckbenchBuilder.build(JSON.parse(fs.readFileSync(args.db)), WinUAEEnvironment, Communicator);
+      const duckbenchBuilder = new DuckbenchBuilder();
+      await duckbenchBuilder.build(
+        JSON.parse(fs.readFileSync(args.db)),
+        WinUAEEnvironment,
+        Communicator,
+      );
     },
-}).command({
-    command: '*',
-    desc: 'Start up the duckbench configurator',
+  })
+  .command({
+    command: "*",
+    desc: "Start up the duckbench configurator",
     builder: (yargs) => {
-        yargs.option('logLevel', {
-            alias: 'l',
-            description: 'Log level for the execution',
-            choices: ['all', 'trace', 'debug', 'info', 'warn', 'error', 'fatal', 'none'],
-            default: 'info',
-        })
+      yargs.option("logLevel", {
+        alias: "l",
+        description: "Log level for the execution",
+        choices: [
+          "all",
+          "trace",
+          "debug",
+          "info",
+          "warn",
+          "error",
+          "fatal",
+          "none",
+        ],
+        default: "info",
+      });
     },
     handler: async (args) => {
-        await import('../services/LoggerService');
-        global.Logger.level = args.logLevel;
-        await import('../services/BaseDirService');
-        import Configurator  from '../configurator/Configurator.js';
+      await import("../services/LoggerService");
+      global.Logger.level = args.logLevel;
+      await import("../services/BaseDirService");
+      import Configurator from "../configurator/Configurator.js";
 
-        const configurator = new Configurator();
-        configurator.start();
-    }
-})
-    .help()
-    .alias('help', 'h')
-    .strict()
-    .argv;
-
+      const configurator = new Configurator();
+      configurator.start();
+    },
+  })
+  .help()
+  .alias("help", "h")
+  .strict().argv;

@@ -1,116 +1,199 @@
-import fs from 'fs';
-import path from 'path';
-import ADFService  from '../../services/ADFService.js';
-import HardDriveService  from '../../services/HardDriveService.js';
-import SettingsService  from '../../services/SettingsService.js';
+import fs from "fs";
+import path from "path";
+import ADFService from "../../services/ADFService.js";
+import HardDriveService from "../../services/HardDriveService.js";
+import SettingsService from "../../services/SettingsService.js";
 
 export default class Setup {
-    structure() {
-        return {
-            name: 'Setup',
-            type: 'internal',
-        };
+  structure() {
+    return {
+      name: "Setup",
+      type: "internal",
+    };
+  }
+
+  validate(config, environmentSetup, settings) {
+    const validationErrors = [];
+    const workbenchADFFileName = SettingsService.getValue(
+      settings,
+      "InstallWorkbench310",
+      "workbench",
+    ).file;
+    if (!workbenchADFFileName) {
+      validationErrors.push({
+        type: "error",
+        text: "Workbench 3.1 ADF could not be found",
+      });
+    } else if (!fs.existsSync(workbenchADFFileName)) {
+      const errorText = `Workbench 3.1 ADF could not be found at ${workbenchADFFileName}`;
+      validationErrors.push({ type: "error", text: errorText });
     }
 
-    validate(config, environmentSetup, settings) {
-        const validationErrors = [];
-        const workbenchADFFileName = SettingsService.getValue(settings, 'InstallWorkbench310', 'workbench').file;
-        if (!workbenchADFFileName) {
-            validationErrors.push({type: 'error', text: 'Workbench 3.1 ADF could not be found'});
-        } else if (!fs.existsSync(workbenchADFFileName)) {
-            const errorText = `Workbench 3.1 ADF could not be found at ${workbenchADFFileName}`;
-            validationErrors.push({type: 'error', text: errorText});
-        }
-
-        const emulatorPath = SettingsService.getValue(settings, 'Setup', 'emulatorRoot').folder;
-        if (!emulatorPath) {
-            validationErrors.push({type: 'error', text: 'Path to emulator is not set'});
-        } else {
-            const path32 = path.join(emulatorPath, 'WinUAE.exe');
-            const path64 = path.join(emulatorPath, 'WinUAE64.exe');
-            const pathFsUae = path.join(emulatorPath, 'FS-UAE.app');
-            if (!fs.existsSync(path32) && !fs.existsSync(path64) && !fs.existsSync(pathFsUae)) {
-                validationErrors.push({type: 'error', text: `Could not find emulator executable at ${emulatorPath}`});
-            }
-        }
-
-        const rom310File = SettingsService.getValue(settings, 'Setup', 'rom310').file;
-        if (!rom310File) {
-            validationErrors.push({type: 'error', text: 'Path to 310 rom file is not set'});
-        } else if (!fs.existsSync(rom310File)) {
-            validationErrors.push({type: 'error', text: `Could not find 310 ROM file at ${rom310File}`});
-        }
-
-        return validationErrors;
-    }
-
-    async prepare(config, environmentSetup, settings) {
-        const bootDiskFileName = path.join(environmentSetup.executionFolder, 'boot.adf');
-        global.Logger.info(`Creating boot disk at ${bootDiskFileName}`);
-        ADFService.createBootableADF(bootDiskFileName, 'DuckBoot');
-        ADFService.createFile(bootDiskFileName, 'AUX', path.join(import.meta.dirname, 'amigaFiles/file_AUX'));
-        ADFService.createDirectory(bootDiskFileName, '', 's');
-        ADFService.createDirectory(bootDiskFileName, '', 't');
-        const startupSequenceFile = path.join(import.meta.dirname, 'amigaFiles/s/file_startup-sequence');
-        ADFService.createFile(bootDiskFileName, 's/startup-sequence', startupSequenceFile);
-
-        global.Logger.debug('Inserting boot disk in DF0 and workbench disk in DF1.');
-        environmentSetup.insertDisk('DF0', {location: bootDiskFileName});
-        environmentSetup.insertDisk('DF1', {
-            location: SettingsService.getValue(settings, 'InstallWorkbench310', 'workbench').file,
+    const emulatorPath = SettingsService.getValue(
+      settings,
+      "Setup",
+      "emulatorRoot",
+    ).folder;
+    if (!emulatorPath) {
+      validationErrors.push({
+        type: "error",
+        text: "Path to emulator is not set",
+      });
+    } else {
+      const path32 = path.join(emulatorPath, "WinUAE.exe");
+      const path64 = path.join(emulatorPath, "WinUAE64.exe");
+      const pathFsUae = path.join(emulatorPath, "FS-UAE.app");
+      if (
+        !fs.existsSync(path32) &&
+        !fs.existsSync(path64) &&
+        !fs.existsSync(pathFsUae)
+      ) {
+        validationErrors.push({
+          type: "error",
+          text: `Could not find emulator executable at ${emulatorPath}`,
         });
-
-        global.Logger.debug(`Mapping DB5: as DB_HOST_CACHE: at ${global.CACHE_DIR}`);
-        environmentSetup.mapFolderToDrive('DB5', global.CACHE_DIR, 'DB_HOST_CACHE');
-
-        global.Logger.debug(`Mapping DB4: as DB_TOOLS: at ${global.TOOLS_DIR}`);
-        environmentSetup.mapFolderToDrive('DB4', global.TOOLS_DIR, 'DB_TOOLS');
-
-        global.Logger.debug(`Mapping DB2: as DB_EXECUTION: at ${environmentSetup.executionFolder}`);
-        environmentSetup.mapFolderToDrive('DB2', environmentSetup.executionFolder, 'DB_EXECUTION', true);
-
-        const cacheLocation = path.join(global.CACHE_DIR, 'client_cache.hdf');
-        if (!fs.existsSync(cacheLocation)) {
-            global.Logger.debug('Creating DB1: as DB_CLIENT_CACHE: as new HDF');
-            await HardDriveService.createRDB(cacheLocation, 250, [{driveName: 'DB1', fileSystem: 'pfs', size: 250}]);
-        } else {
-            global.Logger.debug('Using existing HDF as DB1: as DB_CLIENT_CACHE:');
-        }
-        environmentSetup.attachHDF('DB1', cacheLocation);
-
-        global.Logger.debug('Creating DB0: as DUCKBENCH: as new HDF');
-        const location = path.join(environmentSetup.executionFolder, 'duckbench.hdf');
-        await HardDriveService.createRDB(location, 100, [{driveName: 'DB0', fileSystem: 'pfs', size: 100}]);
-        environmentSetup.attachHDF('DB0', location);
+      }
     }
 
-    async install(config, communicator, pluginStore) {
-        const enterFile = await pluginStore.getPlugin('RedirectInputFile').createInput([''], communicator);
-
-        try {
-            const expectedResponse = 'DB_CLIENT_CACHE: not assigned';
-            await communicator.assign('DB_CLIENT_CACHE:', '', {'EXISTS': true}, undefined, expectedResponse);
-            global.Logger.debug('Formatting DB1: as DB_CLIENT_CACHE: as new HDF');
-            await communicator.format('DB1', 'DB_CLIENT_CACHE', {
-                ffs: true, quick: true, intl: true, noicons: true, REDIRECT_IN: enterFile,
-            });
-        } catch (err) {
-            global.Logger.debug('Using existing formatted HDF as DB1: as DB_CLIENT_CACHE:');
-        }
-
-        global.Logger.debug('Format DUCKBENCH: partition');
-        await communicator.format('DB0', 'DUCKBENCH', {
-            ffs: true, quick: true, intl: true, noicons: true, REDIRECT_IN: enterFile,
-        });
-
-        await communicator.makedir('duckbench:c');
-        await communicator.path('duckbench:c', {ADD: true});
-        await communicator.makedir('duckbench:t');
-        await communicator.makedir('duckbench:envarc');
-        await communicator.makedir('duckbench:disks');
-        await communicator.assign('t:', 'duckbench:t');
-        await communicator.assign('envarc:', 'duckbench:envarc');
+    const rom310File = SettingsService.getValue(
+      settings,
+      "Setup",
+      "rom310",
+    ).file;
+    if (!rom310File) {
+      validationErrors.push({
+        type: "error",
+        text: "Path to 310 rom file is not set",
+      });
+    } else if (!fs.existsSync(rom310File)) {
+      validationErrors.push({
+        type: "error",
+        text: `Could not find 310 ROM file at ${rom310File}`,
+      });
     }
+
+    return validationErrors;
+  }
+
+  async prepare(config, environmentSetup, settings) {
+    const bootDiskFileName = path.join(
+      environmentSetup.executionFolder,
+      "boot.adf",
+    );
+    global.Logger.info(`Creating boot disk at ${bootDiskFileName}`);
+    ADFService.createBootableADF(bootDiskFileName, "DuckBoot");
+    ADFService.createFile(
+      bootDiskFileName,
+      "AUX",
+      path.join(import.meta.dirname, "amigaFiles/file_AUX"),
+    );
+    ADFService.createDirectory(bootDiskFileName, "", "s");
+    ADFService.createDirectory(bootDiskFileName, "", "t");
+    const startupSequenceFile = path.join(
+      import.meta.dirname,
+      "amigaFiles/s/file_startup-sequence",
+    );
+    ADFService.createFile(
+      bootDiskFileName,
+      "s/startup-sequence",
+      startupSequenceFile,
+    );
+
+    global.Logger.debug(
+      "Inserting boot disk in DF0 and workbench disk in DF1.",
+    );
+    environmentSetup.insertDisk("DF0", { location: bootDiskFileName });
+    environmentSetup.insertDisk("DF1", {
+      location: SettingsService.getValue(
+        settings,
+        "InstallWorkbench310",
+        "workbench",
+      ).file,
+    });
+
+    global.Logger.debug(
+      `Mapping DB5: as DB_HOST_CACHE: at ${global.CACHE_DIR}`,
+    );
+    environmentSetup.mapFolderToDrive("DB5", global.CACHE_DIR, "DB_HOST_CACHE");
+
+    global.Logger.debug(`Mapping DB4: as DB_TOOLS: at ${global.TOOLS_DIR}`);
+    environmentSetup.mapFolderToDrive("DB4", global.TOOLS_DIR, "DB_TOOLS");
+
+    global.Logger.debug(
+      `Mapping DB2: as DB_EXECUTION: at ${environmentSetup.executionFolder}`,
+    );
+    environmentSetup.mapFolderToDrive(
+      "DB2",
+      environmentSetup.executionFolder,
+      "DB_EXECUTION",
+      true,
+    );
+
+    const cacheLocation = path.join(global.CACHE_DIR, "client_cache.hdf");
+    if (!fs.existsSync(cacheLocation)) {
+      global.Logger.debug("Creating DB1: as DB_CLIENT_CACHE: as new HDF");
+      await HardDriveService.createRDB(cacheLocation, 250, [
+        { driveName: "DB1", fileSystem: "pfs", size: 250 },
+      ]);
+    } else {
+      global.Logger.debug("Using existing HDF as DB1: as DB_CLIENT_CACHE:");
+    }
+    environmentSetup.attachHDF("DB1", cacheLocation);
+
+    global.Logger.debug("Creating DB0: as DUCKBENCH: as new HDF");
+    const location = path.join(
+      environmentSetup.executionFolder,
+      "duckbench.hdf",
+    );
+    await HardDriveService.createRDB(location, 100, [
+      { driveName: "DB0", fileSystem: "pfs", size: 100 },
+    ]);
+    environmentSetup.attachHDF("DB0", location);
+  }
+
+  async install(config, communicator, pluginStore) {
+    const enterFile = await pluginStore
+      .getPlugin("RedirectInputFile")
+      .createInput([""], communicator);
+
+    try {
+      const expectedResponse = "DB_CLIENT_CACHE: not assigned";
+      await communicator.assign(
+        "DB_CLIENT_CACHE:",
+        "",
+        { EXISTS: true },
+        undefined,
+        expectedResponse,
+      );
+      global.Logger.debug("Formatting DB1: as DB_CLIENT_CACHE: as new HDF");
+      await communicator.format("DB1", "DB_CLIENT_CACHE", {
+        ffs: true,
+        quick: true,
+        intl: true,
+        noicons: true,
+        REDIRECT_IN: enterFile,
+      });
+    } catch (err) {
+      global.Logger.debug(
+        "Using existing formatted HDF as DB1: as DB_CLIENT_CACHE:",
+      );
+    }
+
+    global.Logger.debug("Format DUCKBENCH: partition");
+    await communicator.format("DB0", "DUCKBENCH", {
+      ffs: true,
+      quick: true,
+      intl: true,
+      noicons: true,
+      REDIRECT_IN: enterFile,
+    });
+
+    await communicator.makedir("duckbench:c");
+    await communicator.path("duckbench:c", { ADD: true });
+    await communicator.makedir("duckbench:t");
+    await communicator.makedir("duckbench:envarc");
+    await communicator.makedir("duckbench:disks");
+    await communicator.assign("t:", "duckbench:t");
+    await communicator.assign("envarc:", "duckbench:envarc");
+  }
 }
-
-

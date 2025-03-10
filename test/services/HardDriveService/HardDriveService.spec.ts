@@ -1,75 +1,99 @@
 /* TODO These tests are not really testing the disk being built correctly as they use the same code to test as to run */
 
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
-import HardDriveService  from '../../../src/services/HardDriveService.js';
+import HardDriveService from "../../../src/services/HardDriveService.js";
 
-vi.mock('../../../src/services/AminetService');
-vi.mock('../../../src/services/LhaService');
+vi.mock("../../../src/services/AminetService");
+vi.mock("../../../src/services/LhaService");
 
 const TEMP_FILE_PATH = import.meta.dirname;
 
 function cleanTemp() {
-    for (let index = 1; index <= 3; index++) {
-        const fileName = path.join(TEMP_FILE_PATH, `test${index}.hdf`);
-        if (fs.existsSync(fileName)) {
-            fs.unlinkSync(fileName);
-        }
+  for (let index = 1; index <= 3; index++) {
+    const fileName = path.join(TEMP_FILE_PATH, `test${index}.hdf`);
+    if (fs.existsSync(fileName)) {
+      fs.unlinkSync(fileName);
     }
+  }
 }
 
-const OLD_CACHE_DIR: string = global.CACHE_DIR
+const OLD_CACHE_DIR: string = global.CACHE_DIR;
 
 beforeEach(() => {
-    global.CACHE_DIR = import.meta.dirname;
-    cleanTemp();
+  global.CACHE_DIR = import.meta.dirname;
+  cleanTemp();
 });
 
 afterEach(() => {
-    global.CACHE_DIR = OLD_CACHE_DIR;
-    cleanTemp();
+  global.CACHE_DIR = OLD_CACHE_DIR;
+  cleanTemp();
 });
 
-it('creates the disk', async () => {
-    await HardDriveService.createRDB(path.join(TEMP_FILE_PATH, 'test1.hdf'), 30, [
-        {driveName: 'DH0', fileSystem: 'ffs', size: 10}, {driveName: 'DH1', fileSystem: 'ffs', size: 20},
-    ]);
-    const info = HardDriveService.info(path.join(TEMP_FILE_PATH, 'test1.hdf'));
+it("creates the disk", async () => {
+  await HardDriveService.createRDB(path.join(TEMP_FILE_PATH, "test1.hdf"), 30, [
+    { driveName: "DH0", fileSystem: "ffs", size: 10 },
+    { driveName: "DH1", fileSystem: "ffs", size: 20 },
+  ]);
+  const info = HardDriveService.info(path.join(TEMP_FILE_PATH, "test1.hdf"));
 
-    expect(info.info).toEqual( {
-        'B per C': 1008, 'Block size': 512, 'Cylinders': 60, 'Flags': '10010',
-        'Heads': 16, 'Park': 60, 'Sectors': 63, 'Size': '30 MB',
-    });
+  expect(info.info).toEqual({
+    "B per C": 1008,
+    "Block size": 512,
+    Cylinders: 60,
+    Flags: "10010",
+    Heads: 16,
+    Park: 60,
+    Sectors: 63,
+    Size: "30 MB",
+  });
 });
 
-it('creates the partitions', async () => {
-    await HardDriveService.createRDB(path.join(TEMP_FILE_PATH, 'test2.hdf'), 30, [
-        {driveName: 'DH0', fileSystem: 'ffs', size: 10}, {driveName: 'DH1', fileSystem: 'pfs', size: 20},
-    ]);
-    const info = HardDriveService.info(path.join(TEMP_FILE_PATH, 'test2.hdf'));
+it("creates the partitions", async () => {
+  await HardDriveService.createRDB(path.join(TEMP_FILE_PATH, "test2.hdf"), 30, [
+    { driveName: "DH0", fileSystem: "ffs", size: 10 },
+    { driveName: "DH1", fileSystem: "pfs", size: 20 },
+  ]);
+  const info = HardDriveService.info(path.join(TEMP_FILE_PATH, "test2.hdf"));
 
-    expect(info.partitionInfo).toEqual( [
-        {'Drive name': 'DH0', 'End Cylinder': 20, 'File system': 'DOS3', 'Size': '9.84375 MB', 'Start Cylinder': 1},
-        {'Drive name': 'DH1', 'End Cylinder': 59, 'File system': 'PDS3', 'Size': '19.1953125 MB', 'Start Cylinder': 21},
-    ]);
+  expect(info.partitionInfo).toEqual([
+    {
+      "Drive name": "DH0",
+      "End Cylinder": 20,
+      "File system": "DOS3",
+      Size: "9.84375 MB",
+      "Start Cylinder": 1,
+    },
+    {
+      "Drive name": "DH1",
+      "End Cylinder": 59,
+      "File system": "PDS3",
+      Size: "19.1953125 MB",
+      "Start Cylinder": 21,
+    },
+  ]);
 });
 
-it('creates the filesystems', async () => {
-    await HardDriveService.createRDB(path.join(TEMP_FILE_PATH, 'test3.hdf'), 10, [
-        {driveName: 'DH0', fileSystem: 'ffs'},
-        {driveName: 'DH1', fileSystem: 'pfs'},
-        {driveName: 'DH2', fileSystem: 'pfs'},
-    ]);
-    const info = HardDriveService.info(path.join(TEMP_FILE_PATH, 'test3.hdf'));
+it("creates the filesystems", async () => {
+  await HardDriveService.createRDB(path.join(TEMP_FILE_PATH, "test3.hdf"), 10, [
+    { driveName: "DH0", fileSystem: "ffs" },
+    { driveName: "DH1", fileSystem: "pfs" },
+    { driveName: "DH2", fileSystem: "pfs" },
+  ]);
+  const info = HardDriveService.info(path.join(TEMP_FILE_PATH, "test3.hdf"));
 
-    expect(info.fileSystemInfo).toEqual( [{'File system': 'PDS3', 'Version': '19.2', 'Number of LoadSegs': 2}]);
+  expect(info.fileSystemInfo).toEqual([
+    { "File system": "PDS3", Version: "19.2", "Number of LoadSegs": 2 },
+  ]);
 });
 
-it('throws an error when the filesystem does not exist', async () => {
-    await expect(HardDriveService.createRDB(path.join(TEMP_FILE_PATH, 'test3.hdf'), 10, [
-        {driveName: 'DH0', fileSystem: 'ffs'},
-        {driveName: 'DH1', fileSystem: 'pfs'},
-        {driveName: 'DH2', fileSystem: 'sfs'},
-    ])).rejects.toThrow('Can not install the selected file system');
+it("throws an error when the filesystem does not exist", async () => {
+  await expect(
+    HardDriveService.createRDB(path.join(TEMP_FILE_PATH, "test3.hdf"), 10, [
+      { driveName: "DH0", fileSystem: "ffs" },
+      { driveName: "DH1", fileSystem: "pfs" },
+      { driveName: "DH2", fileSystem: "sfs" },
+    ]),
+  ).rejects.toThrow("Can not install the selected file system");
 });

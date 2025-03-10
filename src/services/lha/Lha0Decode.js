@@ -1,11 +1,9 @@
 export default class Lha0Decode {
-    constructor(compressedBuffer) {
-        this.compressedBuffer = compressedBuffer;
-    }
+  constructor(compressedBuffer) {
+    this.compressedBuffer = compressedBuffer;
+  }
 
-    decode() {
-        return this.compressedBuffer;
-    }
+  decode() {
+    return this.compressedBuffer;
+  }
 }
-
-

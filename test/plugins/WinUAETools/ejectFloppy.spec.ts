@@ -1,23 +1,32 @@
-import WinUAETools  from '../../../src/plugins/WinUAETools/index.js';
+import WinUAETools from "../../../src/plugins/WinUAETools/index.js";
 
-const communicator = {run: vi.fn()};
+const communicator = { run: vi.fn() };
 
-it('runs the winUAETools command', async ()=> {
-    const pluginStore = {getPlugin: () => ({createInput: () => 'ram:some_file.txt'})};
-    const winUAETools = new WinUAETools();
-    await winUAETools.ejectFloppy('some_place:', 1, communicator, pluginStore);
+it("runs the winUAETools command", async () => {
+  const pluginStore = {
+    getPlugin: () => ({ createInput: () => "ram:some_file.txt" }),
+  };
+  const winUAETools = new WinUAETools();
+  await winUAETools.ejectFloppy("some_place:", 1, communicator, pluginStore);
 
-    expect(communicator.run).toHaveBeenCalledWith('some_place:uaectrl', {'REDIRECT_IN': 'ram:some_file.txt'},
-        undefined, '10) Exit UAE-Control');
+  expect(communicator.run).toHaveBeenCalledWith(
+    "some_place:uaectrl",
+    { REDIRECT_IN: "ram:some_file.txt" },
+    undefined,
+    "10) Exit UAE-Control",
+  );
 });
 
-it('throws an error when the installerLG command throws an error', async () => {
-    const pluginStore = {getPlugin: () => ({createInput: () => 'ram:some_file.txt'})};
-    const winUAETools = new WinUAETools();
-    communicator.run.mockImplementation(() => {
-        throw new Error('winUAETools error');
-    });
+it("throws an error when the installerLG command throws an error", async () => {
+  const pluginStore = {
+    getPlugin: () => ({ createInput: () => "ram:some_file.txt" }),
+  };
+  const winUAETools = new WinUAETools();
+  communicator.run.mockImplementation(() => {
+    throw new Error("winUAETools error");
+  });
 
-    await expect(winUAETools.ejectFloppy('some_place:', 1, communicator, pluginStore))
-        .rejects.toThrow('winUAETools error');
+  await expect(
+    winUAETools.ejectFloppy("some_place:", 1, communicator, pluginStore),
+  ).rejects.toThrow("winUAETools error");
 });

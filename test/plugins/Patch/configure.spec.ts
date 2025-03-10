@@ -1,8 +1,10 @@
-import Patch  from '../../../src/plugins/Patch/index.js';
+import Patch from "../../../src/plugins/Patch/index.js";
 
-it('returns Lha as a dependency', () => {
-    const patch = new Patch();
-    const config = patch.configure();
+it("returns Lha as a dependency", () => {
+  const patch = new Patch();
+  const config = patch.configure();
 
-    expect(config).toEqual([{name: 'Lha', optionValues: {location: 'duckbench:c/'}}]);
+  expect(config).toEqual([
+    { name: "Lha", optionValues: { location: "duckbench:c/" } },
+  ]);
 });

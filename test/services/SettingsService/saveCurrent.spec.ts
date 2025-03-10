@@ -1,11 +1,13 @@
-import path from 'path';
-import fs from 'fs';
-vi.mock('fs');
+import path from "path";
+import fs from "fs";
+vi.mock("fs");
 
-import SettingsService  from '../../../src/services/SettingsService.js';
+import SettingsService from "../../../src/services/SettingsService.js";
 
-it('calls write file with the received settings', () => {
-    SettingsService.saveCurrent({a: 'one'});
-    expect(fs.writeFileSync)
-        .toHaveBeenCalledWith(path.join(global.BASE_DIR, 'db_settings.json'), JSON.stringify({a: 'one'}));
+it("calls write file with the received settings", () => {
+  SettingsService.saveCurrent({ a: "one" });
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    path.join(global.BASE_DIR, "db_settings.json"),
+    JSON.stringify({ a: "one" }),
+  );
 });

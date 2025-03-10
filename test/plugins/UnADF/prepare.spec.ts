@@ -1,12 +1,12 @@
-import AminetService  from '../../../src/services/AminetService.js';
-vi.mock('../../../src/services/AminetService');
+import AminetService from "../../../src/services/AminetService.js";
+vi.mock("../../../src/services/AminetService");
 
-import UnADF  from '../../../src/plugins/UnADF/index.js';
+import UnADF from "../../../src/plugins/UnADF/index.js";
 
-it('downloads the patch archive', async () => {
-    const unADF = new UnADF();
-    await unADF.prepare();
+it("downloads the patch archive", async () => {
+  const unADF = new UnADF();
+  await unADF.prepare();
 
-    expect(AminetService.download).toHaveBeenCalledTimes(1);
-    expect(AminetService.download).toHaveBeenCalledWith('disk/misc/UnADF.lha');
+  expect(AminetService.download).toHaveBeenCalledTimes(1);
+  expect(AminetService.download).toHaveBeenCalledWith("disk/misc/UnADF.lha");
 });

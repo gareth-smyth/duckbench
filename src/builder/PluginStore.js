@@ -1,43 +1,51 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 export default class PluginStore {
-    constructor() {
-        this.plugins = {};
-    }
+  constructor() {
+    this.plugins = {};
+  }
 
-    static async getStructures() {
-        const pluginPath = path.join(import.meta.dirname, '../', 'plugins');
-        const pluginsDir = fs.opendirSync(pluginPath);
-        const plugins = [];
-        let directoryEntry;
-        while ((directoryEntry = pluginsDir.readSync()) !== null) {
-            plugins.push(directoryEntry);
-        }
-        plugins.sort();
-        await pluginsDir.close();
-        return Promise.all(plugins.filter((pluginDir) => pluginDir.isDirectory()).map(async (pluginDir) => {
-            const Plugin = (await import(path.join(pluginPath, pluginDir.name, "index.js"))).default;
-            console.log(Plugin)
-            const plugin = new Plugin();
-            return plugin.structure();
-        }));
+  static async getStructures() {
+    const pluginPath = path.join(import.meta.dirname, "../", "plugins");
+    const pluginsDir = fs.opendirSync(pluginPath);
+    const plugins = [];
+    let directoryEntry;
+    while ((directoryEntry = pluginsDir.readSync()) !== null) {
+      plugins.push(directoryEntry);
     }
+    plugins.sort();
+    await pluginsDir.close();
+    return Promise.all(
+      plugins
+        .filter((pluginDir) => pluginDir.isDirectory())
+        .map(async (pluginDir) => {
+          const Plugin = (
+            await import(path.join(pluginPath, pluginDir.name, "index.js"))
+          ).default;
+          console.log(Plugin);
+          const plugin = new Plugin();
+          return plugin.structure();
+        }),
+    );
+  }
 
-    async create(pluginName) {
-        const Plugin = (await import(path.join(`../plugins/${pluginName}`, 'index.js'))).default;
-        return new Plugin();
-    }
+  async create(pluginName) {
+    const Plugin = (
+      await import(path.join(`../plugins/${pluginName}`, "index.js"))
+    ).default;
+    return new Plugin();
+  }
 
-    add(pluginName, plugin) {
-        this.plugins[pluginName.toLocaleLowerCase()] = plugin;
-    }
+  add(pluginName, plugin) {
+    this.plugins[pluginName.toLocaleLowerCase()] = plugin;
+  }
 
-    hasPlugin(pluginName) {
-        return !!this.plugins[pluginName.toLocaleLowerCase()];
-    }
+  hasPlugin(pluginName) {
+    return !!this.plugins[pluginName.toLocaleLowerCase()];
+  }
 
-    getPlugin(pluginName) {
-        return this.plugins[pluginName.toLocaleLowerCase()];
-    }
+  getPlugin(pluginName) {
+    return this.plugins[pluginName.toLocaleLowerCase()];
+  }
 }

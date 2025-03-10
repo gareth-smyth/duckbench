@@ -1,63 +1,66 @@
-import CD32  from '../../../src/plugins/CD32/index.js';
-import EnvironmentSetup  from '../../../src/builder/EnvironmentSetup.js';
+import CD32 from "../../../src/plugins/CD32/index.js";
+import EnvironmentSetup from "../../../src/builder/EnvironmentSetup.js";
 
-vi.mock('../../../src/builder/EnvironmentSetup');
+vi.mock("../../../src/builder/EnvironmentSetup");
 
 const environmentSetup = new EnvironmentSetup();
 
 const config = {
-    optionValues: {
-        processor: '68090',
-        fastMem: '3TB',
-        floppyDrive: 'Yes',
-    },
+  optionValues: {
+    processor: "68090",
+    fastMem: "3TB",
+    floppyDrive: "Yes",
+  },
 };
 
-it('sets the system name', async () => {
-    const cd32 = new CD32();
-    cd32.prepare(config, environmentSetup);
+it("sets the system name", async () => {
+  const cd32 = new CD32();
+  cd32.prepare(config, environmentSetup);
 
-    expect(environmentSetup.setSystemName).toHaveBeenCalledWith('cd32');
+  expect(environmentSetup.setSystemName).toHaveBeenCalledWith("cd32");
 });
 
-it('sets the ROM', async () => {
-    const amiga600 = new CD32();
-    amiga600.prepare(config, environmentSetup);
+it("sets the ROM", async () => {
+  const amiga600 = new CD32();
+  amiga600.prepare(config, environmentSetup);
 
-    expect(environmentSetup.setRom).toHaveBeenCalledWith('3.1');
+  expect(environmentSetup.setRom).toHaveBeenCalledWith("3.1");
 });
 
-it('sets the CPU', async () => {
-    const cd32 = new CD32();
-    cd32.prepare(config, environmentSetup);
+it("sets the CPU", async () => {
+  const cd32 = new CD32();
+  cd32.prepare(config, environmentSetup);
 
-    expect(environmentSetup.setCPU).toHaveBeenCalledWith('68090');
+  expect(environmentSetup.setCPU).toHaveBeenCalledWith("68090");
 });
 
-it('sets the chip mem', async () => {
-    const cd32 = new CD32();
-    cd32.prepare(config, environmentSetup);
+it("sets the chip mem", async () => {
+  const cd32 = new CD32();
+  cd32.prepare(config, environmentSetup);
 
-    expect(environmentSetup.setChipMem).toHaveBeenCalledWith('2');
+  expect(environmentSetup.setChipMem).toHaveBeenCalledWith("2");
 });
 
-it('sets the fast mem', async () => {
-    const cd32 = new CD32();
-    cd32.prepare(config, environmentSetup);
+it("sets the fast mem", async () => {
+  const cd32 = new CD32();
+  cd32.prepare(config, environmentSetup);
 
-    expect(environmentSetup.setFastMem).toHaveBeenCalledWith('3TB');
+  expect(environmentSetup.setFastMem).toHaveBeenCalledWith("3TB");
 });
 
-it('sets the floppy when yes', async () => {
-    const cd32 = new CD32();
-    cd32.prepare(config, environmentSetup);
+it("sets the floppy when yes", async () => {
+  const cd32 = new CD32();
+  cd32.prepare(config, environmentSetup);
 
-    expect(environmentSetup.setFloppyDrive).toHaveBeenCalledWith(true);
+  expect(environmentSetup.setFloppyDrive).toHaveBeenCalledWith(true);
 });
 
-it('sets the floppy when not yes', async () => {
-    const cd32 = new CD32();
-    cd32.prepare(Object.assign(config, {optionValues: {floppyDrive: 'No'}}), environmentSetup);
+it("sets the floppy when not yes", async () => {
+  const cd32 = new CD32();
+  cd32.prepare(
+    Object.assign(config, { optionValues: { floppyDrive: "No" } }),
+    environmentSetup,
+  );
 
-    expect(environmentSetup.setFloppyDrive).toHaveBeenCalledWith(false);
+  expect(environmentSetup.setFloppyDrive).toHaveBeenCalledWith(false);
 });

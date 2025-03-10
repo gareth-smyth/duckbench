@@ -1,45 +1,87 @@
-import UnADF  from '../../../src/plugins/UnADF/index.js';
+import UnADF from "../../../src/plugins/UnADF/index.js";
 
-const pluginStore = {getPlugin: vi.fn()};
-const lha = {run: vi.fn()};
-const communicator = 'aCommunicator';
+const pluginStore = { getPlugin: vi.fn() };
+const lha = { run: vi.fn() };
+const communicator = "aCommunicator";
 
 beforeEach(() => {
-    pluginStore.getPlugin.mockReturnValue(lha);
+  pluginStore.getPlugin.mockReturnValue(lha);
 });
 
-it('calls the communicator to install unADF once in each location requested', async () => {
-    const unADF = new UnADF();
-    await unADF.install({
-        optionValues: {
-            location: 'A:', sourceDir: 'aDir:', sourceFile: 'aFile', dest: 'wb:',
-        },
-    }, communicator, pluginStore);
-    await unADF.install({
-        optionValues: {
-            location: 'A:', sourceDir: 'aDir:', sourceFile: 'aFile', dest: 'wb:',
-        },
-    }, communicator, pluginStore);
-    await unADF.install({
-        optionValues: {
-            location: 'B:', sourceDir: 'bDir:', sourceFile: 'bFile', dest: 'work:',
-        },
-    }, communicator, pluginStore);
+it("calls the communicator to install unADF once in each location requested", async () => {
+  const unADF = new UnADF();
+  await unADF.install(
+    {
+      optionValues: {
+        location: "A:",
+        sourceDir: "aDir:",
+        sourceFile: "aFile",
+        dest: "wb:",
+      },
+    },
+    communicator,
+    pluginStore,
+  );
+  await unADF.install(
+    {
+      optionValues: {
+        location: "A:",
+        sourceDir: "aDir:",
+        sourceFile: "aFile",
+        dest: "wb:",
+      },
+    },
+    communicator,
+    pluginStore,
+  );
+  await unADF.install(
+    {
+      optionValues: {
+        location: "B:",
+        sourceDir: "bDir:",
+        sourceFile: "bFile",
+        dest: "work:",
+      },
+    },
+    communicator,
+    pluginStore,
+  );
 
-    expect(lha.run).toHaveBeenCalledTimes(2);
-    expect(lha.run).toHaveBeenCalledWith('DB_HOST_CACHE:UnADF.lha', 'A:', 'duckbench:c/', {}, communicator);
-    expect(lha.run).toHaveBeenCalledWith('DB_HOST_CACHE:UnADF.lha', 'B:', 'duckbench:c/', {}, communicator);
+  expect(lha.run).toHaveBeenCalledTimes(2);
+  expect(lha.run).toHaveBeenCalledWith(
+    "DB_HOST_CACHE:UnADF.lha",
+    "A:",
+    "duckbench:c/",
+    {},
+    communicator,
+  );
+  expect(lha.run).toHaveBeenCalledWith(
+    "DB_HOST_CACHE:UnADF.lha",
+    "B:",
+    "duckbench:c/",
+    {},
+    communicator,
+  );
 });
 
-it('throws an error when extraction throws', async () => {
-    lha.run.mockImplementation(() => {
-        throw new Error('lha error');
-    });
+it("throws an error when extraction throws", async () => {
+  lha.run.mockImplementation(() => {
+    throw new Error("lha error");
+  });
 
-    const unADF = new UnADF();
-    await expect(unADF.install({
+  const unADF = new UnADF();
+  await expect(
+    unADF.install(
+      {
         optionValues: {
-            location: 'A:', sourceDir: 'aDir:', sourceFile: 'aFile', dest: 'wb:',
+          location: "A:",
+          sourceDir: "aDir:",
+          sourceFile: "aFile",
+          dest: "wb:",
         },
-    }, communicator, pluginStore)).rejects.toThrow('lha error');
+      },
+      communicator,
+      pluginStore,
+    ),
+  ).rejects.toThrow("lha error");
 });

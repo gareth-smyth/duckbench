@@ -1,72 +1,84 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
-import RomFinderService  from '../../services/RomFinderService.js';
+import RomFinderService from "../../services/RomFinderService.js";
 
 export default class Settings {
-    get() {
-        return {
-            name: 'Setup',
-            label: 'Setup',
-            settings: [{
-                name: 'emulatorRoot',
-                type: 'hostFolder',
-                label: 'Emulator root',
-                hasDefaultSearch: true,
-            }, {
-                name: 'rom310',
-                type: 'hostFile',
-                label: 'Kickstart 3.1',
-                hasDefaultSearch: true,
-            }],
-        };
-    }
+  get() {
+    return {
+      name: "Setup",
+      label: "Setup",
+      settings: [
+        {
+          name: "emulatorRoot",
+          type: "hostFolder",
+          label: "Emulator root",
+          hasDefaultSearch: true,
+        },
+        {
+          name: "rom310",
+          type: "hostFile",
+          label: "Kickstart 3.1",
+          hasDefaultSearch: true,
+        },
+      ],
+    };
+  }
 
-    default(settingName) {
-        switch (settingName) {
-        case 'emulatorRoot':
-            return this.findEmulator();
-        case 'rom310':
-            return this.findRom310();
-        }
+  default(settingName) {
+    switch (settingName) {
+      case "emulatorRoot":
+        return this.findEmulator();
+      case "rom310":
+        return this.findRom310();
     }
+  }
 
-    findEmulator() {
-        global.Logger.trace('Looking for an emulator');
-        if (process.env.DUCKBENCH_EMU) {
-            global.Logger.trace('Found an emulator path using environment vars.');
-            return {folder: process.env.DUCKBENCH_EMU};
-        } else if (fs.existsSync('C:/Program Files/WinUAE')) {
-            global.Logger.trace('Found WinUAE paths at "C:/Program Files/WinUAE".');
-            return {folder: 'C:/Program Files/WinUAE'};
-        } else if (fs.existsSync('C:/Program Files (x86)/WinUAE')) {
-            global.Logger.trace('Found WinUAE paths at "C:/Program Files (x86)/WinUAE".');
-            return {folder: 'C:/Program Files (x86)/WinUAE'};
-        }  else if (fs.existsSync('/Applications/FS-UAE.app')) {
-            global.Logger.trace('Found FS-UAE path at "/Applications".');
-            return {folder: '/Applications'};
-        } else {
-            global.Logger.trace('Emulator not found');
-            return {};
-        }
+  findEmulator() {
+    global.Logger.trace("Looking for an emulator");
+    if (process.env.DUCKBENCH_EMU) {
+      global.Logger.trace("Found an emulator path using environment vars.");
+      return { folder: process.env.DUCKBENCH_EMU };
+    } else if (fs.existsSync("C:/Program Files/WinUAE")) {
+      global.Logger.trace('Found WinUAE paths at "C:/Program Files/WinUAE".');
+      return { folder: "C:/Program Files/WinUAE" };
+    } else if (fs.existsSync("C:/Program Files (x86)/WinUAE")) {
+      global.Logger.trace(
+        'Found WinUAE paths at "C:/Program Files (x86)/WinUAE".',
+      );
+      return { folder: "C:/Program Files (x86)/WinUAE" };
+    } else if (fs.existsSync("/Applications/FS-UAE.app")) {
+      global.Logger.trace('Found FS-UAE path at "/Applications".');
+      return { folder: "/Applications" };
+    } else {
+      global.Logger.trace("Emulator not found");
+      return {};
     }
+  }
 
-    findRom310() {
-        global.Logger.trace('Looking for ROMs');
-        if (process.env.DUCKBENCH_ROMS) {
-            global.Logger.trace('Found rom paths using environment vars... setting config');
-            return RomFinderService.find('3.1', process.env.DUCKBENCH_ROMS);
-        } else if (process.env.AMIGAFOREVERDATA) {
-            global.Logger.trace('Found rom paths using Amiga Forever environment vars... setting config');
-            return RomFinderService.find('3.1', path.join(process.env.AMIGAFOREVERDATA, 'Shared', 'rom'));
-        } else {
-            global.Logger.trace('Cannot find required paths. Either AMIGAFOREVERDATA should be set, ' +
-                `or DUCKBENCH_ROMS.
+  findRom310() {
+    global.Logger.trace("Looking for ROMs");
+    if (process.env.DUCKBENCH_ROMS) {
+      global.Logger.trace(
+        "Found rom paths using environment vars... setting config",
+      );
+      return RomFinderService.find("3.1", process.env.DUCKBENCH_ROMS);
+    } else if (process.env.AMIGAFOREVERDATA) {
+      global.Logger.trace(
+        "Found rom paths using Amiga Forever environment vars... setting config",
+      );
+      return RomFinderService.find(
+        "3.1",
+        path.join(process.env.AMIGAFOREVERDATA, "Shared", "rom"),
+      );
+    } else {
+      global.Logger.trace(
+        "Cannot find required paths. Either AMIGAFOREVERDATA should be set, " +
+          `or DUCKBENCH_ROMS.
     AMIGAFOREVERDATA: "${process.env.AMIGAFOREVERDATA}",
-    DUCKBENCH_ROMS: "${process.env.DUCKBENCH_ROMS}"`);
-            return {};
-        }
+    DUCKBENCH_ROMS: "${process.env.DUCKBENCH_ROMS}"`,
+      );
+      return {};
     }
+  }
 }
-
-

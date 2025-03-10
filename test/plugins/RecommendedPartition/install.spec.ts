@@ -1,53 +1,89 @@
-import RecommendedPartition  from '../../../src/plugins/RecommendedPartition/index.js';
+import RecommendedPartition from "../../../src/plugins/RecommendedPartition/index.js";
 
-it('calls the communicator to format the workbench partition', async () => {
-    const communicator = {format: vi.fn(), assign: vi.fn()};
-    const pluginStore = {getPlugin: () => ({createInput: () => 'ram:some file.txt'})};
+it("calls the communicator to format the workbench partition", async () => {
+  const communicator = { format: vi.fn(), assign: vi.fn() };
+  const pluginStore = {
+    getPlugin: () => ({ createInput: () => "ram:some file.txt" }),
+  };
 
-    const partition = new RecommendedPartition();
-    await partition.install({optionValues: {size: 300}}, communicator, pluginStore);
+  const partition = new RecommendedPartition();
+  await partition.install(
+    { optionValues: { size: 300 } },
+    communicator,
+    pluginStore,
+  );
 
-    expect(communicator.assign).toHaveBeenCalledTimes(1);
-    expect(communicator.format).toHaveBeenCalledTimes(1);
-    expect(communicator.format).toHaveBeenCalledWith('DH0', 'WORKBENCH',
-        {'REDIRECT_IN': 'ram:some file.txt', 'intl': true, 'noicons': true, 'quick': true});
+  expect(communicator.assign).toHaveBeenCalledTimes(1);
+  expect(communicator.format).toHaveBeenCalledTimes(1);
+  expect(communicator.format).toHaveBeenCalledWith("DH0", "WORKBENCH", {
+    REDIRECT_IN: "ram:some file.txt",
+    intl: true,
+    noicons: true,
+    quick: true,
+  });
 });
 
-it('assigns work: to dh1:', async () => {
-    const communicator = {format: vi.fn(), assign: vi.fn()};
-    const pluginStore = {getPlugin: () => ({createInput: () => 'ram:some file.txt'})};
+it("assigns work: to dh1:", async () => {
+  const communicator = { format: vi.fn(), assign: vi.fn() };
+  const pluginStore = {
+    getPlugin: () => ({ createInput: () => "ram:some file.txt" }),
+  };
 
-    const partition = new RecommendedPartition();
-    await partition.install({optionValues: {size: 300}}, communicator, pluginStore);
+  const partition = new RecommendedPartition();
+  await partition.install(
+    { optionValues: { size: 300 } },
+    communicator,
+    pluginStore,
+  );
 
-    expect(communicator.assign).toHaveBeenCalledTimes(1);
-    expect(communicator.assign).toHaveBeenCalledWith('WORK:', 'DH0:');
+  expect(communicator.assign).toHaveBeenCalledTimes(1);
+  expect(communicator.assign).toHaveBeenCalledWith("WORK:", "DH0:");
 });
 
-describe('large hard drive set up', () => {
-    it('calls the communicator to format the workbench partition', async () => {
-        const communicator = {format: vi.fn(), assign: vi.fn()};
-        const pluginStore = {getPlugin: () => ({createInput: () => 'ram:some file.txt'})};
+describe("large hard drive set up", () => {
+  it("calls the communicator to format the workbench partition", async () => {
+    const communicator = { format: vi.fn(), assign: vi.fn() };
+    const pluginStore = {
+      getPlugin: () => ({ createInput: () => "ram:some file.txt" }),
+    };
 
-        const partition = new RecommendedPartition();
-        await partition.install({optionValues: {size: 5000}}, communicator, pluginStore);
+    const partition = new RecommendedPartition();
+    await partition.install(
+      { optionValues: { size: 5000 } },
+      communicator,
+      pluginStore,
+    );
 
-        expect(communicator.assign).toHaveBeenCalledTimes(0);
-        expect(communicator.format).toHaveBeenCalledTimes(2);
-        expect(communicator.format).toHaveBeenCalledWith('DH0', 'WORKBENCH',
-            {'REDIRECT_IN': 'ram:some file.txt', 'intl': true, 'noicons': true, 'quick': true});
+    expect(communicator.assign).toHaveBeenCalledTimes(0);
+    expect(communicator.format).toHaveBeenCalledTimes(2);
+    expect(communicator.format).toHaveBeenCalledWith("DH0", "WORKBENCH", {
+      REDIRECT_IN: "ram:some file.txt",
+      intl: true,
+      noicons: true,
+      quick: true,
     });
+  });
 
-    it('calls the communicator to format the work partition', async () => {
-        const communicator = {format: vi.fn(), assign: vi.fn()};
-        const pluginStore = {getPlugin: () => ({createInput: () => 'ram:some file.txt'})};
+  it("calls the communicator to format the work partition", async () => {
+    const communicator = { format: vi.fn(), assign: vi.fn() };
+    const pluginStore = {
+      getPlugin: () => ({ createInput: () => "ram:some file.txt" }),
+    };
 
-        const partition = new RecommendedPartition();
-        await partition.install({optionValues: {size: 5000}}, communicator, pluginStore);
+    const partition = new RecommendedPartition();
+    await partition.install(
+      { optionValues: { size: 5000 } },
+      communicator,
+      pluginStore,
+    );
 
-        expect(communicator.assign).toHaveBeenCalledTimes(0);
-        expect(communicator.format).toHaveBeenCalledTimes(2);
-        expect(communicator.format).toHaveBeenCalledWith('DH1', 'WORK',
-            {'REDIRECT_IN': 'ram:some file.txt', 'intl': true, 'noicons': true, 'quick': true});
+    expect(communicator.assign).toHaveBeenCalledTimes(0);
+    expect(communicator.format).toHaveBeenCalledTimes(2);
+    expect(communicator.format).toHaveBeenCalledWith("DH1", "WORK", {
+      REDIRECT_IN: "ram:some file.txt",
+      intl: true,
+      noicons: true,
+      quick: true,
     });
+  });
 });

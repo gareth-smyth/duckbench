@@ -1,17 +1,17 @@
-import fs from 'fs';
-vi.mock('fs');
+import fs from "fs";
+vi.mock("fs");
 const mockedFs = fs as MockedObject<typeof fs>;
 
-import SettingsService  from '../../../src/services/SettingsService.js';
-import {MockedObject} from "vitest";
+import SettingsService from "../../../src/services/SettingsService.js";
+import { MockedObject } from "vitest";
 
-it('returns an empty object when settings file does not exist', () => {
-    mockedFs.existsSync.mockReturnValueOnce(false);
-    expect(SettingsService.loadCurrent()).toEqual({});
+it("returns an empty object when settings file does not exist", () => {
+  mockedFs.existsSync.mockReturnValueOnce(false);
+  expect(SettingsService.loadCurrent()).toEqual({});
 });
 
-it('loads and returns the settings file when it exists', () => {
-    mockedFs.existsSync.mockReturnValueOnce(true);
-    mockedFs.readFileSync.mockReturnValueOnce(JSON.stringify({a: 'one'}));
-    expect(SettingsService.loadCurrent()).toEqual({a: 'one'});
+it("loads and returns the settings file when it exists", () => {
+  mockedFs.existsSync.mockReturnValueOnce(true);
+  mockedFs.readFileSync.mockReturnValueOnce(JSON.stringify({ a: "one" }));
+  expect(SettingsService.loadCurrent()).toEqual({ a: "one" });
 });

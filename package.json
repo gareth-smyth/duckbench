@@ -8,6 +8,7 @@
   "scripts": {
     "test": "vitest run --coverage",
     "lint": "eslint ./src ./test",
+    "format": "prettier . -w",
     "lintfix": "eslint ./src ./test --fix",
     "dev": "babel src --copy-files --out-dir dist --extensions '.ts,.js' && node --experimental-modules dist/duckbench.js"
   },
@@ -48,9 +49,9 @@
     "@vitest/coverage-istanbul": "^3.0.8",
     "eslint": "^9.22.0",
     "eslint-config-google": "0.14.0",
-    "eslint-config-prettier": "^10.1.1",
     "globals": "^16.0.0",
     "jest-when": "^3.7.0",
+    "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
     "typescript-eslint": "^8.26.0"
   }

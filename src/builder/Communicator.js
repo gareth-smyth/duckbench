@@ -1,67 +1,132 @@
-import CommandBuilder from './CommandRunner.js';
-import SocketCommunicator from './SocketCommunicator.js';
+import CommandBuilder from "./CommandRunner.js";
+import SocketCommunicator from "./SocketCommunicator.js";
 
 export default class Communicator {
-    /* istanbul ignore next */
-    constructor(controlCallback = this.noCallback,
-                socketCommunicator = new SocketCommunicator(controlCallback),
-                commandRunner = new CommandBuilder(socketCommunicator)) {
-        this.commandRunner = commandRunner;
-        this.socketCommunicator = socketCommunicator;
-    }
+  /* istanbul ignore next */
+  constructor(
+    controlCallback = this.noCallback,
+    socketCommunicator = new SocketCommunicator(controlCallback),
+    commandRunner = new CommandBuilder(socketCommunicator),
+  ) {
+    this.commandRunner = commandRunner;
+    this.socketCommunicator = socketCommunicator;
+  }
 
-    /* istanbul ignore next */
-    noCallback(_callbackValue) { }
+  /* istanbul ignore next */
+  noCallback(_callbackValue) {}
 
-    async run(commandString, options, commandCallback, expectedResponse) {
-        return this.commandRunner.run(commandString, options, commandCallback, expectedResponse);
-    }
+  async run(commandString, options, commandCallback, expectedResponse) {
+    return this.commandRunner.run(
+      commandString,
+      options,
+      commandCallback,
+      expectedResponse,
+    );
+  }
 
-    async assign(name, folder, options = {}, commandCallback = this.noCallback, expectedResponse = undefined) {
-        return this.commandRunner.run(`assign ${name} ${folder}`, options, commandCallback, expectedResponse);
-    }
+  async assign(
+    name,
+    folder,
+    options = {},
+    commandCallback = this.noCallback,
+    expectedResponse = undefined,
+  ) {
+    return this.commandRunner.run(
+      `assign ${name} ${folder}`,
+      options,
+      commandCallback,
+      expectedResponse,
+    );
+  }
 
-    async cd(folder, options = {}, commandCallback = this.noCallback) {
-        return this.commandRunner.run(`cd ${folder}`, options, commandCallback);
-    }
+  async cd(folder, options = {}, commandCallback = this.noCallback) {
+    return this.commandRunner.run(`cd ${folder}`, options, commandCallback);
+  }
 
-    async copy(source, destination, options = {},
-               commandCallback = this.noCallback, expectedResponse = undefined) {
-        return this.commandRunner.run(`copy ${source} ${destination}`, options, commandCallback, expectedResponse);
-    }
+  async copy(
+    source,
+    destination,
+    options = {},
+    commandCallback = this.noCallback,
+    expectedResponse = undefined,
+  ) {
+    return this.commandRunner.run(
+      `copy ${source} ${destination}`,
+      options,
+      commandCallback,
+      expectedResponse,
+    );
+  }
 
-    async delete(filename, options = {},
-                 commandCallback = this.noCallback, expectedResponse = `${filename}  Deleted`) {
-        return this.commandRunner.run(`delete ${filename}`, options, commandCallback, expectedResponse);
-    }
+  async delete(
+    filename,
+    options = {},
+    commandCallback = this.noCallback,
+    expectedResponse = `${filename}  Deleted`,
+  ) {
+    return this.commandRunner.run(
+      `delete ${filename}`,
+      options,
+      commandCallback,
+      expectedResponse,
+    );
+  }
 
-    async echo(content, options = {}, commandCallback = this.noCallback) {
-        return this.commandRunner.run(`echo "${content}"`, options, commandCallback);
-    }
+  async echo(content, options = {}, commandCallback = this.noCallback) {
+    return this.commandRunner.run(
+      `echo "${content}"`,
+      options,
+      commandCallback,
+    );
+  }
 
-    async format(drive, volumeName, options = {}, commandCallback = this.noCallback) {
-        const commandString = `format drive ${drive} name ${volumeName}`;
-        const expectedResponse = /^((?!Format Failure).)*$/;
-        return this.commandRunner.run(commandString, options, commandCallback, expectedResponse);
-    }
+  async format(
+    drive,
+    volumeName,
+    options = {},
+    commandCallback = this.noCallback,
+  ) {
+    const commandString = `format drive ${drive} name ${volumeName}`;
+    const expectedResponse = /^((?!Format Failure).)*$/;
+    return this.commandRunner.run(
+      commandString,
+      options,
+      commandCallback,
+      expectedResponse,
+    );
+  }
 
-    async makedir(folder, options = {}, commandCallback = this.noCallback) {
-        return this.commandRunner.run(`makedir ${folder}`, options, commandCallback);
-    }
+  async makedir(folder, options = {}, commandCallback = this.noCallback) {
+    return this.commandRunner.run(
+      `makedir ${folder}`,
+      options,
+      commandCallback,
+    );
+  }
 
-    async path(folder, options = {}, commandCallback = this.noCallback) {
-        return this.commandRunner.run(`path ${folder}`, options, commandCallback);
-    }
+  async path(folder, options = {}, commandCallback = this.noCallback) {
+    return this.commandRunner.run(`path ${folder}`, options, commandCallback);
+  }
 
-    async protect(filename, options = {}, commandCallback = this.noCallback, expectedResponse = undefined) {
-        return this.commandRunner.run(`protect ${filename}`, options, commandCallback, expectedResponse);
-    }
+  async protect(
+    filename,
+    options = {},
+    commandCallback = this.noCallback,
+    expectedResponse = undefined,
+  ) {
+    return this.commandRunner.run(
+      `protect ${filename}`,
+      options,
+      commandCallback,
+      expectedResponse,
+    );
+  }
 
-    close() {
-        this.socketCommunicator.close();
-    }
+  close() {
+    this.socketCommunicator.close();
+  }
 
-    connect() {
-        return this.socketCommunicator.connect();
-    }
+  connect() {
+    return this.socketCommunicator.connect();
+  }
 }

@@ -1,12 +1,12 @@
-import AminetService  from '../../../src/services/AminetService.js';
-vi.mock('../../../src/services/AminetService');
+import AminetService from "../../../src/services/AminetService.js";
+vi.mock("../../../src/services/AminetService");
 
-import MMULib  from '../../../src/plugins/MMULib/index.js';
+import MMULib from "../../../src/plugins/MMULib/index.js";
 
-it('downloads the MMULib archive', async () => {
-    const mmuLib = new MMULib();
-    await mmuLib.prepare();
+it("downloads the MMULib archive", async () => {
+  const mmuLib = new MMULib();
+  await mmuLib.prepare();
 
-    expect(AminetService.download).toHaveBeenCalledTimes(1);
-    expect(AminetService.download).toHaveBeenCalledWith('util/libs/MMULib.lha');
+  expect(AminetService.download).toHaveBeenCalledTimes(1);
+  expect(AminetService.download).toHaveBeenCalledWith("util/libs/MMULib.lha");
 });

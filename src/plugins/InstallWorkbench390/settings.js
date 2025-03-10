@@ -1,20 +1,20 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 export default class Settings {
-    get() {
-        const cacheMarkerPath = path.join(global.CACHE_DIR, 'wb390_cached');
-        return {
-            name: 'InstallWorkbench390',
-            label: 'Workbench 3.9',
-            settings: [{
-                name: 'isoLocation',
-                type: 'hostFile',
-                label: '3.9 .ISO file',
-                cached: fs.existsSync(cacheMarkerPath),
-            }],
-        };
-    }
+  get() {
+    const cacheMarkerPath = path.join(global.CACHE_DIR, "wb390_cached");
+    return {
+      name: "InstallWorkbench390",
+      label: "Workbench 3.9",
+      settings: [
+        {
+          name: "isoLocation",
+          type: "hostFile",
+          label: "3.9 .ISO file",
+          cached: fs.existsSync(cacheMarkerPath),
+        },
+      ],
+    };
+  }
 }
-
-

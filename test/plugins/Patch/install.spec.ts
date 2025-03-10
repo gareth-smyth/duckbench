@@ -1,70 +1,135 @@
-import Patch  from '../../../src/plugins/Patch/index.js';
+import Patch from "../../../src/plugins/Patch/index.js";
 
-const pluginStore = {getPlugin: vi.fn()};
-const lha = {run: vi.fn()};
-const communicator = {copy: vi.fn(), delete: vi.fn()};
+const pluginStore = { getPlugin: vi.fn() };
+const lha = { run: vi.fn() };
+const communicator = { copy: vi.fn(), delete: vi.fn() };
 
 beforeEach(() => {
-    pluginStore.getPlugin.mockReturnValue(lha);
+  pluginStore.getPlugin.mockReturnValue(lha);
 });
 
-it('calls the communicator to extract patch once for each location requested', async () => {
-    const patch = new Patch();
-    await patch.install({optionValues: {location: 'A:'}}, communicator, pluginStore);
-    await patch.install({optionValues: {location: 'A:'}}, communicator, pluginStore);
-    await patch.install({optionValues: {location: 'B:'}}, communicator, pluginStore);
+it("calls the communicator to extract patch once for each location requested", async () => {
+  const patch = new Patch();
+  await patch.install(
+    { optionValues: { location: "A:" } },
+    communicator,
+    pluginStore,
+  );
+  await patch.install(
+    { optionValues: { location: "A:" } },
+    communicator,
+    pluginStore,
+  );
+  await patch.install(
+    { optionValues: { location: "B:" } },
+    communicator,
+    pluginStore,
+  );
 
-    expect(lha.run).toHaveBeenCalledTimes(2);
-    expect(lha.run).toHaveBeenCalledWith('DB_HOST_CACHE:patch-2.1.lha', 'duckbench:', 'duckbench:c/', {}, communicator);
+  expect(lha.run).toHaveBeenCalledTimes(2);
+  expect(lha.run).toHaveBeenCalledWith(
+    "DB_HOST_CACHE:patch-2.1.lha",
+    "duckbench:",
+    "duckbench:c/",
+    {},
+    communicator,
+  );
 });
 
-it('throws an error when extraction fails', async () => {
-    lha.run.mockImplementation(() => {
-        throw new Error('lha error');
-    });
+it("throws an error when extraction fails", async () => {
+  lha.run.mockImplementation(() => {
+    throw new Error("lha error");
+  });
 
-    const patch = new Patch();
-    await expect(patch.install({optionValues: {location: 'A:'}}, communicator, pluginStore))
-        .rejects.toThrow('lha error');
+  const patch = new Patch();
+  await expect(
+    patch.install(
+      { optionValues: { location: "A:" } },
+      communicator,
+      pluginStore,
+    ),
+  ).rejects.toThrow("lha error");
 });
 
-it('calls the communicator to copy patch once to each location requested', async () => {
-    const patch = new Patch();
-    await patch.install({optionValues: {location: 'A:'}}, communicator, pluginStore);
-    await patch.install({optionValues: {location: 'A:'}}, communicator, pluginStore);
-    await patch.install({optionValues: {location: 'B:'}}, communicator, pluginStore);
+it("calls the communicator to copy patch once to each location requested", async () => {
+  const patch = new Patch();
+  await patch.install(
+    { optionValues: { location: "A:" } },
+    communicator,
+    pluginStore,
+  );
+  await patch.install(
+    { optionValues: { location: "A:" } },
+    communicator,
+    pluginStore,
+  );
+  await patch.install(
+    { optionValues: { location: "B:" } },
+    communicator,
+    pluginStore,
+  );
 
-    expect(communicator.copy).toHaveBeenCalledTimes(2);
-    expect(communicator.copy).toHaveBeenCalledWith('duckbench:patch-2.1/c/patch', 'A:');
-    expect(communicator.copy).toHaveBeenCalledWith('duckbench:patch-2.1/c/patch', 'B:');
+  expect(communicator.copy).toHaveBeenCalledTimes(2);
+  expect(communicator.copy).toHaveBeenCalledWith(
+    "duckbench:patch-2.1/c/patch",
+    "A:",
+  );
+  expect(communicator.copy).toHaveBeenCalledWith(
+    "duckbench:patch-2.1/c/patch",
+    "B:",
+  );
 });
 
-it('throws an error when copying fails', async () => {
-    lha.run.mockImplementation(() => {
-        throw new Error('copy error');
-    });
+it("throws an error when copying fails", async () => {
+  lha.run.mockImplementation(() => {
+    throw new Error("copy error");
+  });
 
-    const patch = new Patch();
-    await expect(patch.install({optionValues: {location: 'A:'}}, communicator, pluginStore))
-        .rejects.toThrow('copy error');
+  const patch = new Patch();
+  await expect(
+    patch.install(
+      { optionValues: { location: "A:" } },
+      communicator,
+      pluginStore,
+    ),
+  ).rejects.toThrow("copy error");
 });
 
-it('calls the communicator to delete extracted patch once for each location requested', async () => {
-    const patch = new Patch();
-    await patch.install({optionValues: {location: 'A:'}}, communicator, pluginStore);
-    await patch.install({optionValues: {location: 'A:'}}, communicator, pluginStore);
-    await patch.install({optionValues: {location: 'B:'}}, communicator, pluginStore);
+it("calls the communicator to delete extracted patch once for each location requested", async () => {
+  const patch = new Patch();
+  await patch.install(
+    { optionValues: { location: "A:" } },
+    communicator,
+    pluginStore,
+  );
+  await patch.install(
+    { optionValues: { location: "A:" } },
+    communicator,
+    pluginStore,
+  );
+  await patch.install(
+    { optionValues: { location: "B:" } },
+    communicator,
+    pluginStore,
+  );
 
-    expect(communicator.delete).toHaveBeenCalledTimes(2);
-    expect(communicator.delete).toHaveBeenCalledWith('duckbench:patch-2.1', {'ALL': true});
+  expect(communicator.delete).toHaveBeenCalledTimes(2);
+  expect(communicator.delete).toHaveBeenCalledWith("duckbench:patch-2.1", {
+    ALL: true,
+  });
 });
 
-it('throws an error when deleting fails', async () => {
-    lha.run.mockImplementation(() => {
-        throw new Error('delete error');
-    });
+it("throws an error when deleting fails", async () => {
+  lha.run.mockImplementation(() => {
+    throw new Error("delete error");
+  });
 
-    const patch = new Patch();
-    await expect(patch.install({optionValues: {location: 'A:'}}, communicator, pluginStore))
-        .rejects.toThrow('delete error');
+  const patch = new Patch();
+  await expect(
+    patch.install(
+      { optionValues: { location: "A:" } },
+      communicator,
+      pluginStore,
+    ),
+  ).rejects.toThrow("delete error");
 });

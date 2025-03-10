@@ -14,13 +14,8 @@
     "paths": {
       "*": ["*"]
     },
-    "types": [
-      "vitest/globals"
-    ],
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/"
-    ],
+    "types": ["vitest/globals"],
+    "typeRoots": ["./node_modules/@types", "./src/"],
     "allowSyntheticDefaultImports": true,
     "allowJs": true
   },

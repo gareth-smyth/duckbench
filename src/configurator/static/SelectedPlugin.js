@@ -1,2 +1,1 @@
-export default class SelectedPlugin {
-}
+export default class SelectedPlugin {}
