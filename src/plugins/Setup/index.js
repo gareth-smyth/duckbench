@@ -173,7 +173,8 @@ export default class Setup {
         noicons: true,
         REDIRECT_IN: enterFile,
       });
-    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       global.Logger.debug(
         "Using existing formatted HDF as DB1: as DB_CLIENT_CACHE:",
       );

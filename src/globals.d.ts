@@ -1,3 +1,6 @@
+/* eslint-disable no-var */
+// noinspection ES6ConvertVarToLetConst
+
 import { Logger } from "pino";
 
 declare global {

@@ -1,3 +1,5 @@
+import m from "mithril";
+
 export default class HostFolder {
   view(node) {
     const setting = node.attrs.setting;

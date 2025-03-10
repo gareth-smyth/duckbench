@@ -27,6 +27,7 @@ export default class FileListItem {
   }
 
   addToEndOfHashList(fileListItem) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     let previousWithSameHash = this;
     let nextWithSameHash = this.getNextWithSameHash();
     while (nextWithSameHash) {

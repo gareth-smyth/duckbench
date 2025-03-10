@@ -71,7 +71,7 @@ export default class SystemDiskService {
           return { os: "3.1", disk: "extras", file: fileName };
         case "Storage3.1":
           return { os: "3.1", disk: "storage", file: fileName };
-        case "Locale":
+        case "Locale": {
           const localeFiles = ADFService.readFiles(fileName, "");
           if (localeFiles.find((fileName) => fileName === "Disk.info")) {
             return { os: "3.1", disk: "locale", file: fileName };
@@ -81,7 +81,8 @@ export default class SystemDiskService {
             return { os: "2.1", disk: "locale", file: fileName };
           }
           return {};
-        case "Fonts":
+        }
+        case "Fonts": {
           const fontFiles = ADFService.readFiles(fileName, "");
           if (fontFiles.find((fileName) => fileName === "Disk.info")) {
             return { os: "3.1", disk: "fonts", file: fileName };
@@ -95,6 +96,7 @@ export default class SystemDiskService {
             return { os: "2.1", disk: "fonts", file: fileName };
           }
           return {};
+        }
         default:
           return {};
       }

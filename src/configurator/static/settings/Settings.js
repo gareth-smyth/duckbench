@@ -1,5 +1,7 @@
 import Setting from "./Setting.js";
 
+import m from "mithril";
+
 export default class Settings {
   view(node) {
     return node.attrs.settings.map((plugin) => {

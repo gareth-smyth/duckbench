@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import net from "net";
 
 const CLOSE_EVENT = "CLOSE_EVENT";
@@ -18,7 +19,7 @@ export default class SocketCommunicator {
     this.client.on("ready", this._readyEvent.bind(this));
   }
 
-  noCallback(event) {}
+  noCallback(_event) {}
 
   async runCommand(commandString, commandCallback = this.noCallback) {
     this.commandRunning = `${commandString}`;
@@ -152,6 +153,7 @@ export default class SocketCommunicator {
   }
 
   _responseIsPrompt(responseLine) {
+    // eslint-disable-next-line no-control-regex
     return responseLine.match(/\d\..*>/);
   }
 

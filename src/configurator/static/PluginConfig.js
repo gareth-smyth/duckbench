@@ -1,5 +1,7 @@
 import Option from "./Option.js";
 
+import m from "mithril";
+
 export default class PluginConfig {
   view(node) {
     const configuration = node.attrs.configuration;
