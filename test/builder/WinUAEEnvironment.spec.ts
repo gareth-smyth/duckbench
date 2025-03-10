@@ -32,10 +32,22 @@ it('spawns a new winuae 64 bit process', () => {
             getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
         settings,
     );
-    fs.existsSync = vi.fn().mockReturnValue(false);
+    fs.existsSync = vi.fn().mockReturnValueOnce(false).mockReturnValueOnce(true);
     environment.start();
     const configFileLocation = path.join('/some/folder/', 'amiga.uae');
     expect(spawn).toHaveBeenCalledWith(path.join('/path/to/winuae/', 'WinUAE64.exe'), ['-f', configFileLocation]);
+});
+
+it('spawns a new fsuae process', () => {
+    const environment = new WinUAEEnvironment(
+        {executionFolder: '/some/folder', disks: {}, rom: 'a_rom',
+            getRomFileName: () => 'aRomFile', getCPU: () => '68020'},
+        settings,
+    );
+    fs.existsSync = vi.fn().mockReturnValueOnce(false).mockReturnValueOnce(false);
+    environment.start();
+    const configFileLocation = path.join('/some/folder/', 'amiga.uae');
+    expect(spawn).toHaveBeenCalledWith(path.join('/path/to/winuae/', 'FS-UAE.app/Contents/MacOS/FS-UAE'), ['-f', configFileLocation]);
 });
 
 it('kills the winuae process', () => {

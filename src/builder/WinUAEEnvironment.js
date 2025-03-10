@@ -98,7 +98,8 @@ export default class WinUAEEnvironment {
         const emulatorRoot = SettingsService.getValue(this.settings, 'Setup', 'emulatorRoot');
         const path32 = path.join(emulatorRoot.folder, 'WinUAE.exe');
         const path64 = path.join(emulatorRoot.folder, 'WinUAE64.exe');
-        const executablePath = fs.existsSync(path32) ? path32 : path64;
+        const pathMacFsUAE = path.join(emulatorRoot.folder, 'FS-UAE.app/Contents/MacOS/FS-UAE');
+        const executablePath = fs.existsSync(path32) ? path32 : fs.existsSync(path64) ? path64 : pathMacFsUAE;
         this.winuaeProcess = spawn(executablePath,
             ['-f', path.join(this.uaeRunningConfig)],
         );

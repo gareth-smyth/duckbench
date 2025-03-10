@@ -9,6 +9,8 @@
     "resolveJsonModule": true,
     "rootDir": "./",
     "baseUrl": "./",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
     "paths": {
       "*": ["*"]
     },

@@ -5,9 +5,7 @@ import { URL } from 'url';
 import {WebSocketServer} from 'ws';
 import DuckbenchBuilder from '../builder/DuckbenchBuilder.js';
 import PluginStore from '../builder/PluginStore.js';
-import Communicator from '../builder/Communicator.js';
 import SettingsService from '../services/SettingsService.js';
-import WinUAEEnvironment from '../builder/WinUAEEnvironment.js';
 import ValidationError from '../errors/ValidationError.js';
 
 
@@ -27,7 +25,7 @@ export default class Configurator {
                 case 'RUN':
                     global.Logger.trace('Running duckbench builder');
                     socket.send(JSON.stringify({ type: 'warning', text: 'Running builder' }));
-                    new DuckbenchBuilder().build(payload.config, WinUAEEnvironment, Communicator, payload.settings).then(() => {
+                    new DuckbenchBuilder().build(payload.config, payload.settings).then(() => {
                         socket.send(JSON.stringify({ type: 'info', text: 'Build complete' }));
                     }).catch((err) => {
                         if(err instanceof ValidationError) {
