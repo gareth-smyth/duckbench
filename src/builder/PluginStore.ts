@@ -1,10 +1,9 @@
 import fs from "fs";
 import path from "path";
+import type { Plugin } from "../types";
 
 export default class PluginStore {
-  constructor() {
-    this.plugins = {};
-  }
+  private readonly plugins: Record<string, Plugin> = {};
 
   static async getStructures() {
     const pluginPath = path.join(import.meta.dirname, "../", "plugins");
@@ -30,22 +29,22 @@ export default class PluginStore {
     );
   }
 
-  async create(pluginName) {
+  async create(pluginName: string) {
     const Plugin = (
       await import(path.join(`../plugins/${pluginName}`, "index.js"))
     ).default;
     return new Plugin();
   }
 
-  add(pluginName, plugin) {
+  add(pluginName: string, plugin: Plugin) {
     this.plugins[pluginName.toLocaleLowerCase()] = plugin;
   }
 
-  hasPlugin(pluginName) {
+  hasPlugin(pluginName: string) {
     return !!this.plugins[pluginName.toLocaleLowerCase()];
   }
 
-  getPlugin(pluginName) {
+  getPlugin(pluginName: string) {
     return this.plugins[pluginName.toLocaleLowerCase()];
   }
 }

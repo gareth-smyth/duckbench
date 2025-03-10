@@ -4,7 +4,7 @@ import path from "path";
 import { URL } from "url";
 import { WebSocketServer } from "ws";
 import DuckbenchBuilder from "../builder/DuckbenchBuilder.js";
-import PluginStore from "../builder/PluginStore.js";
+import PluginStore from "../builder/PluginStore.ts";
 import SettingsService from "../services/SettingsService.js";
 import ValidationError from "../errors/ValidationError.js";
 
