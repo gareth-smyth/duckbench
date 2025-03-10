@@ -19,15 +19,22 @@ describe('emulatorRoot', () => {
     it('defaults emulator root to C:/Program Files/WinUAE when DUCKBENCH_EMU is not set', () => {
         const settings = new Settings();
         delete process.env.DUCKBENCH_EMU;
-        mockedFs.existsSync.mockReturnValueOnce(true);
+        mockedFs.existsSync.mockReturnValueOnce(true).mockReturnValueOnce(false).mockReturnValueOnce(false);
         expect(settings.default('emulatorRoot')).toEqual({folder: 'C:/Program Files/WinUAE'});
     });
 
     it('defaults emulator root to C:/Program Files (x86)/WinUAE when DUCKBENCH_EMU is not set', () => {
         const settings = new Settings();
         delete process.env.DUCKBENCH_EMU;
-        mockedFs.existsSync.mockReturnValueOnce(false).mockReturnValueOnce(true);
+        mockedFs.existsSync.mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValueOnce(false);
         expect(settings.default('emulatorRoot')).toEqual({folder: 'C:/Program Files (x86)/WinUAE'});
+    });
+
+    it('defaults emulator root to /Applications when DUCKBENCH_EMU is not set', () => {
+        const settings = new Settings();
+        delete process.env.DUCKBENCH_EMU;
+        mockedFs.existsSync.mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(true);
+        expect(settings.default('emulatorRoot')).toEqual({folder: '/Applications'});
     });
 
     it('defaults emulator root to undefined when DUCKBENCH_EMU is not set and not found in program files', () => {

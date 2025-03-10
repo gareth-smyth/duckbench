@@ -6,7 +6,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "lint": "eslint ./src ./test",
     "lintfix": "eslint ./src ./test --fix",
     "dev": "babel src --copy-files --out-dir dist --extensions '.ts,.js' && node --experimental-modules dist/duckbench.js"
@@ -45,6 +45,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/jest-when": "^3.5.5",
     "@types/request-promise": "^4.1.51",
+    "@vitest/coverage-istanbul": "^3.0.8",
     "eslint": "^9.22.0",
     "eslint-config-google": "0.14.0",
     "eslint-config-prettier": "^10.1.1",

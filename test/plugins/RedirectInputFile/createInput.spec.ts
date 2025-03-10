@@ -3,7 +3,7 @@ import RedirectInputFile  from '../../../src/plugins/RedirectInputFile/index.js'
 it('returns the default file location', async () => {
     const communicator = {echo: vi.fn()};
     const redirectInputFile = new RedirectInputFile();
-    expect(await redirectInputFile.createInput(['a', 'b', 'c'], communicator, 'ram:temp_input')).toEqual('ram:temp_input');
+    expect(await redirectInputFile.createInput(['a', 'b', 'c'], communicator)).toEqual('ram:tmp_input');
 });
 
 it('returns the file location', async () => {

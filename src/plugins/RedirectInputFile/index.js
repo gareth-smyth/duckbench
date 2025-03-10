@@ -9,7 +9,7 @@ export default class RedirectInputFile {
         };
     }
 
-    async createInput(arrayOfInput, communicator, location = 'ram:tmpinput') {
+    async createInput(arrayOfInput, communicator, location = 'ram:tmp_input') {
         await communicator.echo(arrayOfInput.join('*n') + '*n', {REDIRECT_OUT: location});
         return location;
     }
