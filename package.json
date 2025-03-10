@@ -3,14 +3,21 @@
   "version": "0.0.1-alpha.7",
   "description": "A set of tools to help setup Amiga OS on real hardware or in an emulator.",
   "repository": "https://github.com/gareth-smyth/duckbench",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
   "type": "module",
   "scripts": {
     "test": "vitest run --coverage",
     "lint": "eslint ./src ./test",
     "format": "prettier . -w",
     "lintfix": "eslint ./src ./test --fix",
-    "dev": "babel src --copy-files --out-dir dist --extensions '.ts,.js' && node --experimental-modules dist/duckbench.js"
+    "build": "babel src --copy-files --out-dir dist --extensions '.ts,.js' && npm run build:types",
+    "build:types": "tsc --emitDeclarationOnly --noEmitOnError false",
+    "dev": "babel src --copy-files --out-dir dist --extensions '.ts,.js' && node dist/duckbench.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "bin": {
     "convertrom": "src/tools/convertrom",

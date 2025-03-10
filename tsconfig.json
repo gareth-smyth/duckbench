@@ -7,23 +7,21 @@
     "strict": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "rootDir": "./",
+    "rootDir": "./src",
     "baseUrl": "./",
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "paths": {
       "*": ["*"]
     },
-    "types": ["vitest/globals"],
-    "typeRoots": ["./node_modules/@types", "./src/"],
+    "typeRoots": ["./node_modules/@types"],
     "allowSyntheticDefaultImports": true,
-    "allowJs": true
+    "allowJs": true,
+    "declaration": true
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
-    "test/**/*.ts",
-    "test/**/*.d.ts",
     "node_modules/vitest/globals.d.ts"
   ]
 }
