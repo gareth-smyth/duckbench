@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { vi } from "vitest";
-import { BASE_DIR } from "../../../src/services/BaseDirService.js";
+import { BASE_DIR } from "../../../src/services/BaseDirService";
 
 vi.mock("fs");
 

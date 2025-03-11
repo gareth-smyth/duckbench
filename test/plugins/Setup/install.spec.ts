@@ -1,5 +1,5 @@
 import Communicator from "../../../src/builder/Communicator.js";
-import PluginStore from "../../../src/builder/PluginStore.js";
+import PluginStore from "../../../src/builder/PluginStore";
 import RedirectInputFile from "../../../src/plugins/RedirectInputFile/index.js";
 
 vi.mock("../../../src/builder/Communicator");
@@ -7,7 +7,7 @@ vi.mock("../../../src/builder/PluginStore");
 vi.mock("../../../src/plugins/RedirectInputFile");
 
 import Setup from "../../../src/plugins/Setup/index.js";
-import { MockedObject } from "vitest";
+import { MockedObject, vi } from "vitest";
 
 let communicator: MockedObject<Communicator>;
 let pluginStore: MockedObject<PluginStore>;

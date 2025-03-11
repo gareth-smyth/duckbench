@@ -1,7 +1,7 @@
 import { MockedObject, vi } from "vitest";
 import path from "path";
 import "vitest-fetch-mock";
-import { CACHE_DIR } from "../../src/services/BaseDirService.js";
+import { CACHE_DIR } from "../../src/services/BaseDirService";
 
 import fs from "fs";
 vi.mock("fs");

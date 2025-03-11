@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import Communicator from "../../../src/builder/Communicator.js";
-import { CACHE_DIR } from "../../../src/services/BaseDirService.js";
+import { CACHE_DIR } from "../../../src/services/BaseDirService";
 
 vi.mock("fs");
 const mockedFs = fs as MockedObject<typeof fs>;

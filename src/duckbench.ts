@@ -1,4 +1,4 @@
-import "./services/BaseDirService.js";
+import "./services/BaseDirService";
 import Configurator from "./configurator/Configurator.js";
 import Logger from "./services/LoggerService.js";
 

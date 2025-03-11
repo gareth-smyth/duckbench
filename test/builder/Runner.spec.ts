@@ -14,7 +14,7 @@ beforeEach(() => {
   vi.mocked(PluginStore).mockImplementation(() => mockPluginStoreInstance);
 });
 
-import Runner from "../../src/builder/Runner.js";
+import Runner from "../../src/builder/Runner";
 import { MockedObject } from "vitest";
 import EnvironmentSetup from "../../src/builder/EnvironmentSetup";
 import Communicator from "../../src/builder/Communicator";

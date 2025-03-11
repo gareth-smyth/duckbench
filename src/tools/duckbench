@@ -2,7 +2,7 @@
 /* eslint-disable */
 import fs from "fs";
 import yargs from "yargs";
-import Logger from '../services/LoggerService.js';
+import Logger from "../services/LoggerService.js";
 
 yargs
   .command({

@@ -1,4 +1,4 @@
-import CommandRunner from "../../src/builder/CommandRunner.js";
+import CommandRunner from "../../src/builder/CommandRunner";
 import SocketCommunicator from "../../src/builder/SocketCommunicator.js";
 import { MockedObject } from "vitest";
 vi.mock("../../src/builder/SocketCommunicator");

@@ -2,7 +2,7 @@ import fs from "fs";
 import InstallWorkbench390 from "../../../src/plugins/InstallWorkbench390/index.js";
 
 import Communicator from "../../../src/builder/Communicator.js";
-import PluginStore from "../../../src/builder/PluginStore.js";
+import PluginStore from "../../../src/builder/PluginStore";
 import InstallLG from "../../../src/plugins/InstallerLG/index.js";
 import Patch from "../../../src/plugins/Patch/index.js";
 import WinUAETools from "../../../src/plugins/WinUAETools/index.js";

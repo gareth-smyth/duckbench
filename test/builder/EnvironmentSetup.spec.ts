@@ -5,7 +5,7 @@ import path from "path";
 import { vi } from "vitest";
 
 import EnvironmentSetup from "../../src/builder/EnvironmentSetup.js";
-import { BASE_DIR } from "../../src/services/BaseDirService.js";
+import { BASE_DIR } from "../../src/services/BaseDirService";
 
 vi.mock("fs");
 
@@ -171,6 +171,7 @@ it("inserts amiga and non-amiga os ADFs", () => {
 
   environmentSetup.insertDisk("df0", { location: "/home/disk1.adf" });
   environmentSetup.insertDisk("df1", {
+    location: "",
     type: "amigaos",
     name: "amiga-os-310-workbench.adf",
   });

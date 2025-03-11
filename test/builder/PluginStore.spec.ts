@@ -1,4 +1,4 @@
-import PluginStore from "../../src/builder/PluginStore.js";
+import PluginStore from "../../src/builder/PluginStore";
 
 describe("access plugin store", () => {
   it("adds plugins to store", () => {

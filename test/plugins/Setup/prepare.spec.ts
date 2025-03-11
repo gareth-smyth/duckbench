@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { CACHE_DIR } from "../../../src/services/BaseDirService.js";
+import { CACHE_DIR } from "../../../src/services/BaseDirService";
 
 import EnvironmentSetup from "../../../src/builder/EnvironmentSetup.js";
 import ADFService from "../../../src/services/ADFService.js";

@@ -1,4 +1,4 @@
-import PluginStore from "./PluginStore.js";
+import PluginStore from "./PluginStore";
 import ValidationError from "../errors/ValidationError.js";
 import type { Plugin, PluginConfig, Settings } from "../types";
 import EnvironmentSetup from "./EnvironmentSetup";

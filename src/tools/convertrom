@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable */
-import Logger from '../services/LoggerService.js';
+import Logger from "../services/LoggerService.js";
 
 import("../services/BaseDirService.js");
 import("../services/LoggerService.js");

@@ -1,1 +1,1 @@
-export { default as DuckbenchBuilder } from "./builder/DuckbenchBuilder.js";
+export { default as DuckbenchBuilder } from "./builder/DuckbenchBuilder";

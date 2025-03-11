@@ -2,7 +2,7 @@ import fs from "fs";
 import InstallWorkbench310 from "../../../src/plugins/InstallWorkbench310/index.js";
 
 import Communicator from "../../../src/builder/Communicator.js";
-import PluginStore from "../../../src/builder/PluginStore.js";
+import PluginStore from "../../../src/builder/PluginStore";
 import InstallLG from "../../../src/plugins/InstallerLG/index.js";
 import Patch from "../../../src/plugins/Patch/index.js";
 import UnADF from "../../../src/plugins/UnADF/index.js";

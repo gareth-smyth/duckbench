@@ -40,3 +40,37 @@ export type Plugin = {
     environmentSetup: EnvironmentSetup,
   ) => Promise<void>;
 };
+
+export type AdfDefinition = {
+  drive: string;
+  location: string;
+};
+
+export type HdfDefinition = {
+  drive: string;
+  location: string;
+};
+
+export type CdDefinition = {
+  location: string;
+};
+
+export type MappedDriveDefinition = {
+  drive: string;
+  location: string;
+  name: string;
+  writeable: boolean;
+};
+
+export type DiskDefinition = {
+  location: string;
+  type?: string;
+  name?: string;
+};
+
+export type DiskSetup = {
+  ADF: AdfDefinition[];
+  HDF: HdfDefinition[];
+  CD: CdDefinition[];
+  MAPPED_DRIVE: MappedDriveDefinition[];
+};
