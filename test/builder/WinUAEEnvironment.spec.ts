@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 
 import WinUAEEnvironment from "../../src/builder/WinUAEEnvironment.js";
-import { MockedObject } from "vitest";
+import { MockedObject, vi } from "vitest";
 
 vi.mock("child_process");
 vi.mock("fs");

@@ -22,7 +22,6 @@ export default class PluginStore {
           const Plugin = (
             await import(path.join(pluginPath, pluginDir.name, "index.js"))
           ).default;
-          console.log(Plugin);
           const plugin = new Plugin();
           return plugin.structure();
         }),
