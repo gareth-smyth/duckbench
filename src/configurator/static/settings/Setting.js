@@ -1,8 +1,6 @@
 import HostFolder from "./HostFolder.js";
 import HostFile from "./HostFile.js";
 
-import m from "mithril";
-
 export default class Setting {
   view(node) {
     const plugin = node.attrs.plugin;

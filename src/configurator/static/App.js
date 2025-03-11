@@ -2,8 +2,6 @@ import Configuration from "./Configuration.js";
 import PluginSelect from "./PluginSelect.js";
 import Settings from "./settings/Settings.js";
 
-import m from "mithril";
-
 export default class App {
   constructor() {
     this.configuration = new Configuration();

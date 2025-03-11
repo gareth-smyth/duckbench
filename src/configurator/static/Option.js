@@ -1,5 +1,3 @@
-import m from "mithril";
-
 export default class Option {
   view(node) {
     const configuration = node.attrs.configuration;
