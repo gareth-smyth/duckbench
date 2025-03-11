@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-escape */
 import net from "net";
+import Logger from "../services/LoggerService.js";
 
 const CLOSE_EVENT = "CLOSE_EVENT";
 const CONNECT_EVENT = "CONNECT_EVENT";
@@ -25,7 +26,7 @@ export default class SocketCommunicator {
     this.commandRunning = `${commandString}`;
     this.commandCallback = commandCallback;
     this.status = "SEND_COMMAND";
-    global.Logger.debug(
+    Logger.debug(
       `I am running the command "${commandString.trim()}" on the Amiga`,
     );
     this.client.write(`${commandString}\r`);
@@ -40,7 +41,7 @@ export default class SocketCommunicator {
   }
 
   _dataEvent(data) {
-    global.Logger.trace(`Got data ${JSON.stringify(data.toString())}`);
+    Logger.trace(`Got data ${JSON.stringify(data.toString())}`);
     const dataString = data.toString();
 
     for (let charIdx = 0; charIdx <= dataString.length; charIdx++) {
@@ -61,17 +62,17 @@ export default class SocketCommunicator {
 
   _closeEvent() {
     this.controlCallback({ message: CLOSE_EVENT });
-    global.Logger.debug("The Amiga has closed the connection");
+    Logger.debug("The Amiga has closed the connection");
   }
 
   _connectEvent() {
     this.controlCallback({ message: CONNECT_EVENT });
-    global.Logger.debug("I am connected to the Amiga");
+    Logger.debug("I am connected to the Amiga");
   }
 
   _readyEvent() {
     this.controlCallback({ message: READY_EVENT });
-    global.Logger.debug("I have opened communication with the Amiga");
+    Logger.debug("I have opened communication with the Amiga");
   }
 
   connect() {
@@ -84,19 +85,19 @@ export default class SocketCommunicator {
   }
 
   _processResponse(responseLine) {
-    global.Logger.trace(
+    Logger.trace(
       `While status is ${this.status} I got ${JSON.stringify(responseLine)}`,
     );
 
     switch (this.status) {
       case "CONNECTING":
         if (this._responseIsPrompt(responseLine)) {
-          global.Logger.debug("I have communication with the Amiga.");
+          Logger.debug("I have communication with the Amiga.");
           this.status = "CONNECTED";
           setTimeout(this.connectedResolve, 1000);
         } else {
           this.controlCallback({ message: DATA_EVENT, data: responseLine });
-          global.Logger.debug(
+          Logger.debug(
             `While connecting I got this message: ${JSON.stringify(responseLine)}`,
           );
         }
@@ -114,7 +115,7 @@ export default class SocketCommunicator {
             message: COMMAND_RECEIVED,
             data: responseLine,
           });
-          global.Logger.debug(
+          Logger.debug(
             `The Amiga is executing the command "${this.commandRunning.trim()}"` +
               " and I am waiting for the response.",
           );
@@ -128,11 +129,11 @@ export default class SocketCommunicator {
         break;
       case "COMMAND_RUNNING":
         if (this._responseIsPrompt(responseLine)) {
-          global.Logger.debug(
+          Logger.debug(
             `I ran the command "${this.commandRunning.trim()}" and it has returned the values ` +
               `\r\n---\r\n${this.runningCommandData.join("\r\n")}\r\n---`,
           );
-          global.Logger.debug(
+          Logger.debug(
             `I ran the command ${this.commandRunning.trim()} and it completed.`,
           );
           this.status = "CONNECTED";
@@ -142,7 +143,7 @@ export default class SocketCommunicator {
           }, 1000);
         } else {
           this.commandCallback({ message: DATA_EVENT, data: responseLine });
-          global.Logger.trace(
+          Logger.trace(
             `I ran the command ${this.commandRunning.trim()} and have received the ` +
               `response ${JSON.stringify(responseLine)}`,
           );

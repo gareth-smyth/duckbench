@@ -1,4 +1,5 @@
 import AminetService from "../../services/AminetService.js";
+import Logger from "../../services/LoggerService.js";
 
 export default class Lha {
   constructor() {
@@ -39,7 +40,7 @@ export default class Lha {
       );
       this.installed[config.optionValues.location] = true;
     } else {
-      global.Logger.trace(
+      Logger.trace(
         `Not installing LHA as it has already been installed to ${config.optionValues.location}`,
       );
     }

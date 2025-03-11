@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import SystemDiskService from "../../services/SystemDiskService.js";
+import Logger from "../../services/LoggerService.js";
 
 export default class Settings {
   constructor() {
@@ -42,22 +43,20 @@ export default class Settings {
   }
 
   async default(settingName) {
-    global.Logger.trace(`Looking for ${this.readableName} disks`);
+    Logger.trace(`Looking for ${this.readableName} disks`);
     if (process.env.DUCKBENCH_DISKS) {
-      global.Logger.trace("Found disk path using environment var...");
+      Logger.trace("Found disk path using environment var...");
       return SystemDiskService.find(
         this.identifier,
         settingName,
         process.env.DUCKBENCH_DISKS,
       );
     } else if (process.env.AMIGAFOREVERDATA) {
-      global.Logger.trace(
-        "Found disk paths using Amiga Forever environment var...",
-      );
+      Logger.trace("Found disk paths using Amiga Forever environment var...");
       const diskPath = path.join(process.env.AMIGAFOREVERDATA, "Shared", "adf");
       return SystemDiskService.find(this.identifier, settingName, diskPath);
     } else {
-      global.Logger.trace(
+      Logger.trace(
         "Cannot find required path. Either AMIGAFOREVERDATA or DUCKBENCH_DISKS shoule be set. " +
           'AMIGAFOREVERDATA: "${process.env.AMIGAFOREVERDATA}", ' +
           'DUCKBENCH_DISKS: "${process.env.DUCKBENCH_DISKS}"',

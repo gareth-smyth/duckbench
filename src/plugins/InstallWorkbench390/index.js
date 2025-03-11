@@ -3,6 +3,7 @@ import path from "path";
 
 import BaseInstall from "../InstallWorkbench310/index.js";
 import SettingsService from "../../services/SettingsService.js";
+import Logger from "../../services/LoggerService.js";
 
 export default class InstallWorkbench390 extends BaseInstall {
   constructor() {
@@ -67,9 +68,7 @@ export default class InstallWorkbench390 extends BaseInstall {
   async installToCache(communicator, unADF, patch, installerLg) {
     const cacheMarkerPath = path.join(global.CACHE_DIR, this.cacheName);
     if (!fs.existsSync(cacheMarkerPath)) {
-      global.Logger.debug(
-        `${this.readableName} not yet cached. Building cache.`,
-      );
+      Logger.debug(`${this.readableName} not yet cached. Building cache.`);
 
       await communicator.delete(
         `DB_CLIENT_CACHE:${this.name}`,

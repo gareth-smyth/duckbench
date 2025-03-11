@@ -1,13 +1,12 @@
 import fs from "fs";
 import path from "path";
+import Logger from "./LoggerService.js";
 
 export default class AminetService {
   static async download(netPath, filename = path.basename(netPath)) {
     const fullSavePath = path.join(global.CACHE_DIR, filename);
     if (!fs.existsSync(fullSavePath)) {
-      global.Logger.debug(
-        `Downloading ${filename} from http://aminet.net/${netPath}`,
-      );
+      Logger.debug(`Downloading ${filename} from http://aminet.net/${netPath}`);
       try {
         const response = await fetch(`http://aminet.net/${netPath}`);
         if (!response.ok) {
@@ -20,7 +19,7 @@ export default class AminetService {
         throw new Error(err.message || `Failed to download ${filename}`);
       }
     } else {
-      global.Logger.debug(`Using cached version of ${filename}`);
+      Logger.debug(`Using cached version of ${filename}`);
     }
     return fullSavePath;
   }

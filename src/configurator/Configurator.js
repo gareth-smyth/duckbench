@@ -7,6 +7,7 @@ import DuckbenchBuilder from "../builder/DuckbenchBuilder.js";
 import PluginStore from "../builder/PluginStore.js";
 import SettingsService from "../services/SettingsService.js";
 import ValidationError from "../errors/ValidationError.js";
+import Logger from "../services/LoggerService.js";
 
 export default class Configurator {
   start() {
@@ -18,11 +19,11 @@ export default class Configurator {
     const server = new WebSocketServer({ port: 8553 });
     server.on("connection", (socket) => {
       socket.on("message", (message) => {
-        global.Logger.trace(`Message received - ${message}`);
+        Logger.trace(`Message received - ${message}`);
         const payload = JSON.parse(message);
         switch (payload.command) {
           case "RUN":
-            global.Logger.trace("Running duckbench builder");
+            Logger.trace("Running duckbench builder");
             socket.send(
               JSON.stringify({ type: "warning", text: "Running builder" }),
             );
@@ -54,7 +55,7 @@ export default class Configurator {
               });
             break;
           default:
-            global.Logger.error("Received unknown command");
+            Logger.error("Received unknown command");
         }
       });
     });
@@ -63,29 +64,29 @@ export default class Configurator {
   startHTTPHandler() {
     const server = http.createServer();
     server.on("request", async (request, response) => {
-      global.Logger.debug(`Request for ${request.url}`);
+      Logger.debug(`Request for ${request.url}`);
       const url = new URL(request.url, "http://localhost");
       if (url.pathname === "/plugins.json") {
-        global.Logger.trace("Getting plugins");
+        Logger.trace("Getting plugins");
         const plugins = await PluginStore.getStructures();
         response.writeHead(200, { "Content-Type": "application/json" });
         response.end(JSON.stringify(plugins), "utf-8");
         return;
       } else if (url.pathname === "/settings.json") {
-        global.Logger.trace("Getting settings");
+        Logger.trace("Getting settings");
         const plugins = await SettingsService.getAvailable();
         response.writeHead(200, { "Content-Type": "application/json" });
         response.end(JSON.stringify(plugins), "utf-8");
         return;
       } else if (url.pathname === "/currentSettings") {
         if (request.method === "GET") {
-          global.Logger.trace("Getting settings");
+          Logger.trace("Getting settings");
           const currentSettings = await SettingsService.loadCurrent();
           response.writeHead(200, { "Content-Type": "application/json" });
           response.end(JSON.stringify(currentSettings), "utf-8");
           return;
         } else {
-          global.Logger.trace("Saving settings");
+          Logger.trace("Saving settings");
           let body = "";
           request.on("data", (chunk) => {
             body += chunk.toString();
@@ -124,28 +125,28 @@ export default class Configurator {
       };
 
       const contentType = mimeTypes[extname] || "application/octet-stream";
-      global.Logger.debug(`Reading file ${filePath}`);
+      Logger.debug(`Reading file ${filePath}`);
       fs.readFile(filePath, function (error, content) {
         if (error) {
           if (error.code === "ENOENT") {
-            global.Logger.error(`Did not find file ${filePath}`);
-            global.Logger.debug(`${JSON.stringify(error)}`);
+            Logger.error(`Did not find file ${filePath}`);
+            Logger.debug(`${JSON.stringify(error)}`);
             response.writeHead(404);
             response.end();
           } else {
-            global.Logger.error(`Error reading ${filePath}`);
-            global.Logger.debug(`${JSON.stringify(error)}`);
+            Logger.error(`Error reading ${filePath}`);
+            Logger.debug(`${JSON.stringify(error)}`);
             response.writeHead(500);
             response.end();
           }
         } else {
-          global.Logger.trace("Responding with file");
+          Logger.trace("Responding with file");
           response.writeHead(200, { "Content-Type": contentType });
           response.end(content, "utf-8");
         }
       });
     });
     server.listen(8552);
-    global.Logger.info("Browse http://127.0.0.1:8552/index.html");
+    Logger.info("Browse http://127.0.0.1:8552/index.html");
   }
 }

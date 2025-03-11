@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import Logger from "./LoggerService.js";
 
 export default class SettingsService {
   static async getAvailable() {
@@ -28,7 +29,7 @@ export default class SettingsService {
           }
 
           PluginSettings = (await import(settingsFile)).default;
-          global.Logger.trace(`Loading settings for ${pluginDir.name}`);
+          Logger.trace(`Loading settings for ${pluginDir.name}`);
           const pluginSettings = new PluginSettings();
           return pluginSettings.get();
         }),

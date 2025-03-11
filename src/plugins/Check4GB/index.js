@@ -1,4 +1,5 @@
 import AminetService from "../../services/AminetService.js";
+import Logger from "../../services/LoggerService.js";
 
 export default class Check4GB {
   constructor() {
@@ -58,7 +59,7 @@ export default class Check4GB {
       );
       this.installed[config.optionValues.location] = true;
     } else {
-      global.Logger.trace(
+      Logger.trace(
         `Not installing Check4GB as it has already been installed to ${config.optionValues.location}`,
       );
     }

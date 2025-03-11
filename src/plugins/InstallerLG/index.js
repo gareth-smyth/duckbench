@@ -1,3 +1,5 @@
+import Logger from "../../services/LoggerService.js";
+
 export default class InstallerLG {
   constructor() {
     this.installed = {};
@@ -31,7 +33,7 @@ export default class InstallerLG {
       this.installed[config.optionValues.location] = true;
     } else {
       const location = config.optionValues.location;
-      global.Logger.trace(
+      Logger.trace(
         `Not installing InstallerLG as it has already been installed to ${location}`,
       );
     }

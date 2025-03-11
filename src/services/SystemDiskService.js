@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import ADFService from "./ADFService.js";
+import Logger from "./LoggerService.js";
 
 /* This is quite complicated to test for little benefit. It's also quite likely to change a lot. */
 /* istanbul ignore next */
@@ -46,7 +47,7 @@ export default class SystemDiskService {
         .extname(fileName)
         .localeCompare(".adf", undefined, { sensitivity: "accent" }) === 0
     ) {
-      global.Logger.trace(`Examining disk ${fileName}.`);
+      Logger.trace(`Examining disk ${fileName}.`);
       const diskInfo = ADFService.info(fileName);
       switch (diskInfo.name) {
         case "Install2.1":
@@ -101,7 +102,7 @@ export default class SystemDiskService {
           return {};
       }
     } else {
-      global.Logger.trace(
+      Logger.trace(
         `Not trying file ${fileName} as it does not appear to be an adf.`,
       );
       return {};

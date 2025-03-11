@@ -3,6 +3,7 @@ import EnvironmentSetup from "./EnvironmentSetup.js";
 import WinUAEEnvironment from "./WinUAEEnvironment.js";
 import Communicator from "./Communicator.js";
 import { PluginConfig, Settings } from "../types";
+import Logger from "../services/LoggerService.js";
 
 export default class DuckbenchBuilder {
   async build(config: PluginConfig[], settings: Settings) {
@@ -23,13 +24,13 @@ export default class DuckbenchBuilder {
         runner,
       );
     } catch (err) {
-      global.Logger.trace(err);
+      Logger.trace(err);
       throw err;
     } finally {
       communicator.close();
       environment.stop();
       environmentSetup.destroy();
-      global.Logger.info("Build complete.");
+      Logger.info("Build complete.");
     }
   }
 
@@ -48,11 +49,11 @@ export default class DuckbenchBuilder {
 
     communicator.close();
 
-    global.Logger.info("Pausing before shutting down the emulator.");
+    Logger.info("Pausing before shutting down the emulator.");
     await this.sleep(20000);
     environment.stop();
 
-    global.Logger.info("Pausing to let the emulator shutdown.");
+    Logger.info("Pausing to let the emulator shutdown.");
     await this.sleep(1000);
 
     await runner.finalise(environmentSetup);

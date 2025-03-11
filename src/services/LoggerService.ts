@@ -1,4 +1,6 @@
 /* istanbul ignore file */
 import log from "pino";
 
-global.Logger = log();
+const Logger = log();
+
+export default Logger;

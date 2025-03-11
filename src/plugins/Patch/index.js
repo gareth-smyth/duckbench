@@ -1,4 +1,5 @@
 import AminetService from "../../services/AminetService.js";
+import Logger from "../../services/LoggerService.js";
 
 export default class Patch {
   constructor() {
@@ -55,7 +56,7 @@ export default class Patch {
       await communicator.delete("duckbench:patch-2.1", { ALL: true });
       this.installed[config.optionValues.location] = true;
     } else {
-      global.Logger.trace(
+      Logger.trace(
         `Not installing patch as it has already been installed to ${config.optionValues.location}`,
       );
     }

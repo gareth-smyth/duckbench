@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /* eslint-disable */
+import Logger from '../services/LoggerService.js';
+
 import("../services/BaseDirService");
-import("../services/LoggerService");
+import("../services/LoggerService.js");
 import RomConversionService from "../services/RomConversionService.js";
 import yargs from "yargs";
 
@@ -53,7 +55,7 @@ yargs
         .demandOption("output-size");
     },
     handler: (args) => {
-      global.Logger.level = args.logLevel;
+      Logger.level = args.logLevel;
       RomConversionService.realToEmulator(
         args.input,
         args.output,
@@ -113,7 +115,7 @@ yargs
         .demandOption("o");
     },
     handler: (args) => {
-      global.Logger.level = args.logLevel;
+      Logger.level = args.logLevel;
       RomConversionService.emulatorToReal(
         args.input,
         args.output,

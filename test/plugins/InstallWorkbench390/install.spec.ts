@@ -7,9 +7,11 @@ import InstallLG from "../../../src/plugins/InstallerLG/index.js";
 import Patch from "../../../src/plugins/Patch/index.js";
 import WinUAETools from "../../../src/plugins/WinUAETools/index.js";
 import UnADF from "../../../src/plugins/UnADF/index.js";
-import { MockedObject } from "vitest";
+import { MockedObject, vi } from "vitest";
+import Logger from "../../../src/services/LoggerService.js";
 
 vi.mock("fs");
+vi.mock("../../../src/services/LoggerService");
 vi.mock("../../../src/builder/Communicator");
 vi.mock("../../../src/builder/PluginStore");
 vi.mock("../../../src/plugins/InstallerLG");
@@ -184,7 +186,7 @@ describe("when the cache does not exist", () => {
       floppyDrive: true,
     });
 
-    expect(global.Logger.info).toHaveBeenCalledWith("10%");
+    expect(Logger.info).toHaveBeenCalledWith("10%");
   });
 
   it("logs non-progress messages", async () => {
@@ -203,7 +205,7 @@ describe("when the cache does not exist", () => {
       floppyDrive: true,
     });
 
-    expect(global.Logger.trace).toHaveBeenCalledWith(JSON.stringify(event));
+    expect(Logger.trace).toHaveBeenCalledWith(JSON.stringify(event));
   });
 
   it("calls patch for the install script", async () => {

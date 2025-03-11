@@ -3,6 +3,7 @@ import path from "path";
 import ADFService from "../../services/ADFService.js";
 import HardDriveService from "../../services/HardDriveService.js";
 import SettingsService from "../../services/SettingsService.js";
+import Logger from "../../services/LoggerService.js";
 
 export default class Setup {
   structure() {
@@ -80,7 +81,7 @@ export default class Setup {
       environmentSetup.executionFolder,
       "boot.adf",
     );
-    global.Logger.info(`Creating boot disk at ${bootDiskFileName}`);
+    Logger.info(`Creating boot disk at ${bootDiskFileName}`);
     ADFService.createBootableADF(bootDiskFileName, "DuckBoot");
     ADFService.createFile(
       bootDiskFileName,
@@ -99,9 +100,7 @@ export default class Setup {
       startupSequenceFile,
     );
 
-    global.Logger.debug(
-      "Inserting boot disk in DF0 and workbench disk in DF1.",
-    );
+    Logger.debug("Inserting boot disk in DF0 and workbench disk in DF1.");
     environmentSetup.insertDisk("DF0", { location: bootDiskFileName });
     environmentSetup.insertDisk("DF1", {
       location: SettingsService.getValue(
@@ -111,15 +110,13 @@ export default class Setup {
       ).file,
     });
 
-    global.Logger.debug(
-      `Mapping DB5: as DB_HOST_CACHE: at ${global.CACHE_DIR}`,
-    );
+    Logger.debug(`Mapping DB5: as DB_HOST_CACHE: at ${global.CACHE_DIR}`);
     environmentSetup.mapFolderToDrive("DB5", global.CACHE_DIR, "DB_HOST_CACHE");
 
-    global.Logger.debug(`Mapping DB4: as DB_TOOLS: at ${global.TOOLS_DIR}`);
+    Logger.debug(`Mapping DB4: as DB_TOOLS: at ${global.TOOLS_DIR}`);
     environmentSetup.mapFolderToDrive("DB4", global.TOOLS_DIR, "DB_TOOLS");
 
-    global.Logger.debug(
+    Logger.debug(
       `Mapping DB2: as DB_EXECUTION: at ${environmentSetup.executionFolder}`,
     );
     environmentSetup.mapFolderToDrive(
@@ -131,16 +128,16 @@ export default class Setup {
 
     const cacheLocation = path.join(global.CACHE_DIR, "client_cache.hdf");
     if (!fs.existsSync(cacheLocation)) {
-      global.Logger.debug("Creating DB1: as DB_CLIENT_CACHE: as new HDF");
+      Logger.debug("Creating DB1: as DB_CLIENT_CACHE: as new HDF");
       await HardDriveService.createRDB(cacheLocation, 250, [
         { driveName: "DB1", fileSystem: "pfs", size: 250 },
       ]);
     } else {
-      global.Logger.debug("Using existing HDF as DB1: as DB_CLIENT_CACHE:");
+      Logger.debug("Using existing HDF as DB1: as DB_CLIENT_CACHE:");
     }
     environmentSetup.attachHDF("DB1", cacheLocation);
 
-    global.Logger.debug("Creating DB0: as DUCKBENCH: as new HDF");
+    Logger.debug("Creating DB0: as DUCKBENCH: as new HDF");
     const location = path.join(
       environmentSetup.executionFolder,
       "duckbench.hdf",
@@ -165,7 +162,7 @@ export default class Setup {
         undefined,
         expectedResponse,
       );
-      global.Logger.debug("Formatting DB1: as DB_CLIENT_CACHE: as new HDF");
+      Logger.debug("Formatting DB1: as DB_CLIENT_CACHE: as new HDF");
       await communicator.format("DB1", "DB_CLIENT_CACHE", {
         ffs: true,
         quick: true,
@@ -175,12 +172,10 @@ export default class Setup {
       });
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      global.Logger.debug(
-        "Using existing formatted HDF as DB1: as DB_CLIENT_CACHE:",
-      );
+      Logger.debug("Using existing formatted HDF as DB1: as DB_CLIENT_CACHE:");
     }
 
-    global.Logger.debug("Format DUCKBENCH: partition");
+    Logger.debug("Format DUCKBENCH: partition");
     await communicator.format("DB0", "DUCKBENCH", {
       ffs: true,
       quick: true,

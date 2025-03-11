@@ -1,4 +1,5 @@
 import AminetService from "../../services/AminetService.js";
+import Logger from "../../services/LoggerService.js";
 
 export default class SysInfo {
   constructor() {
@@ -63,7 +64,7 @@ export default class SysInfo {
       await communicator.delete("duckbench:SysInfo", { ALL: true });
       this.installed[config.optionValues.location] = true;
     } else {
-      global.Logger.trace(
+      Logger.trace(
         `Not installing SysInfo as it has already been installed to ${config.optionValues.location}`,
       );
     }

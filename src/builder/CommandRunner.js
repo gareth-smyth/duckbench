@@ -1,3 +1,5 @@
+import Logger from "../services/LoggerService.js";
+
 export default class CommandRunner {
   constructor(socketCommunicator) {
     this.socketCommunicator = socketCommunicator;
@@ -5,7 +7,7 @@ export default class CommandRunner {
 
   async run(commandString, options, commandCallback, expectedResponse) {
     commandString = this.addOptions(commandString, options);
-    global.Logger.debug(`Running ${commandString}`);
+    Logger.debug(`Running ${commandString}`);
     return this.socketCommunicator
       .runCommand(commandString, commandCallback)
       .then((response) => {
@@ -20,7 +22,7 @@ export default class CommandRunner {
             );
           }
         }
-        global.Logger.debug(`Ran ${commandString}`);
+        Logger.debug(`Ran ${commandString}`);
       })
       .catch((err) => {
         throw new Error(err);

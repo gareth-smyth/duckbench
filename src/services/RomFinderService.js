@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import Logger from "./LoggerService.js";
 
 /* This is quite complicated to test for little benefit. It's also quite likely to change a lot. */
 /* istanbul ignore next */
@@ -42,7 +43,7 @@ export default class RomFinderService {
         .extname(fileName)
         .localeCompare(".rom", undefined, { sensitivity: "accent" }) === 0
     ) {
-      global.Logger.trace(`Examining rom ${fileName}.`);
+      Logger.trace(`Examining rom ${fileName}.`);
       if (
         (fileName.includes("3.1") || fileName.includes("310")) &&
         !fileName.includes("ext") &&
@@ -53,7 +54,7 @@ export default class RomFinderService {
         return {};
       }
     } else {
-      global.Logger.trace(
+      Logger.trace(
         `Not trying file ${fileName} as it does not appear to be a rom.`,
       );
       return {};

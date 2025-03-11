@@ -1,4 +1,5 @@
 import AminetService from "../../services/AminetService.js";
+import Logger from "../../services/LoggerService.js";
 
 export default class UnADF {
   constructor() {
@@ -51,7 +52,7 @@ export default class UnADF {
       );
       this.installed[config.optionValues.location] = true;
     } else {
-      global.Logger.trace(
+      Logger.trace(
         `Not extracting unadf as it has already been extracted to ${config.optionValues.location}`,
       );
     }

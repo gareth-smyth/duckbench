@@ -2,6 +2,7 @@
 /* eslint-disable */
 import fs from "fs";
 import yargs from "yargs";
+import Logger from '../services/LoggerService.js';
 
 yargs
   .command({
@@ -33,8 +34,8 @@ yargs
         .demandOption("duckbench-file");
     },
     handler: async (args) => {
-      await import("../services/LoggerService");
-      global.Logger.level = args.logLevel;
+      await import("../services/LoggerService.js");
+      Logger.level = args.logLevel;
       await import("../services/BaseDirService");
       import Communicator from "../builder/Communicator.js";
       import DuckbenchBuilder from "../builder/DuckbenchBuilder.ts";
@@ -69,8 +70,8 @@ yargs
       });
     },
     handler: async (args) => {
-      await import("../services/LoggerService");
-      global.Logger.level = args.logLevel;
+      await import("../services/LoggerService.js");
+      Logger.level = args.logLevel;
       await import("../services/BaseDirService");
       import Configurator from "../configurator/Configurator.js";
 

@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import Logger from "../../services/LoggerService.js";
 
 export default class WinUAETools {
   constructor() {
@@ -36,14 +37,14 @@ export default class WinUAETools {
 
   async install(config, communicator, pluginStore, environmentSetup, settings) {
     if (!this.installed[config.optionValues.location]) {
-      global.Logger.trace(
+      Logger.trace(
         `Installing win uae tools to ${config.optionValues.location}`,
       );
       if (
         !fs.existsSync(path.join(global.CACHE_DIR, "uae-configuration")) ||
         !fs.existsSync(path.join(global.CACHE_DIR, "uaectrl"))
       ) {
-        global.Logger.trace("Installing win uae tools to cache");
+        Logger.trace("Installing win uae tools to cache");
 
         const emuRoot = settings["Setup"].find(
           (setting) => setting.name === "emulatorRoot",
@@ -65,7 +66,7 @@ export default class WinUAETools {
         );
         fs.copyFileSync(ctrlPath, path.join(global.CACHE_DIR, "uaectrl"));
       } else {
-        global.Logger.trace(
+        Logger.trace(
           "Not installing win uae tools to cache - they have already been installed",
         );
       }
@@ -79,7 +80,7 @@ export default class WinUAETools {
       );
       this.installed[config.optionValues.location] = true;
     } else {
-      global.Logger.trace(
+      Logger.trace(
         `Not installing win uae tools - they have been installed to ${config.optionValues.location}`,
       );
     }

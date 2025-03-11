@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import Logger from "./LoggerService.js";
 
 const OUTPUT_SIZE_MAP = {
   "64kb": 0.25,
@@ -45,9 +46,9 @@ export default class RomConversionService {
         }
       }
     } catch (err) {
-      global.Logger.error(err.message);
-      global.Logger.debug(JSON.stringify(err));
-      global.Logger.trace(err.stack);
+      Logger.error(err.message);
+      Logger.debug(JSON.stringify(err));
+      Logger.trace(err.stack);
     } finally {
       if (outFile) {
         fs.closeSync(outFile);
@@ -122,9 +123,9 @@ export default class RomConversionService {
         }
       }
     } catch (err) {
-      global.Logger.error(err.message);
-      global.Logger.debug(JSON.stringify(err));
-      global.Logger.trace(err.stack);
+      Logger.error(err.message);
+      Logger.debug(JSON.stringify(err));
+      Logger.trace(err.stack);
     } finally {
       outFileContents.forEach((outFile) => {
         fs.closeSync(outFile);

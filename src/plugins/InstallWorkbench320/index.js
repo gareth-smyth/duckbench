@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import Logger from "../../services/LoggerService.js";
 
 export default class InstallWorkbench320 {
   constructor() {
@@ -115,7 +116,7 @@ export default class InstallWorkbench320 {
       environmentSetup.executionFolder,
       `wb${this.identifier}_install_key`,
     );
-    global.Logger.debug(
+    Logger.debug(
       `Copying ${this.readableName} install script redirected input file from "${installKeySource}" ` +
         `to "${installKeyDestination}".`,
     );
@@ -123,7 +124,7 @@ export default class InstallWorkbench320 {
   }
 
   prepareDisks(settings, environmentSetup) {
-    global.Logger.debug(`Copying ${this.readableName} disks`);
+    Logger.debug(`Copying ${this.readableName} disks`);
     for (let diskIndex = 0; diskIndex < this.disks.length; diskIndex++) {
       const diskName = this.disks[diskIndex].name;
       const fileSetting = settings[this.name].find(
@@ -144,7 +145,7 @@ export default class InstallWorkbench320 {
         environmentSetup.executionFolder,
         patchFileName,
       );
-      global.Logger.debug(
+      Logger.debug(
         `Copying startup sequence no floppy patch file from "${floppyPatchSource}" ` +
           `to "${floppyPatchDestination}".`,
       );
@@ -162,7 +163,7 @@ export default class InstallWorkbench320 {
       environmentSetup.executionFolder,
       `wb${this.identifier}_install.patch`,
     );
-    global.Logger.debug(
+    Logger.debug(
       `Copying ${this.readableName} install patch file from "${patchSource}" to "${patchDestination}".`,
     );
     fs.copyFileSync(patchSource, patchDestination);
@@ -176,7 +177,7 @@ export default class InstallWorkbench320 {
 
     await this.installToCache(communicator, unADF, patch, installerLg);
 
-    global.Logger.debug(`Copying ${this.readableName} files from cache.`);
+    Logger.debug(`Copying ${this.readableName} files from cache.`);
     await communicator.copy(
       `DB_CLIENT_CACHE:${this.name}/wb`,
       "DH0:",
@@ -224,9 +225,7 @@ export default class InstallWorkbench320 {
   async installToCache(communicator, unADF, patch, installerLg) {
     const cacheMarkerPath = path.join(global.CACHE_DIR, this.cacheName);
     if (!fs.existsSync(cacheMarkerPath)) {
-      global.Logger.debug(
-        `${this.readableName} not yet cached. Building cache.`,
-      );
+      Logger.debug(`${this.readableName} not yet cached. Building cache.`);
 
       await communicator.delete(
         `DB_CLIENT_CACHE:${this.name}`,
@@ -304,9 +303,9 @@ export default class InstallWorkbench320 {
       event.message === "DATA_EVENT" &&
       event.data.substr(0, 9) === "Progress:"
     ) {
-      global.Logger.info(event.data.substr(10));
+      Logger.info(event.data.substr(10));
     } else {
-      global.Logger.trace(JSON.stringify(event));
+      Logger.trace(JSON.stringify(event));
     }
   }
 

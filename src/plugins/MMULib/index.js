@@ -1,4 +1,5 @@
 import AminetService from "../../services/AminetService.js";
+import Logger from "../../services/LoggerService.js";
 
 export default class MMULib {
   constructor() {
@@ -73,7 +74,7 @@ export default class MMULib {
       await communicator.delete("duckbench:MMULib", { ALL: true });
       this.installed[config.optionValues.location] = true;
     } else {
-      global.Logger.trace(
+      Logger.trace(
         `Not installing MMULib as it has already been installed to ${config.optionValues.location}`,
       );
     }

@@ -1,16 +1,16 @@
 import "./services/BaseDirService.js";
-import "./services/LoggerService.js";
 import Configurator from "./configurator/Configurator.js";
+import Logger from "./services/LoggerService.js";
 
 try {
-  global.Logger.level = "trace";
+  Logger.level = "trace";
   const configurator = new Configurator();
   configurator.start();
 } catch (error) {
   if (error && typeof error === "object" && "message" in error) {
-    global.Logger.error(error.message);
-    global.Logger.trace(error);
+    Logger.error(error.message);
+    Logger.trace(error);
   } else {
-    global.Logger.error(error);
+    Logger.error(error);
   }
 }
