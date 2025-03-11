@@ -2,8 +2,10 @@
 import { when } from "jest-when";
 import fs from "fs";
 import path from "path";
+import { vi } from "vitest";
 
 import EnvironmentSetup from "../../src/builder/EnvironmentSetup.js";
+import { BASE_DIR } from "../../src/services/BaseDirService.js";
 
 vi.mock("fs");
 
@@ -19,7 +21,7 @@ afterEach(() => {
 
 it("creates the execution root folder and execution folder if it does not exist", () => {
   when(fs.existsSync)
-    .expectCalledWith(path.join(global.BASE_DIR, "execution"))
+    .expectCalledWith(path.join(BASE_DIR, "execution"))
     .mockReturnValueOnce(false);
 
   Date = vi.fn(
@@ -29,17 +31,15 @@ it("creates the execution root folder and execution folder if it does not exist"
   new EnvironmentSetup();
 
   expect(fs.mkdirSync).toHaveBeenCalledTimes(2);
+  expect(fs.mkdirSync).toHaveBeenCalledWith(path.join(BASE_DIR, "execution"));
   expect(fs.mkdirSync).toHaveBeenCalledWith(
-    path.join(global.BASE_DIR, "execution"),
-  );
-  expect(fs.mkdirSync).toHaveBeenCalledWith(
-    path.join(global.BASE_DIR, "execution", "20200401172930235"),
+    path.join(BASE_DIR, "execution", "20200401172930235"),
   );
 });
 
 it("deletes the execution folder when destroy is called.", () => {
   when(fs.existsSync)
-    .expectCalledWith(path.join(global.BASE_DIR, "execution"))
+    .expectCalledWith(path.join(BASE_DIR, "execution"))
     .mockReturnValueOnce(false);
 
   Date = vi.fn(
@@ -50,11 +50,7 @@ it("deletes the execution folder when destroy is called.", () => {
   environmentSetup.destroy();
 
   expect(fs.rmdirSync).toHaveBeenCalledTimes(1);
-  const executionFolder = path.join(
-    global.BASE_DIR,
-    "execution",
-    "20200401172930235",
-  );
+  const executionFolder = path.join(BASE_DIR, "execution", "20200401172930235");
   expect(fs.rmdirSync).toHaveBeenCalledWith(executionFolder, {
     recursive: true,
   });
@@ -62,7 +58,7 @@ it("deletes the execution folder when destroy is called.", () => {
 
 it("creates only the execution folder if the root folder exists", () => {
   when(fs.existsSync)
-    .expectCalledWith(path.join(global.BASE_DIR, "execution"))
+    .expectCalledWith(path.join(BASE_DIR, "execution"))
     .mockReturnValueOnce(true);
 
   Date = vi.fn(
@@ -73,7 +69,7 @@ it("creates only the execution folder if the root folder exists", () => {
 
   expect(fs.mkdirSync).toHaveBeenCalledTimes(1);
   expect(fs.mkdirSync).toHaveBeenCalledWith(
-    path.join(global.BASE_DIR, "execution", "20200401182930235"),
+    path.join(BASE_DIR, "execution", "20200401182930235"),
   );
 });
 
@@ -180,7 +176,7 @@ it("inserts amiga and non-amiga os ADFs", () => {
   });
   environmentSetup.insertDisk("df5", { location: "/home/disk2.adf" });
   const bootDiskLocation = path.join(
-    global.BASE_DIR,
+    BASE_DIR,
     "execution",
     "20200401202930235",
     "df0.adf",
@@ -190,7 +186,7 @@ it("inserts amiga and non-amiga os ADFs", () => {
     location: bootDiskLocation,
   });
   const wbDiskLocation = path.join(
-    global.BASE_DIR,
+    BASE_DIR,
     "execution",
     "20200401202930235",
     "df1.adf",
@@ -200,7 +196,7 @@ it("inserts amiga and non-amiga os ADFs", () => {
     location: wbDiskLocation,
   });
   const otherDiskLocation = path.join(
-    global.BASE_DIR,
+    BASE_DIR,
     "execution",
     "20200401202930235",
     "df5.adf",
@@ -220,7 +216,7 @@ it("sets disk permissions for non amiga os disks", () => {
   environmentSetup.insertDisk("df0", { location: "/home/disk1.adf" });
   expect(fs.chmodSync).toHaveBeenCalledTimes(1);
   const diskLocation = path.join(
-    global.BASE_DIR,
+    BASE_DIR,
     "execution",
     "20200401202930235",
     "df0.adf",
@@ -235,7 +231,7 @@ it("copies disks and sets permissions", () => {
   const environmentSetup = new EnvironmentSetup();
   const wbSourceLocation = "/home/os_disks/amiga-os-310-workbench.adf";
   const wbDestLocation = path.join(
-    global.BASE_DIR,
+    BASE_DIR,
     "execution",
     "20200401202930235",
     "df1.adf",
@@ -251,7 +247,7 @@ it("copies disks and sets permissions", () => {
   );
   expect(fs.chmodSync).toHaveBeenCalledTimes(1);
   const diskLocation = path.join(
-    global.BASE_DIR,
+    BASE_DIR,
     "execution",
     "20200401202930235",
     "df1.adf",

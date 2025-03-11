@@ -36,7 +36,7 @@ yargs
     handler: async (args) => {
       await import("../services/LoggerService.js");
       Logger.level = args.logLevel;
-      await import("../services/BaseDirService");
+      await import("../services/BaseDirService.js");
       import Communicator from "../builder/Communicator.js";
       import DuckbenchBuilder from "../builder/DuckbenchBuilder.ts";
       import WinUAEEnvironment from "../builder/WinUAEEnvironment.js";
@@ -72,7 +72,7 @@ yargs
     handler: async (args) => {
       await import("../services/LoggerService.js");
       Logger.level = args.logLevel;
-      await import("../services/BaseDirService");
+      await import("../services/BaseDirService.js");
       import Configurator from "../configurator/Configurator.js";
 
       const configurator = new Configurator();

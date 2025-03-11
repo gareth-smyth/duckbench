@@ -1,12 +1,14 @@
-/* TODO These tests are not really testing the disk being built correctly as they use the same code to test as to run */
-
 import fs from "fs";
 import path from "path";
+import { vi } from "vitest";
 
 import HardDriveService from "../../../src/services/HardDriveService.js";
 
 vi.mock("../../../src/services/AminetService");
 vi.mock("../../../src/services/LhaService");
+vi.mock("../../../src/services/BaseDirService", () => ({
+  CACHE_DIR: import.meta.dirname,
+}));
 
 const TEMP_FILE_PATH = import.meta.dirname;
 
@@ -19,15 +21,11 @@ function cleanTemp() {
   }
 }
 
-const OLD_CACHE_DIR: string = global.CACHE_DIR;
-
 beforeEach(() => {
-  global.CACHE_DIR = import.meta.dirname;
   cleanTemp();
 });
 
 afterEach(() => {
-  global.CACHE_DIR = OLD_CACHE_DIR;
   cleanTemp();
 });
 

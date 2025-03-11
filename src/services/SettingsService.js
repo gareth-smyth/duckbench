@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import Logger from "./LoggerService.js";
+import { BASE_DIR } from "./BaseDirService.js";
 
 export default class SettingsService {
   static async getAvailable() {
@@ -47,7 +48,7 @@ export default class SettingsService {
   }
 
   static loadCurrent() {
-    const settingsPath = path.join(global.BASE_DIR, "db_settings.json");
+    const settingsPath = path.join(BASE_DIR, "db_settings.json");
     if (fs.existsSync(settingsPath)) {
       return JSON.parse(fs.readFileSync(settingsPath).toString());
     }
@@ -56,7 +57,7 @@ export default class SettingsService {
   }
 
   static saveCurrent(settings) {
-    const settingsPath = path.join(global.BASE_DIR, "db_settings.json");
+    const settingsPath = path.join(BASE_DIR, "db_settings.json");
     fs.writeFileSync(settingsPath, JSON.stringify(settings));
   }
 

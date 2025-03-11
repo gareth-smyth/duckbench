@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import Logger from "../../services/LoggerService.js";
+import { CACHE_DIR } from "../../services/BaseDirService.js";
 
 export default class WinUAETools {
   constructor() {
@@ -41,8 +42,8 @@ export default class WinUAETools {
         `Installing win uae tools to ${config.optionValues.location}`,
       );
       if (
-        !fs.existsSync(path.join(global.CACHE_DIR, "uae-configuration")) ||
-        !fs.existsSync(path.join(global.CACHE_DIR, "uaectrl"))
+        !fs.existsSync(path.join(CACHE_DIR, "uae-configuration")) ||
+        !fs.existsSync(path.join(CACHE_DIR, "uaectrl"))
       ) {
         Logger.trace("Installing win uae tools to cache");
 
@@ -62,9 +63,9 @@ export default class WinUAETools {
 
         fs.copyFileSync(
           configurationPath,
-          path.join(global.CACHE_DIR, "uae-configuration"),
+          path.join(CACHE_DIR, "uae-configuration"),
         );
-        fs.copyFileSync(ctrlPath, path.join(global.CACHE_DIR, "uaectrl"));
+        fs.copyFileSync(ctrlPath, path.join(CACHE_DIR, "uaectrl"));
       } else {
         Logger.trace(
           "Not installing win uae tools to cache - they have already been installed",

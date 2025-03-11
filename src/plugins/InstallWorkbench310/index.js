@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { ScreenMode, HIRES_LACED } from "../../services/prefs/ScreenMode.js";
 import Logger from "../../services/LoggerService.js";
+import { CACHE_DIR } from "../../services/BaseDirService.js";
 
 export default class InstallWorkbench310 {
   constructor() {
@@ -218,7 +219,7 @@ export default class InstallWorkbench310 {
   }
 
   async installToCache(communicator, unADF, patch, installerLg) {
-    const cacheMarkerPath = path.join(global.CACHE_DIR, this.cacheName);
+    const cacheMarkerPath = path.join(CACHE_DIR, this.cacheName);
     if (!fs.existsSync(cacheMarkerPath)) {
       Logger.debug(`${this.readableName} not yet cached. Building cache.`);
 

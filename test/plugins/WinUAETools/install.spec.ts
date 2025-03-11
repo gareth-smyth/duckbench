@@ -2,12 +2,14 @@ import fs from "fs";
 import path from "path";
 
 import Communicator from "../../../src/builder/Communicator.js";
+import { CACHE_DIR } from "../../../src/services/BaseDirService.js";
 
 vi.mock("fs");
 const mockedFs = fs as MockedObject<typeof fs>;
 vi.mock("../../../src/builder/Communicator");
 
 import WinUAETools from "../../../src/plugins/WinUAETools/index.js";
+import { MockedObject, vi } from "vitest";
 
 let communicator: MockedObject<Communicator>;
 beforeEach(() => {
@@ -58,11 +60,11 @@ it("copies the tools to the cache when both not already there", async () => {
   expect(fs.copyFileSync).toHaveBeenCalledTimes(2);
   expect(fs.copyFileSync).toHaveBeenCalledWith(
     configurationPath,
-    path.join(global.CACHE_DIR, "uae-configuration"),
+    path.join(CACHE_DIR, "uae-configuration"),
   );
   expect(fs.copyFileSync).toHaveBeenCalledWith(
     ctrlPath,
-    path.join(global.CACHE_DIR, "uaectrl"),
+    path.join(CACHE_DIR, "uaectrl"),
   );
 });
 
@@ -105,11 +107,11 @@ it("copies the tools to the cache when either not already there", async () => {
   expect(fs.copyFileSync).toHaveBeenCalledTimes(2);
   expect(fs.copyFileSync).toHaveBeenCalledWith(
     configurationPath,
-    path.join(global.CACHE_DIR, "uae-configuration"),
+    path.join(CACHE_DIR, "uae-configuration"),
   );
   expect(fs.copyFileSync).toHaveBeenCalledWith(
     ctrlPath,
-    path.join(global.CACHE_DIR, "uaectrl"),
+    path.join(CACHE_DIR, "uaectrl"),
   );
 });
 

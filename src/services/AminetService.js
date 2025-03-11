@@ -1,10 +1,11 @@
 import fs from "fs";
 import path from "path";
 import Logger from "./LoggerService.js";
+import { CACHE_DIR } from "./BaseDirService.js";
 
 export default class AminetService {
   static async download(netPath, filename = path.basename(netPath)) {
-    const fullSavePath = path.join(global.CACHE_DIR, filename);
+    const fullSavePath = path.join(CACHE_DIR, filename);
     if (!fs.existsSync(fullSavePath)) {
       Logger.debug(`Downloading ${filename} from http://aminet.net/${netPath}`);
       try {

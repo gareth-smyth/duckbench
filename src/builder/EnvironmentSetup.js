@@ -1,19 +1,16 @@
 import fs from "fs";
 import path from "path";
+import { BASE_DIR } from "../services/BaseDirService.js";
 
 export default class EnvironmentSetup {
   constructor() {
     this.disks = {};
 
     const executionNumber = new Date().toISOString().replace(/[^0-9]/g, "");
-    this.executionFolder = path.join(
-      global.BASE_DIR,
-      "execution",
-      executionNumber,
-    );
+    this.executionFolder = path.join(BASE_DIR, "execution", executionNumber);
 
-    if (!fs.existsSync(path.join(global.BASE_DIR, "execution"))) {
-      fs.mkdirSync(path.join(global.BASE_DIR, "execution"));
+    if (!fs.existsSync(path.join(BASE_DIR, "execution"))) {
+      fs.mkdirSync(path.join(BASE_DIR, "execution"));
     }
 
     fs.mkdirSync(this.executionFolder);

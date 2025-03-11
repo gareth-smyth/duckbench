@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { CACHE_DIR } from "../../../src/services/BaseDirService.js";
 
 import EnvironmentSetup from "../../../src/builder/EnvironmentSetup.js";
 import ADFService from "../../../src/services/ADFService.js";
@@ -12,7 +13,7 @@ vi.mock("../../../src/services/ADFService");
 vi.mock("../../../src/services/HardDriveService");
 
 import Setup from "../../../src/plugins/Setup/index.js";
-import { MockedObject } from "vitest";
+import { MockedObject, vi } from "vitest";
 
 const settings = {
   InstallWorkbench310: [{ name: "workbench", value: { file: "aFile" } }],
@@ -49,7 +50,7 @@ it("maps the host cache drive", async () => {
 
   expect(environmentSetup.mapFolderToDrive).toHaveBeenCalledWith(
     "DB5",
-    "MyCacheDir:",
+    CACHE_DIR,
     "DB_HOST_CACHE",
   );
 });
@@ -85,7 +86,7 @@ it("creates and adds the cache partition when it does not exist", async () => {
   expect(HardDriveService.createRDB).toHaveBeenCalledTimes(2);
   expect(environmentSetup.attachHDF).toHaveBeenCalledTimes(2);
 
-  const clientCacheLocation = path.join(global.CACHE_DIR, "client_cache.hdf");
+  const clientCacheLocation = path.join(CACHE_DIR, "client_cache.hdf");
   expect(HardDriveService.createRDB).toHaveBeenCalledWith(
     clientCacheLocation,
     250,

@@ -1,9 +1,10 @@
 import fs from "fs";
 import path from "path";
+import { CACHE_DIR } from "../../services/BaseDirService.js";
 
 export default class Settings {
   get() {
-    const cacheMarkerPath = path.join(global.CACHE_DIR, "wb390_cached");
+    const cacheMarkerPath = path.join(CACHE_DIR, "wb390_cached");
     return {
       name: "InstallWorkbench390",
       label: "Workbench 3.9",

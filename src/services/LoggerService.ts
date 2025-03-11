@@ -1,4 +1,5 @@
-/* istanbul ignore file */
+/* istanbul ignore file -- @preserve */
+
 import log from "pino";
 
 const Logger = log();

@@ -3,6 +3,7 @@ import path from "path";
 
 import SystemDiskService from "../../services/SystemDiskService.js";
 import Logger from "../../services/LoggerService.js";
+import { CACHE_DIR } from "../../services/BaseDirService.js";
 
 export default class Settings {
   constructor() {
@@ -21,7 +22,7 @@ export default class Settings {
   }
 
   get() {
-    const cacheMarkerPath = path.join(global.CACHE_DIR, this.cacheName);
+    const cacheMarkerPath = path.join(CACHE_DIR, this.cacheName);
     return {
       name: this.name,
       label: this.readableName,

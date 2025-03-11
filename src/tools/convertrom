@@ -2,7 +2,7 @@
 /* eslint-disable */
 import Logger from '../services/LoggerService.js';
 
-import("../services/BaseDirService");
+import("../services/BaseDirService.js");
 import("../services/LoggerService.js");
 import RomConversionService from "../services/RomConversionService.js";
 import yargs from "yargs";

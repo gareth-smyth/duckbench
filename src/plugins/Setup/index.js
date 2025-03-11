@@ -4,6 +4,7 @@ import ADFService from "../../services/ADFService.js";
 import HardDriveService from "../../services/HardDriveService.js";
 import SettingsService from "../../services/SettingsService.js";
 import Logger from "../../services/LoggerService.js";
+import { CACHE_DIR, TOOLS_DIR } from "../../services/BaseDirService.js";
 
 export default class Setup {
   structure() {
@@ -110,11 +111,11 @@ export default class Setup {
       ).file,
     });
 
-    Logger.debug(`Mapping DB5: as DB_HOST_CACHE: at ${global.CACHE_DIR}`);
-    environmentSetup.mapFolderToDrive("DB5", global.CACHE_DIR, "DB_HOST_CACHE");
+    Logger.debug(`Mapping DB5: as DB_HOST_CACHE: at ${CACHE_DIR}`);
+    environmentSetup.mapFolderToDrive("DB5", CACHE_DIR, "DB_HOST_CACHE");
 
-    Logger.debug(`Mapping DB4: as DB_TOOLS: at ${global.TOOLS_DIR}`);
-    environmentSetup.mapFolderToDrive("DB4", global.TOOLS_DIR, "DB_TOOLS");
+    Logger.debug(`Mapping DB4: as DB_TOOLS: at ${TOOLS_DIR}`);
+    environmentSetup.mapFolderToDrive("DB4", TOOLS_DIR, "DB_TOOLS");
 
     Logger.debug(
       `Mapping DB2: as DB_EXECUTION: at ${environmentSetup.executionFolder}`,
@@ -126,7 +127,7 @@ export default class Setup {
       true,
     );
 
-    const cacheLocation = path.join(global.CACHE_DIR, "client_cache.hdf");
+    const cacheLocation = path.join(CACHE_DIR, "client_cache.hdf");
     if (!fs.existsSync(cacheLocation)) {
       Logger.debug("Creating DB1: as DB_CLIENT_CACHE: as new HDF");
       await HardDriveService.createRDB(cacheLocation, 250, [

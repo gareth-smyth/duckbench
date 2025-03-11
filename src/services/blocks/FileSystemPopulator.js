@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import AminetService from "../AminetService.js";
 import LhaService from "../LhaService.js";
+import { CACHE_DIR } from "../BaseDirService.js";
 
 const FileSystemDosTypeMap = {
   pfs: { dosType: "0x50445303", version: 0x00130002 },
@@ -78,9 +79,9 @@ export default class FileSystemPopulator {
       const downloadPath = await AminetService.download(
         "disk/misc/pfs3aio.lha",
       );
-      LhaService.extract(downloadPath, global.CACHE_DIR);
+      LhaService.extract(downloadPath, CACHE_DIR);
 
-      const fileSystemPath = path.join(global.CACHE_DIR, "pfs3aio");
+      const fileSystemPath = path.join(CACHE_DIR, "pfs3aio");
 
       const stats = fs.statSync(fileSystemPath);
       const fileSize = stats.size;

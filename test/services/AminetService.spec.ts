@@ -1,6 +1,7 @@
 import { MockedObject, vi } from "vitest";
 import path from "path";
-import "../../src/globals.d.ts";
+import "vitest-fetch-mock";
+import { CACHE_DIR } from "../../src/services/BaseDirService.js";
 
 import fs from "fs";
 vi.mock("fs");
@@ -30,7 +31,7 @@ it("downloads the file when it does not exist", async () => {
   expect(fetch).toHaveBeenCalledWith(expectedURI);
   expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
   expect(fs.writeFileSync).toHaveBeenCalledWith(
-    path.join(global.CACHE_DIR, "my_download.file"),
+    path.join(CACHE_DIR, "my_download.file"),
     Buffer.from(fileBuffer),
   );
 });
@@ -46,7 +47,7 @@ it("overrides the filename when supplied", async () => {
   expect(fetch).toHaveBeenCalledWith(expectedURI);
   expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
   expect(fs.writeFileSync).toHaveBeenCalledWith(
-    path.join(global.CACHE_DIR, "my_filename.lha"),
+    path.join(CACHE_DIR, "my_filename.lha"),
     Buffer.from(fileBuffer),
   );
 });
