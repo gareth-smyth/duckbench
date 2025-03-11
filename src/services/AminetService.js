@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import request from "request-promise";
 
 export default class AminetService {
   static async download(netPath, filename = path.basename(netPath)) {
@@ -9,14 +8,17 @@ export default class AminetService {
       global.Logger.debug(
         `Downloading ${filename} from http://aminet.net/${netPath}`,
       );
-      const response = await request({
-        uri: `http://aminet.net/${netPath}`,
-        resolveWithFullResponse: true,
-        encoding: null,
-      }).catch((err) => {
-        throw new Error(err);
-      });
-      fs.writeFileSync(fullSavePath, response.body);
+      try {
+        const response = await fetch(`http://aminet.net/${netPath}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${netPath}: ${response.statusText}`);
+        }
+
+        const buffer = Buffer.from(await response.arrayBuffer());
+        fs.writeFileSync(fullSavePath, buffer);
+      } catch (err) {
+        throw new Error(err.message || `Failed to download ${filename}`);
+      }
     } else {
       global.Logger.debug(`Using cached version of ${filename}`);
     }

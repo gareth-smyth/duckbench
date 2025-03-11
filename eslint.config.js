@@ -31,7 +31,11 @@ export default [
       ],
     },
   },
-  { languageOptions: { globals: { ...globals.browser, ...globals.node, m: "readonly" } } },
+  {
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node, m: "readonly" },
+    },
+  },
   pluginJs.configs.recommended,
   ...typescriptEslint.configs.recommended,
 ];

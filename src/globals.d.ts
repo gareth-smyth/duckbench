@@ -2,6 +2,7 @@
 // noinspection ES6ConvertVarToLetConst
 
 import { Logger } from "pino";
+import "vitest-fetch-mock";
 
 declare global {
   var Logger: Logger;
