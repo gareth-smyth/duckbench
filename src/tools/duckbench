@@ -37,9 +37,9 @@ yargs
       await import("../services/LoggerService.js");
       Logger.level = args.logLevel;
       await import("../services/BaseDirService.js");
-      import Communicator from "../builder/Communicator.js";
+      import Communicator from "../builder/Communicator.ts";
       import DuckbenchBuilder from "../builder/DuckbenchBuilder.ts";
-      import WinUAEEnvironment from "../builder/WinUAEEnvironment.js";
+      import WinUAEEnvironment from "../builder/WinUAEEnvironment.ts";
 
       const duckbenchBuilder = new DuckbenchBuilder();
       await duckbenchBuilder.build(

@@ -15,7 +15,7 @@ beforeEach(() => {
 });
 
 import Runner from "../../src/builder/Runner";
-import { MockedObject } from "vitest";
+import { MockedObject, vi } from "vitest";
 import EnvironmentSetup from "../../src/builder/EnvironmentSetup";
 import Communicator from "../../src/builder/Communicator";
 
@@ -170,9 +170,9 @@ describe("validate", () => {
     const validateFunc2 = vi.fn().mockReturnValueOnce([]);
     const setupValidateFunc = vi.fn().mockReturnValueOnce([]);
     mockPluginStoreInstance.getPlugin
-      .mockReturnValueOnce({ validate: validateFunc1 })
-      .mockReturnValueOnce({})
-      .mockReturnValueOnce({ validate: validateFunc2 });
+      .mockReturnValueOnce({ validate: validateFunc1 } as unknown as Plugin)
+      .mockReturnValueOnce({} as unknown as Plugin)
+      .mockReturnValueOnce({ validate: validateFunc2 } as unknown as Plugin);
 
     const runner = new Runner();
     runner.configs = [{ name: "a" }, { name: "b" }, { name: "c" }];
@@ -194,9 +194,9 @@ describe("validate", () => {
     const validateFunc2 = vi.fn().mockReturnValueOnce([]);
     const setupValidateFunc = vi.fn().mockReturnValueOnce([]);
     mockPluginStoreInstance.getPlugin
-      .mockReturnValueOnce({ validate: validateFunc1 })
-      .mockReturnValueOnce({})
-      .mockReturnValueOnce({ validate: validateFunc2 });
+      .mockReturnValueOnce({ validate: validateFunc1 } as unknown as Plugin)
+      .mockReturnValueOnce({} as unknown as Plugin)
+      .mockReturnValueOnce({ validate: validateFunc2 } as unknown as Plugin);
 
     const runner = new Runner();
     runner.configs = [{ name: "a" }, { name: "b" }, { name: "c" }];
@@ -213,9 +213,9 @@ describe("prepare", () => {
     const prepareFunc1 = vi.fn();
     const prepareFunc2 = vi.fn();
     mockPluginStoreInstance.getPlugin
-      .mockReturnValueOnce({ prepare: prepareFunc1 })
-      .mockReturnValueOnce({})
-      .mockReturnValueOnce({ prepare: prepareFunc2 });
+      .mockReturnValueOnce({ prepare: prepareFunc1 } as unknown as Plugin)
+      .mockReturnValueOnce({} as unknown as Plugin)
+      .mockReturnValueOnce({ prepare: prepareFunc2 } as unknown as Plugin);
 
     const runner = new Runner();
     runner.configs = [{ name: "a" }, { name: "b" }, { name: "c" }];
@@ -251,9 +251,9 @@ describe("install", () => {
     const installFunc1 = vi.fn();
     const installFunc2 = vi.fn();
     mockPluginStoreInstance.getPlugin
-      .mockReturnValueOnce({ install: installFunc1 })
-      .mockReturnValueOnce({})
-      .mockReturnValueOnce({ install: installFunc2 });
+      .mockReturnValueOnce({ install: installFunc1 } as unknown as Plugin)
+      .mockReturnValueOnce({} as unknown as Plugin)
+      .mockReturnValueOnce({ install: installFunc2 } as unknown as Plugin);
 
     const runner = new Runner();
     runner.configs = [{ name: "a" }, { name: "b" }, { name: "c" }];
@@ -306,9 +306,9 @@ describe("finalise", () => {
     const finaliseFunc1 = vi.fn();
     const finaliseFunc2 = vi.fn();
     mockPluginStoreInstance.getPlugin
-      .mockReturnValueOnce({ finalise: finaliseFunc1 })
-      .mockReturnValueOnce({})
-      .mockReturnValueOnce({ finalise: finaliseFunc2 });
+      .mockReturnValueOnce({ finalise: finaliseFunc1 } as unknown as Plugin)
+      .mockReturnValueOnce({} as unknown as Plugin)
+      .mockReturnValueOnce({ finalise: finaliseFunc2 } as unknown as Plugin);
 
     const runner = new Runner();
     runner.configs = [{ name: "a" }, { name: "b" }, { name: "c" }];

@@ -8,7 +8,7 @@ vi.mock("../../src/builder/WinUAEEnvironment");
 vi.mock("../../src/builder/Communicator");
 
 import DuckbenchBuilder from "../../src/builder/DuckbenchBuilder";
-import { MockedObject } from "vitest";
+import { MockedObject, vi } from "vitest";
 import WinUAEEnvironment from "../../src/builder/WinUAEEnvironment";
 import Communicator from "../../src/builder/Communicator";
 import { PluginConfig } from "../../src/types";

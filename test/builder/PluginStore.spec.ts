@@ -1,37 +1,39 @@
 import PluginStore from "../../src/builder/PluginStore";
+import type { Plugin } from "../../src/types";
+import { vi } from "vitest";
 
 describe("access plugin store", () => {
   it("adds plugins to store", () => {
     const pluginStore = new PluginStore();
-    pluginStore.add("a plugin", "some plugin");
+    pluginStore.add("a plugin", "some plugin" as unknown as Plugin);
 
     expect(pluginStore.getPlugin("a plugin")).toEqual("some plugin");
   });
 
   it("gets plugins even in different case", () => {
     const pluginStore = new PluginStore();
-    pluginStore.add("a plugin", "some plugin");
+    pluginStore.add("a plugin", "some plugin" as unknown as Plugin);
 
     expect(pluginStore.getPlugin("A PLUGIN")).toEqual("some plugin");
   });
 
   it("returns true for hasPlugin when a plugin has been added to the store", () => {
     const pluginStore = new PluginStore();
-    pluginStore.add("a plugin", "some plugin");
+    pluginStore.add("a plugin", "some plugin" as unknown as Plugin);
 
     expect(pluginStore.hasPlugin("a plugin")).toEqual(true);
   });
 
   it("returns true for hasPlugin when a plugin has been added to the store even in a different case", () => {
     const pluginStore = new PluginStore();
-    pluginStore.add("a plugin", "some plugin");
+    pluginStore.add("a plugin", "some plugin" as unknown as Plugin);
 
     expect(pluginStore.hasPlugin("A PLUGIN")).toEqual(true);
   });
 
   it("returns false for hasPlugin when a plugin has not been added to the store", () => {
     const pluginStore = new PluginStore();
-    pluginStore.add("a plugin", "some plugin");
+    pluginStore.add("a plugin", "some plugin" as unknown as Plugin);
 
     expect(pluginStore.hasPlugin("another plugin")).toEqual(false);
   });

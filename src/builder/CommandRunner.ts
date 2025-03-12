@@ -1,11 +1,24 @@
-import Logger from "../services/LoggerService.js";
+import Logger from "../services/LoggerService";
+import SocketCommunicator from "./SocketCommunicator";
+import {
+  CommandExpectedResponse,
+  CommandOptions,
+  SocketCommandCallback,
+} from "../types";
 
 export default class CommandRunner {
-  constructor(socketCommunicator) {
+  private readonly socketCommunicator;
+
+  constructor(socketCommunicator: SocketCommunicator) {
     this.socketCommunicator = socketCommunicator;
   }
 
-  async run(commandString, options, commandCallback, expectedResponse) {
+  async run(
+    commandString: string,
+    options: CommandOptions,
+    commandCallback: SocketCommandCallback,
+    expectedResponse?: CommandExpectedResponse,
+  ) {
     commandString = this.addOptions(commandString, options);
     Logger.debug(`Running ${commandString}`);
     return this.socketCommunicator
@@ -29,7 +42,10 @@ export default class CommandRunner {
       });
   }
 
-  checkResponse(expectedResponse, response) {
+  checkResponse(
+    expectedResponse: CommandExpectedResponse | undefined,
+    response: string[],
+  ): boolean {
     if (expectedResponse) {
       return (
         response.length === 0 ||
@@ -42,21 +58,30 @@ export default class CommandRunner {
     }
   }
 
-  checkRegExResponse(expectedResponse, response) {
+  checkRegExResponse(
+    expectedResponse: CommandExpectedResponse,
+    response: string[],
+  ) {
     return (
       expectedResponse instanceof RegExp &&
       !expectedResponse.test(response.join())
     );
   }
 
-  checkStringResponse(expectedResponse, response) {
+  checkStringResponse(
+    expectedResponse: CommandExpectedResponse,
+    response: string[],
+  ) {
     return (
       typeof expectedResponse === "string" &&
       !response.join().includes(expectedResponse)
     );
   }
 
-  checkMultipleResponses(expectedResponse, response) {
+  checkMultipleResponses(
+    expectedResponse: CommandExpectedResponse,
+    response: string[],
+  ) {
     return (
       Array.isArray(expectedResponse) &&
       expectedResponse.some((expectedSubResponse) => {
@@ -65,7 +90,7 @@ export default class CommandRunner {
     );
   }
 
-  addOptions(command, options) {
+  addOptions(command: string, options: CommandOptions) {
     const redirectIn = options.REDIRECT_IN;
     const redirectOut = options.REDIRECT_OUT;
 

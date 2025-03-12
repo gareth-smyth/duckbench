@@ -9,7 +9,7 @@ export type PluginConfig = {
   optionValues?: Record<string, string>;
 };
 
-export type Settings = Record<string, Array<Record<string, string>>>;
+export type Settings = Record<string, Array<Record<string, unknown>>>;
 
 export type PluginError = {
   type: string;
@@ -110,3 +110,10 @@ export type SocketCommandCallback = (
 export type SocketControlCallback = (
   event?: SocketControlCallBackEvent,
 ) => void;
+
+export type CommandOptions = {
+  REDIRECT_IN?: string;
+  REDIRECT_OUT?: string;
+} & Record<string, string | boolean>;
+
+export type CommandExpectedResponse = RegExp | string | Array<RegExp | string>;

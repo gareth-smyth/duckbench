@@ -4,12 +4,14 @@ import fs from "fs";
 
 import WinUAEEnvironment from "../../src/builder/WinUAEEnvironment.js";
 import { MockedObject, vi } from "vitest";
+import EnvironmentSetup from "../../src/builder/EnvironmentSetup";
+import { Settings } from "../../src/types";
 
 vi.mock("child_process");
 vi.mock("fs");
 const mockedFs = fs as MockedObject<typeof fs>;
 
-const settings = {
+const settings: Settings = {
   Setup: [
     { name: "emulatorRoot", value: { folder: "/path/to/winuae/" } },
     { name: "rom310", value: { file: "some/place" } },
@@ -20,11 +22,10 @@ it("spawns a new winuae 32 bit process", () => {
   const environment = new WinUAEEnvironment(
     {
       executionFolder: "/some/folder",
-      disks: {},
+      disks: { ADF: [], HDF: [], CD: [], MAPPED_DRIVE: [] },
       rom: "a_rom",
-      getRomFileName: () => "aRomFile",
       getCPU: () => "68020",
-    },
+    } as unknown as EnvironmentSetup,
     settings,
   );
   fs.existsSync = vi.fn().mockReturnValue(true);
@@ -40,11 +41,10 @@ it("spawns a new winuae 64 bit process", () => {
   const environment = new WinUAEEnvironment(
     {
       executionFolder: "/some/folder",
-      disks: {},
+      disks: { ADF: [], HDF: [], CD: [], MAPPED_DRIVE: [] },
       rom: "a_rom",
-      getRomFileName: () => "aRomFile",
       getCPU: () => "68020",
-    },
+    } as unknown as EnvironmentSetup,
     settings,
   );
   fs.existsSync = vi.fn().mockReturnValueOnce(false).mockReturnValueOnce(true);
@@ -60,11 +60,10 @@ it("spawns a new fsuae process", () => {
   const environment = new WinUAEEnvironment(
     {
       executionFolder: "/some/folder",
-      disks: {},
+      disks: { ADF: [], HDF: [], CD: [], MAPPED_DRIVE: [] },
       rom: "a_rom",
-      getRomFileName: () => "aRomFile",
       getCPU: () => "68020",
-    },
+    } as unknown as EnvironmentSetup,
     settings,
   );
   fs.existsSync = vi.fn().mockReturnValueOnce(false).mockReturnValueOnce(false);
@@ -80,11 +79,10 @@ it("kills the winuae process", () => {
   const environment = new WinUAEEnvironment(
     {
       executionFolder: "/some/folder",
-      disks: {},
+      disks: { ADF: [], HDF: [], CD: [], MAPPED_DRIVE: [] },
       rom: "a_rom",
-      getRomFileName: () => "aRomFile",
       getCPU: () => "68020",
-    },
+    } as unknown as EnvironmentSetup,
     settings,
   );
   const process = { kill: vi.fn() } as unknown as ChildProcess;
@@ -98,11 +96,10 @@ it("does not kill the winuae process when it does not exist", () => {
   const environment = new WinUAEEnvironment(
     {
       executionFolder: "/some/folder",
-      disks: {},
+      disks: { ADF: [], HDF: [], CD: [], MAPPED_DRIVE: [] },
       rom: "a_rom",
-      getRomFileName: () => "aRomFile",
       getCPU: () => "68020",
-    },
+    } as unknown as EnvironmentSetup,
     settings,
   );
   vi.mocked(spawn).mockReturnValueOnce(undefined as unknown as ChildProcess);
@@ -115,11 +112,10 @@ it("writes the non-configurable parts of the config", () => {
   new WinUAEEnvironment(
     {
       executionFolder: "/some/folder",
-      disks: {},
+      disks: { ADF: [], HDF: [], CD: [], MAPPED_DRIVE: [] },
       rom: "a_rom",
-      getRomFileName: () => "aRomFile",
       getCPU: () => "68020",
-    },
+    } as unknown as EnvironmentSetup,
     settings,
   );
   expect(fs.openSync).toHaveBeenCalledWith(
@@ -144,14 +140,13 @@ it("writes the non-disk or cpu related parts of the config", () => {
   new WinUAEEnvironment(
     {
       executionFolder: "/some/folder",
-      disks: {},
+      disks: { ADF: [], HDF: [], CD: [], MAPPED_DRIVE: [] },
       rom: "arom",
       cpu: "68000",
       chipMem: "4",
       fastMem: "someMem",
-      getRomFileName: () => "aRomFile",
       getCPU: () => "68020",
-    },
+    } as unknown as EnvironmentSetup,
     settings,
   );
   expect(fs.openSync).toHaveBeenCalledWith(
@@ -171,14 +166,13 @@ it("writes the cpu related parts of the config for a non-68030", () => {
   new WinUAEEnvironment(
     {
       executionFolder: "/some/folder",
-      disks: {},
+      disks: { ADF: [], HDF: [], CD: [], MAPPED_DRIVE: [] },
       rom: "arom",
       cpu: "68000",
       chipMem: "4",
       fastMem: "someMem",
-      getRomFileName: () => "aRomFile",
       getCPU: () => "68020",
-    },
+    } as unknown as EnvironmentSetup,
     settings,
   );
   expect(fs.writeSync).toHaveBeenCalledWith(112, "cpu_type=68020\n");
@@ -189,14 +183,13 @@ it("writes the cpu related parts of the config for a 68030", () => {
   new WinUAEEnvironment(
     {
       executionFolder: "/some/folder",
-      disks: {},
+      disks: { ADF: [], HDF: [], CD: [], MAPPED_DRIVE: [] },
       rom: "arom",
       cpu: "68000",
       chipMem: "4",
       fastMem: "someMem",
-      getRomFileName: () => "aRomFile",
       getCPU: () => "68030",
-    },
+    } as unknown as EnvironmentSetup,
     settings,
   );
   expect(fs.writeSync).toHaveBeenCalledWith(112, "cpu_type=68020\n");
@@ -213,11 +206,13 @@ it("writes the floppy related parts of the config", () => {
           { drive: "df0:", location: "some/disk.adf" },
           { drive: "df2:", location: "some/disk2.adf" },
         ],
+        HDF: [],
+        CD: [],
+        MAPPED_DRIVE: [],
       },
       rom: "arom",
-      getRomFileName: () => "aRomFile",
       getCPU: () => "68020",
-    },
+    } as unknown as EnvironmentSetup,
     settings,
   );
   expect(fs.openSync).toHaveBeenCalledWith(
@@ -235,11 +230,13 @@ it("writes the CD related parts of the config", () => {
       executionFolder: "/some/folder",
       disks: {
         CD: [{ location: "some/disk.file" }, { location: "some/disk2.iso" }],
+        ADF: [],
+        HDF: [],
+        MAPPED_DRIVE: [],
       },
       rom: "arom",
-      getRomFileName: () => "aRomFile",
       getCPU: () => "68020",
-    },
+    } as unknown as EnvironmentSetup,
     settings,
   );
   expect(fs.openSync).toHaveBeenCalledWith(
@@ -268,13 +265,19 @@ it("writes the uaehf related parts of the config", () => {
             location: "some/folder",
             writeable: true,
           },
-          { drive: "dh2", name: "drive2", location: "some/folder2" },
+          {
+            drive: "dh2",
+            name: "drive2",
+            location: "some/folder2",
+            writeable: false,
+          },
         ],
+        ADF: [],
+        CD: [],
       },
       rom: "arom",
-      getRomFileName: () => "aRomFile",
       getCPU: () => "68020",
-    },
+    } as unknown as EnvironmentSetup,
     settings,
   );
   expect(fs.openSync).toHaveBeenCalledWith(

@@ -1,10 +1,16 @@
 import fs from "fs";
 import path from "path";
-import { spawn } from "child_process";
+import { ChildProcess, spawn } from "child_process";
 import SettingsService from "../services/SettingsService.js";
+import EnvironmentSetup from "./EnvironmentSetup";
+import { DiskSetup, Settings } from "../types";
 
 export default class WinUAEEnvironment {
-  constructor(environment, settings) {
+  private readonly settings;
+  private readonly uaeRunningConfig;
+  private winuaeProcess: ChildProcess | undefined;
+
+  constructor(environment: EnvironmentSetup, settings: Settings) {
     this.settings = settings;
 
     this.uaeRunningConfig = path.join(environment.executionFolder, "amiga.uae");
@@ -42,7 +48,7 @@ export default class WinUAEEnvironment {
     fs.closeSync(configFile);
   }
 
-  writeDiskConfig(configFile, disks) {
+  writeDiskConfig(configFile: number, disks: DiskSetup) {
     if (disks.ADF) {
       disks.ADF.forEach((disk) => {
         const diskNum = disk.drive[2];
@@ -84,7 +90,7 @@ export default class WinUAEEnvironment {
     }
   }
 
-  getCPUType(cpu) {
+  getCPUType(cpu: string) {
     if (cpu === "68030") {
       return "68020";
     } else {
@@ -92,10 +98,11 @@ export default class WinUAEEnvironment {
     }
   }
 
-  getCPUModel(cpu) {
+  getCPUModel(cpu: string) {
     if (cpu === "68030") {
       return "68030";
     }
+    return;
   }
 
   stop() {

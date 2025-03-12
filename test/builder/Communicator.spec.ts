@@ -1,6 +1,6 @@
 import Communicator from "../../src/builder/Communicator.js";
 import SocketCommunicator from "../../src/builder/SocketCommunicator";
-import CommandRunner from "../../src/builder/CommandRunner.js";
+import CommandRunner from "../../src/builder/CommandRunner";
 import { MockedObject, vi } from "vitest";
 vi.mock("../../src/builder/SocketCommunicator");
 vi.mock("../../src/builder/CommandRunner");
@@ -9,18 +9,18 @@ let communicator: Communicator;
 let socketCommunicator: MockedObject<SocketCommunicator>;
 let commandRunner: MockedObject<CommandRunner>;
 beforeEach(() => {
-  commandRunner = vi.mocked(new CommandRunner());
   socketCommunicator = vi.mocked(new SocketCommunicator());
+  commandRunner = vi.mocked(new CommandRunner(socketCommunicator));
   communicator = new Communicator(undefined, socketCommunicator, commandRunner);
 });
 
-const options = "options";
+const options = {};
 const callback = () => "aCallback";
 
 it("runs the command runner", async () => {
   await communicator.run("some command", options, callback, "response");
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "some command",
     options,
     callback,
@@ -37,7 +37,7 @@ it("runs the assign command", async () => {
     "expected response",
   );
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "assign name: some:folder",
     options,
     callback,
@@ -46,9 +46,9 @@ it("runs the assign command", async () => {
 });
 
 it("runs the assign command with defaults", async () => {
-  await communicator.assign("name:", "some:folder");
+  await communicator.assign("name:", "some:folder", options);
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "assign name: some:folder",
     {},
     expect.any(Function),
@@ -59,13 +59,17 @@ it("runs the assign command with defaults", async () => {
 it("runs the cd command", async () => {
   await communicator.cd("some:folder", options, callback);
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith("cd some:folder", options, callback);
+  expect(commandRunner.run).toHaveBeenCalledWith(
+    "cd some:folder",
+    options,
+    callback,
+  );
 });
 
 it("runs the cd command with defaults", async () => {
   await communicator.cd("some:folder");
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "cd some:folder",
     {},
     expect.any(Function),
@@ -81,7 +85,7 @@ it("runs the copy command", async () => {
     "expect response",
   );
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "copy filename some:folder",
     options,
     callback,
@@ -92,7 +96,7 @@ it("runs the copy command", async () => {
 it("runs the copy command with defaults", async () => {
   await communicator.copy("filename", "some:folder");
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "copy filename some:folder",
     {},
     expect.any(Function),
@@ -103,7 +107,7 @@ it("runs the copy command with defaults", async () => {
 it("runs the delete command", async () => {
   await communicator.delete("some:file", options, callback);
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "delete some:file",
     options,
     callback,
@@ -112,9 +116,9 @@ it("runs the delete command", async () => {
 });
 
 it("runs the delete command with defaults", async () => {
-  await communicator.delete("some:file");
+  await communicator.delete("some:file", options);
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "delete some:file",
     {},
     expect.any(Function),
@@ -125,7 +129,7 @@ it("runs the delete command with defaults", async () => {
 it("runs the echo command", async () => {
   await communicator.echo("something", options, callback);
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     'echo "something"',
     options,
     callback,
@@ -133,9 +137,9 @@ it("runs the echo command", async () => {
 });
 
 it("runs the echo command with defaults", async () => {
-  await communicator.echo("something");
+  await communicator.echo("something", options);
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     'echo "something"',
     {},
     expect.any(Function),
@@ -145,7 +149,7 @@ it("runs the echo command with defaults", async () => {
 it("runs the format command", async () => {
   await communicator.format("drive", "volume", options, callback);
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "format drive drive name volume",
     options,
     callback,
@@ -156,7 +160,7 @@ it("runs the format command", async () => {
 it("runs the format command with defaults", async () => {
   await communicator.format("drive", "volume");
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "format drive drive name volume",
     {},
     expect.any(Function),
@@ -167,7 +171,7 @@ it("runs the format command with defaults", async () => {
 it("runs the makedir command", async () => {
   await communicator.makedir("DB0:folder", options, callback);
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "makedir DB0:folder",
     options,
     callback,
@@ -177,7 +181,7 @@ it("runs the makedir command", async () => {
 it("runs the makedir command with defaults", async () => {
   await communicator.makedir("DB0:folder");
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "makedir DB0:folder",
     {},
     expect.any(Function),
@@ -187,7 +191,7 @@ it("runs the makedir command with defaults", async () => {
 it("runs the path command", async () => {
   await communicator.path("DB0:folder", options, callback);
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "path DB0:folder",
     options,
     callback,
@@ -197,7 +201,7 @@ it("runs the path command", async () => {
 it("runs the path command with defaults", async () => {
   await communicator.path("DB0:folder");
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "path DB0:folder",
     {},
     expect.any(Function),
@@ -212,7 +216,7 @@ it("runs the protect command", async () => {
     "expect response",
   );
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "protect DB0:folder",
     options,
     callback,
@@ -223,7 +227,7 @@ it("runs the protect command", async () => {
 it("runs the protect command with defaults", async () => {
   await communicator.protect("DB0:folder");
   expect(commandRunner.run).toHaveBeenCalledTimes(1);
-  expect(commandRunner.run).toBeCalledWith(
+  expect(commandRunner.run).toHaveBeenCalledWith(
     "protect DB0:folder",
     {},
     expect.any(Function),
