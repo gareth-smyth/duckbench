@@ -49,40 +49,34 @@ export default class WinUAEEnvironment {
   }
 
   writeDiskConfig(configFile: number, disks: DiskSetup) {
-    if (disks.ADF) {
-      disks.ADF.forEach((disk) => {
-        const diskNum = disk.drive[2];
-        fs.writeSync(configFile, `floppy${diskNum}=${disk.location}\n`);
-      });
-    }
+    disks.ADF.forEach((disk) => {
+      const diskNum = disk.drive[2];
+      fs.writeSync(configFile, `floppy${diskNum}=${disk.location}\n`);
+    });
 
     let diskIdx = 0;
-    if (disks.HDF) {
-      disks.HDF.forEach((disk) => {
-        const hardfileLine = `hardfile2=rw,${disk.drive}:${disk.location},0,0,0,512,0,,uae${diskIdx}\n`;
-        const hfLine = `uaehf${diskIdx}=hdf,rw,${disk.drive}:${disk.location},0,0,0,512,0,,uae${diskIdx}\n`;
-        fs.writeSync(configFile, hardfileLine);
-        fs.writeSync(configFile, hfLine);
-        diskIdx += 1;
-      });
-    }
+    disks.HDF.forEach((disk) => {
+      const hardfileLine = `hardfile2=rw,${disk.drive}:${disk.location},0,0,0,512,0,,uae${diskIdx}\n`;
+      const hfLine = `uaehf${diskIdx}=hdf,rw,${disk.drive}:${disk.location},0,0,0,512,0,,uae${diskIdx}\n`;
+      fs.writeSync(configFile, hardfileLine);
+      fs.writeSync(configFile, hfLine);
+      diskIdx += 1;
+    });
 
-    if (disks.MAPPED_DRIVE) {
-      disks.MAPPED_DRIVE.forEach((disk) => {
-        const readWrite = disk.writeable ? "rw" : "ro";
-        fs.writeSync(
-          configFile,
-          `filesystem2=${readWrite},${disk.drive}:${disk.name}:${disk.location},-128\n`,
-        );
-        fs.writeSync(
-          configFile,
-          `uaehf${diskIdx}=dir,${readWrite},${disk.drive}:${disk.name}:${disk.location},-128\n`,
-        );
-        diskIdx += 1;
-      });
-    }
+    disks.MAPPED_DRIVE.forEach((disk) => {
+      const readWrite = disk.writeable ? "rw" : "ro";
+      fs.writeSync(
+        configFile,
+        `filesystem2=${readWrite},${disk.drive}:${disk.name}:${disk.location},-128\n`,
+      );
+      fs.writeSync(
+        configFile,
+        `uaehf${diskIdx}=dir,${readWrite},${disk.drive}:${disk.name}:${disk.location},-128\n`,
+      );
+      diskIdx += 1;
+    });
 
-    if (disks.CD) {
+    if (disks.CD.length) {
       fs.writeSync(configFile, "win32.map_cd_drives=true\n");
       disks.CD.forEach((disk, cdIdx) => {
         fs.writeSync(configFile, `cdimage${cdIdx}=${disk.location}\n`);

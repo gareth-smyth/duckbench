@@ -11,6 +11,7 @@ export default class Communicator {
   private readonly commandRunner;
   private readonly socketCommunicator;
 
+  /* istanbul ignore next */
   constructor(
     controlCallback: SocketControlCallback = this.noCallback,
     socketCommunicator = new SocketCommunicator(controlCallback),
