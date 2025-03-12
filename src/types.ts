@@ -74,3 +74,39 @@ export type DiskSetup = {
   CD: CdDefinition[];
   MAPPED_DRIVE: MappedDriveDefinition[];
 };
+
+export type SocketControlNonDataEventMessages =
+  | "CLOSE_EVENT"
+  | "CONNECT_EVENT"
+  | "READY_EVENT"
+  | "COMMAND_RECEIVED";
+export type SocketControlDataEventMessage = "DATA_EVENT";
+export type SocketControlEvents =
+  | SocketControlNonDataEventMessages
+  | SocketControlDataEventMessage;
+
+export type SocketControlNonDataEvent = {
+  message: SocketControlNonDataEventMessages;
+};
+
+export type SocketControlDataEvent = {
+  message: SocketControlDataEventMessage;
+  data: string;
+};
+
+export type CommandCallBackMessage = "COMMAND_RECEIVED" | "DATA_EVENT";
+
+export type SocketCommandCallBackEvent = {
+  message: CommandCallBackMessage;
+  data: string;
+};
+export type SocketControlCallBackEvent =
+  | SocketControlNonDataEvent
+  | SocketControlDataEvent;
+
+export type SocketCommandCallback = (
+  event?: SocketCommandCallBackEvent,
+) => void;
+export type SocketControlCallback = (
+  event?: SocketControlCallBackEvent,
+) => void;

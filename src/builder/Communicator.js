@@ -1,5 +1,5 @@
 import CommandBuilder from "./CommandRunner.js";
-import SocketCommunicator from "./SocketCommunicator.js";
+import SocketCommunicator from "./SocketCommunicator";
 
 export default class Communicator {
   /* istanbul ignore next */

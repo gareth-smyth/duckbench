@@ -1,28 +1,45 @@
 /* eslint-disable no-useless-escape */
 import net from "net";
-import Logger from "../services/LoggerService.js";
+import Logger from "../services/LoggerService";
+import { SocketCommandCallback, SocketControlCallback } from "../types";
 
-const CLOSE_EVENT = "CLOSE_EVENT";
-const CONNECT_EVENT = "CONNECT_EVENT";
-const READY_EVENT = "READY_EVENT";
-const DATA_EVENT = "DATA_EVENT";
-const COMMAND_RECEIVED = "COMMAND_RECEIVED";
+type SocketStatus =
+  | "SEND_COMMAND"
+  | "CONNECTED"
+  | "CONNECTING"
+  | "COMMAND_RUNNING";
 
 export default class SocketCommunicator {
-  constructor(controlCallback = this.noCallback) {
-    this.client = new net.Socket();
-    this.currentLine = "";
-    this.lastCharLF = false;
-    this.controlCallback = controlCallback;
+  private readonly client: net.Socket = new net.Socket();
+  private currentLine: string = "";
+  private commandRunning: string = "";
+  private runningCommandData: string[] = [];
+  private lastCharLF: boolean = false;
+  private status?: SocketStatus;
+
+  private readonly controlCallback: SocketControlCallback =
+    SocketCommunicator.noCallback;
+  private commandCallback: SocketCommandCallback =
+    SocketCommunicator.noCallback;
+  private runningCommandResolve?: (
+    value: string[] | PromiseLike<string[]>,
+  ) => void;
+  private connectedResolve?: (value: unknown | PromiseLike<unknown>) => void;
+
+  constructor(controlCallback?: SocketControlCallback) {
+    this.controlCallback = controlCallback || this.controlCallback;
     this.client.on("data", this._dataEvent.bind(this));
     this.client.on("close", this._closeEvent.bind(this));
     this.client.on("connect", this._connectEvent.bind(this));
     this.client.on("ready", this._readyEvent.bind(this));
   }
 
-  noCallback(_event) {}
+  static noCallback(): void {}
 
-  async runCommand(commandString, commandCallback = this.noCallback) {
+  async runCommand(
+    commandString: string,
+    commandCallback = SocketCommunicator.noCallback,
+  ): Promise<string[]> {
     this.commandRunning = `${commandString}`;
     this.commandCallback = commandCallback;
     this.status = "SEND_COMMAND";
@@ -40,7 +57,7 @@ export default class SocketCommunicator {
     this.client.destroy();
   }
 
-  _dataEvent(data) {
+  _dataEvent(data: object) {
     Logger.trace(`Got data ${JSON.stringify(data.toString())}`);
     const dataString = data.toString();
 
@@ -61,17 +78,17 @@ export default class SocketCommunicator {
   }
 
   _closeEvent() {
-    this.controlCallback({ message: CLOSE_EVENT });
+    this.controlCallback({ message: "CLOSE_EVENT" });
     Logger.debug("The Amiga has closed the connection");
   }
 
   _connectEvent() {
-    this.controlCallback({ message: CONNECT_EVENT });
+    this.controlCallback({ message: "CONNECT_EVENT" });
     Logger.debug("I am connected to the Amiga");
   }
 
   _readyEvent() {
-    this.controlCallback({ message: READY_EVENT });
+    this.controlCallback({ message: "READY_EVENT" });
     Logger.debug("I have opened communication with the Amiga");
   }
 
@@ -84,7 +101,7 @@ export default class SocketCommunicator {
     return connectingPromise;
   }
 
-  _processResponse(responseLine) {
+  _processResponse(responseLine: string) {
     Logger.trace(
       `While status is ${this.status} I got ${JSON.stringify(responseLine)}`,
     );
@@ -94,16 +111,16 @@ export default class SocketCommunicator {
         if (this._responseIsPrompt(responseLine)) {
           Logger.debug("I have communication with the Amiga.");
           this.status = "CONNECTED";
-          setTimeout(this.connectedResolve, 1000);
+          setTimeout(() => this.connectedResolve?.(undefined), 1000);
         } else {
-          this.controlCallback({ message: DATA_EVENT, data: responseLine });
+          this.controlCallback({ message: "DATA_EVENT", data: responseLine });
           Logger.debug(
             `While connecting I got this message: ${JSON.stringify(responseLine)}`,
           );
         }
         break;
       case "CONNECTED":
-        this.controlCallback({ message: DATA_EVENT, data: responseLine });
+        this.controlCallback({ message: "DATA_EVENT", data: responseLine });
         throw Error(
           "While connected but not waiting on a command to finish I got this " +
             `message: ${JSON.stringify(responseLine)}`,
@@ -112,7 +129,7 @@ export default class SocketCommunicator {
         if (responseLine.match(this._escapeRegex(this.commandRunning))) {
           this.status = "COMMAND_RUNNING";
           this.commandCallback({
-            message: COMMAND_RECEIVED,
+            message: "COMMAND_RECEIVED",
             data: responseLine,
           });
           Logger.debug(
@@ -120,7 +137,7 @@ export default class SocketCommunicator {
               " and I am waiting for the response.",
           );
         } else {
-          this.controlCallback({ message: DATA_EVENT, data: responseLine });
+          this.controlCallback({ message: "DATA_EVENT", data: responseLine });
           throw Error(
             `I ran the command "${this.commandRunning.trim()}" and have received the response ` +
               `${JSON.stringify(responseLine)} but I expected an echo`,
@@ -138,11 +155,11 @@ export default class SocketCommunicator {
           );
           this.status = "CONNECTED";
           setTimeout(() => {
-            this.runningCommandResolve(this.runningCommandData);
+            this.runningCommandResolve?.(this.runningCommandData);
             this.runningCommandData = [];
           }, 1000);
         } else {
-          this.commandCallback({ message: DATA_EVENT, data: responseLine });
+          this.commandCallback({ message: "DATA_EVENT", data: responseLine });
           Logger.trace(
             `I ran the command ${this.commandRunning.trim()} and have received the ` +
               `response ${JSON.stringify(responseLine)}`,
@@ -153,12 +170,12 @@ export default class SocketCommunicator {
     }
   }
 
-  _responseIsPrompt(responseLine) {
+  _responseIsPrompt(responseLine: string) {
     // eslint-disable-next-line no-control-regex
     return responseLine.match(/\d\..*>/);
   }
 
-  _escapeRegex(string) {
+  _escapeRegex(string: string) {
     return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
   }
 }

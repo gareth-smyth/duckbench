@@ -1,8 +1,15 @@
 import { Socket } from "net";
 vi.mock("net");
 
-import SocketCommunicator from "../../src/builder/SocketCommunicator.js";
-import { MockedObject } from "vitest";
+import SocketCommunicator from "../../src/builder/SocketCommunicator";
+import { MockedObject, vi } from "vitest";
+import {
+  SocketCommandCallback,
+  SocketCommandCallBackEvent,
+  SocketControlCallback,
+  SocketControlCallBackEvent,
+  SocketControlDataEvent,
+} from "../../src/types";
 
 // As some functionality resolves promises with setTimeout we need to fake time passing and promise resolution cycle
 async function flushTimeoutsAndPromises() {
@@ -12,20 +19,24 @@ async function flushTimeoutsAndPromises() {
 
 const mockedSocket = Socket as unknown as MockedObject<typeof Socket>;
 
-let mockSocket: Socket & {
+type MockSocket = Socket & {
   eventFunctions: Record<string, (data: string) => void>;
 };
+let mockSocket: MockSocket;
 beforeEach(() => {
   vi.useFakeTimers();
   mockSocket = {
     eventFunctions: {},
     destroy: vi.fn(),
-    on: vi.fn((event, func) => {
-      mockSocket.eventFunctions[event] = func;
-    }),
+    on: vi.fn(
+      (event: string, func: (...args: unknown[]) => void): MockSocket => {
+        mockSocket.eventFunctions[event] = func;
+        return mockSocket;
+      },
+    ),
     connect: vi.fn(),
     write: vi.fn(),
-  };
+  } as unknown as MockSocket;
   vi.mocked(mockedSocket).mockImplementation(() => mockSocket);
 });
 
@@ -87,47 +98,52 @@ it("does not resolve the connection until a prompt is received", async () => {
 });
 
 it("calls the control callback when a close event is received", async () => {
-  let closeEvent = {};
-  const controlCallback = (event) => {
+  let closeEvent: SocketControlCallBackEvent | undefined = undefined;
+  const controlCallback: SocketControlCallback = (
+    event: SocketControlCallBackEvent | undefined,
+  ) => {
     closeEvent = event;
   };
   new SocketCommunicator(controlCallback);
 
-  mockSocket.eventFunctions.close();
+  mockSocket.eventFunctions.close("");
   await flushTimeoutsAndPromises();
-  expect(closeEvent.message).toEqual("CLOSE_EVENT");
+  expect(closeEvent!.message).toEqual("CLOSE_EVENT");
 });
 
 it("calls the control callback when a connect event is received", async () => {
-  let connectEvent = {};
-  const controlCallback = (event) => {
+  let connectEvent: SocketControlCallBackEvent | undefined = undefined;
+  const controlCallback = (event: SocketControlCallBackEvent | undefined) => {
     connectEvent = event;
   };
   new SocketCommunicator(controlCallback);
 
-  mockSocket.eventFunctions.connect();
+  mockSocket.eventFunctions.connect("");
   await flushTimeoutsAndPromises();
-  expect(connectEvent.message).toEqual("CONNECT_EVENT");
+  expect(connectEvent!.message).toEqual("CONNECT_EVENT");
 });
 
 it("calls the control callback when a ready event is received", async () => {
-  let readyEvent = {};
-  const controlCallback = (event) => {
+  let readyEvent: SocketControlCallBackEvent | undefined = undefined;
+  const controlCallback = (event: SocketControlCallBackEvent | undefined) => {
     readyEvent = event;
   };
   new SocketCommunicator(controlCallback);
 
-  mockSocket.eventFunctions.ready();
+  mockSocket.eventFunctions.ready("");
   await flushTimeoutsAndPromises();
-  expect(readyEvent.message).toEqual("READY_EVENT");
+  expect(readyEvent!.message).toEqual("READY_EVENT");
 });
 
 it("calls the control callback when output is received without sending a command", async () => {
-  let dataEvent = {};
-  const controlCallback = (event) => {
+  let dataEvent: SocketControlDataEvent | undefined = undefined;
+  const controlCallback = (event: SocketControlDataEvent | undefined) => {
     dataEvent = event;
   };
-  const communicator = new SocketCommunicator(controlCallback);
+  const communicator = new SocketCommunicator(
+    controlCallback as SocketControlCallback,
+  );
+  // noinspection ES6MissingAwait
   communicator.connect();
 
   mockSocket.eventFunctions.data("2.A Prompt>");
@@ -140,16 +156,46 @@ it("calls the control callback when output is received without sending a command
       '"This is the sent line"',
   );
   await flushTimeoutsAndPromises();
-  expect(dataEvent.message).toEqual("DATA_EVENT");
-  expect(dataEvent.data).toEqual("This is the sent line");
+  expect(dataEvent!.message).toEqual("DATA_EVENT");
+  expect(dataEvent!.data).toEqual("This is the sent line");
 });
 
 it("calls the control callback when a command has been sent but not yet received the echo", async () => {
-  let dataEvent = {};
-  const controlCallback = (event) => {
+  let dataEvent: SocketControlDataEvent | undefined = undefined;
+  const controlCallback = (event: SocketControlDataEvent | undefined) => {
     dataEvent = event;
   };
-  const communicator = new SocketCommunicator(controlCallback);
+  const communicator = new SocketCommunicator(
+    controlCallback as SocketControlCallback,
+  );
+  // noinspection ES6MissingAwait
+  communicator.connect();
+  mockSocket.eventFunctions.data("2.A Prompt>");
+  await flushTimeoutsAndPromises();
+
+  // noinspection ES6MissingAwait
+  communicator.runCommand("copy afile adir");
+  await flushTimeoutsAndPromises();
+
+  expect(() =>
+    mockSocket.eventFunctions.data("This is the sent line\n\r"),
+  ).toThrow(
+    'I ran the command "copy afile adir" and have received the response "This is the sent line" ' +
+      "but I expected an echo",
+  );
+  await flushTimeoutsAndPromises();
+  expect(dataEvent!.message).toEqual("DATA_EVENT");
+  expect(dataEvent!.data).toEqual("This is the sent line");
+});
+
+it("calls the control callback when a command has been sent but not yet received the echo", async () => {
+  let dataEvent: SocketControlDataEvent | undefined = undefined;
+  const controlCallback = (event: SocketControlDataEvent | undefined) => {
+    dataEvent = event;
+  };
+  const communicator = new SocketCommunicator(
+    controlCallback as SocketControlCallback,
+  );
   communicator.connect();
   mockSocket.eventFunctions.data("2.A Prompt>");
   await flushTimeoutsAndPromises();
@@ -164,37 +210,13 @@ it("calls the control callback when a command has been sent but not yet received
       "but I expected an echo",
   );
   await flushTimeoutsAndPromises();
-  expect(dataEvent.message).toEqual("DATA_EVENT");
-  expect(dataEvent.data).toEqual("This is the sent line");
-});
-
-it("calls the control callback when a command has been sent but not yet received the echo", async () => {
-  let dataEvent = {};
-  const controlCallback = (event) => {
-    dataEvent = event;
-  };
-  const communicator = new SocketCommunicator(controlCallback);
-  communicator.connect();
-  mockSocket.eventFunctions.data("2.A Prompt>");
-  await flushTimeoutsAndPromises();
-
-  communicator.runCommand("copy afile adir");
-  await flushTimeoutsAndPromises();
-
-  expect(() =>
-    mockSocket.eventFunctions.data("This is the sent line\n\r"),
-  ).toThrow(
-    'I ran the command "copy afile adir" and have received the response "This is the sent line" ' +
-      "but I expected an echo",
-  );
-  await flushTimeoutsAndPromises();
-  expect(dataEvent.message).toEqual("DATA_EVENT");
-  expect(dataEvent.data).toEqual("This is the sent line");
+  expect(dataEvent!.message).toEqual("DATA_EVENT");
+  expect(dataEvent!.data).toEqual("This is the sent line");
 });
 
 it("calls the command callback when a command has been sent and echoed but not completed", async () => {
-  let commandEvent = {};
-  const commandCallback = (event) => {
+  let commandEvent: SocketCommandCallBackEvent | undefined = undefined;
+  const commandCallback = (event: SocketCommandCallBackEvent | undefined) => {
     commandEvent = event;
   };
   const communicator = new SocketCommunicator();
@@ -202,23 +224,26 @@ it("calls the command callback when a command has been sent and echoed but not c
   mockSocket.eventFunctions.data("2.A Prompt>");
   await flushTimeoutsAndPromises();
 
-  communicator.runCommand("copy afile adir", commandCallback);
+  communicator.runCommand(
+    "copy afile adir",
+    commandCallback as SocketCommandCallback,
+  );
   await flushTimeoutsAndPromises();
 
   mockSocket.eventFunctions.data("copy afile adir\n\r");
   await flushTimeoutsAndPromises();
-  expect(commandEvent.message).toEqual("COMMAND_RECEIVED");
-  expect(commandEvent.data).toEqual("copy afile adir");
+  expect(commandEvent!.message).toEqual("COMMAND_RECEIVED");
+  expect(commandEvent!.data).toEqual("copy afile adir");
 });
 
 it("resolves the command promise with sent data when a new prompt is received", async () => {
-  let resolvedData = {};
+  let resolvedData: string[] = [];
   const communicator = new SocketCommunicator();
   communicator.connect();
   mockSocket.eventFunctions.data("2.A Prompt>");
   await flushTimeoutsAndPromises();
 
-  communicator.runCommand("copy afile adir").then((data) => {
+  communicator.runCommand("copy afile adir").then((data: string[]) => {
     resolvedData = data;
   });
   await flushTimeoutsAndPromises();
@@ -237,8 +262,8 @@ it("resolves the command promise with sent data when a new prompt is received", 
 });
 
 it("returns a data event to the command callback then data is received before the command completes", async () => {
-  let commandEvent = {};
-  const commandCallback = (event) => {
+  let commandEvent: SocketCommandCallBackEvent | undefined = undefined;
+  const commandCallback = (event: SocketCommandCallBackEvent | undefined) => {
     commandEvent = event;
   };
   const communicator = new SocketCommunicator();
@@ -246,7 +271,10 @@ it("returns a data event to the command callback then data is received before th
   mockSocket.eventFunctions.data("2.A Prompt>");
   await flushTimeoutsAndPromises();
 
-  communicator.runCommand("copy afile adir", commandCallback);
+  communicator.runCommand(
+    "copy afile adir",
+    commandCallback as SocketCommandCallback,
+  );
   await flushTimeoutsAndPromises();
   mockSocket.eventFunctions.data("copy afile adir\n\r");
   await flushTimeoutsAndPromises();
@@ -254,6 +282,6 @@ it("returns a data event to the command callback then data is received before th
   mockSocket.eventFunctions.data("some data\n\r");
   await flushTimeoutsAndPromises();
 
-  expect(commandEvent.message).toEqual("DATA_EVENT");
-  expect(commandEvent.data).toEqual("some data");
+  expect(commandEvent!.message).toEqual("DATA_EVENT");
+  expect(commandEvent!.data).toEqual("some data");
 });
