@@ -33,8 +33,22 @@ export function buildFsUaeConfig(
   });
   configLines.push("");
 
-  amiga.disks.MAPPED_DRIVE.forEach((mappedDriveDefinition, index) => {
-    configLines.push(`hard_drive_${index}=${mappedDriveDefinition.location}`);
+  let diskIndex = 0;
+  amiga.disks.MAPPED_DRIVE.forEach((mappedDriveDefinition) => {
+    configLines.push(
+      `hard_drive_${diskIndex}=${mappedDriveDefinition.location}`,
+    );
+    diskIndex += 1;
+  });
+  amiga.disks.HDF.forEach((mappedDriveDefinition) => {
+    configLines.push(
+      `hard_drive_${diskIndex}=${mappedDriveDefinition.location}`,
+    );
+    diskIndex += 1;
+  });
+  configLines.push("");
+  amiga.disks.CD.forEach((image, index) => {
+    configLines.push(`cdrom_drive_${index}=${image}`);
   });
   configLines.push("");
 

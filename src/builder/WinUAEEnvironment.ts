@@ -78,7 +78,7 @@ export default class WinUAEEnvironment {
     if (disks.CD.length) {
       fs.writeSync(configFile, "win32.map_cd_drives=true\n");
       disks.CD.forEach((disk, cdIdx) => {
-        fs.writeSync(configFile, `cdimage${cdIdx}=${disk.location}\n`);
+        fs.writeSync(configFile, `cdimage${cdIdx}=${disk}\n`);
       });
     }
   }

@@ -46,10 +46,6 @@ export type HdfDefinition = {
   location: string;
 };
 
-export type CdDefinition = {
-  location: string;
-};
-
 export type MappedDriveDefinition = {
   drive?: string;
   location: string;
@@ -60,7 +56,7 @@ export type MappedDriveDefinition = {
 export type DiskSetup = {
   ADF: string[];
   HDF: HdfDefinition[];
-  CD: CdDefinition[];
+  CD: string[];
   MAPPED_DRIVE: MappedDriveDefinition[];
 };
 

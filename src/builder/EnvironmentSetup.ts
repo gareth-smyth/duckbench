@@ -54,7 +54,7 @@ export default class EnvironmentSetup {
   }
 
   insertCDISO(location: string) {
-    this.disks.CD.push({ location });
+    this.disks.CD.push(location);
   }
 
   insertDisk(drive: string, fileLocation: string) {

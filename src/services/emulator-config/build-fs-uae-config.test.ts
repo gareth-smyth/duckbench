@@ -47,13 +47,30 @@ it("configures floppy drives", () => {
   expect(config).toContain(`floppy_drive_1=disk2.adf`);
 });
 
-it("configures mapped drives", () => {
+it("configures CD drives", () => {
+  const config = buildFsUaeConfig(
+    {
+      ...standardAmiga,
+      disks: { ...standardAmiga.disks, CD: ["disc1.iso", "disc2.iso"] },
+    },
+    standardEmulatorSettings,
+  );
+
+  expect(config).toContain(`cdrom_drive_0=disc1.iso`);
+  expect(config).toContain(`cdrom_drive_1=disc2.iso`);
+});
+
+it("configures  drives", () => {
   const config = buildFsUaeConfig(
     {
       ...standardAmiga,
       disks: {
         ...standardAmiga.disks,
         MAPPED_DRIVE: [{ location: "/drive/1" }, { location: "/drive/2" }],
+        HDF: [
+          { location: "/drive/3.hdf", drive: "df1" },
+          { location: "/drive/4.hdf", drive: "df2" },
+        ],
       },
     },
     standardEmulatorSettings,
@@ -61,4 +78,6 @@ it("configures mapped drives", () => {
 
   expect(config).toContain(`hard_drive_0=/drive/1`);
   expect(config).toContain(`hard_drive_1=/drive/2`);
+  expect(config).toContain(`hard_drive_2=/drive/3.hdf`);
+  expect(config).toContain(`hard_drive_3=/drive/4.hdf`);
 });
