@@ -125,10 +125,8 @@ it("sets the cd drive", () => {
   const environmentSetup = new EnvironmentSetup();
   environmentSetup.insertCDISO("/my/location");
   environmentSetup.insertCDISO("/my/other/location");
-  expect(environmentSetup.disks.CD[0]).toEqual({ location: "/my/location" });
-  expect(environmentSetup.disks.CD[1]).toEqual({
-    location: "/my/other/location",
-  });
+  expect(environmentSetup.disks.CD[0]).toEqual("/my/location");
+  expect(environmentSetup.disks.CD[1]).toEqual("/my/other/location");
 });
 
 it("adds HDFs", () => {

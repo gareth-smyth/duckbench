@@ -226,7 +226,7 @@ it("writes the CD related parts of the config", () => {
     {
       executionFolder: "/some/folder",
       disks: {
-        CD: [{ location: "some/disk.file" }, { location: "some/disk2.iso" }],
+        CD: ["some/disk.file", "some/disk2.iso"],
         ADF: [],
         HDF: [],
         MAPPED_DRIVE: [],
