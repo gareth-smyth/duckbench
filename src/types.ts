@@ -41,11 +41,6 @@ export type Plugin = {
   ) => Promise<void>;
 };
 
-export type AdfDefinition = {
-  drive: string;
-  location: string;
-};
-
 export type HdfDefinition = {
   drive: string;
   location: string;
@@ -56,20 +51,14 @@ export type CdDefinition = {
 };
 
 export type MappedDriveDefinition = {
-  drive: string;
+  drive?: string;
   location: string;
-  name: string;
-  writeable: boolean;
-};
-
-export type DiskDefinition = {
-  location: string;
-  type?: string;
   name?: string;
+  writeable?: boolean;
 };
 
 export type DiskSetup = {
-  ADF: AdfDefinition[];
+  ADF: string[];
   HDF: HdfDefinition[];
   CD: CdDefinition[];
   MAPPED_DRIVE: MappedDriveDefinition[];
@@ -117,3 +106,64 @@ export type CommandOptions = {
 } & Record<string, string | boolean>;
 
 export type CommandExpectedResponse = RegExp | string | Array<RegExp | string>;
+
+export type AmigaModel =
+  | "A1000"
+  | "A1500"
+  | "A2000"
+  | "A3000"
+  | "A4000"
+  | "A500"
+  | "A500+"
+  | "A600"
+  | "A1200"
+  | "CDTV"
+  | "CD32";
+
+export type CPU =
+  | "68000"
+  | "68010"
+  | "68EC020"
+  | "68020"
+  | "68EC030"
+  | "68030"
+  | "68EC040"
+  | "68LC040"
+  | "68040-NOMMU"
+  | "68040"
+  | "68EC060"
+  | "68LC060"
+  | "68060-NOMMU"
+  | "68060";
+
+export type Kickstart =
+  | "1.0"
+  | "1.1"
+  | "1.2"
+  | "1.3"
+  | "1.4"
+  | "2.04"
+  | "2.05"
+  | "3.0"
+  | "3.1"
+  | "3.2";
+
+export type Chipset = "OCS" | "ECS" | "AGA";
+
+export interface AmigaDefinition {
+  model: AmigaModel;
+  cpu: CPU;
+  fastMemory: number;
+  kickstart: Kickstart;
+  chipMemory: number;
+  chipset: Chipset;
+}
+
+export type Amiga = {
+  definition: AmigaDefinition;
+  disks: DiskSetup;
+};
+
+export type EmulatorSettings = {
+  kickstarts: { [k in Kickstart]?: string };
+};

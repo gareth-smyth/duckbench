@@ -19,7 +19,7 @@ export default class WinUAEEnvironment {
     fs.writeSync(configFile, "use_gui=no\n");
     fs.writeSync(configFile, "// headless=true\n");
     fs.writeSync(configFile, "use_debugger=true\n");
-    fs.writeSync(configFile, "win32.serial_port=TCP://0.0.0.0:1234\n");
+    fs.writeSync(configFile, "win32.serial_port=TCP://0.0.0.0:8552\n");
     fs.writeSync(configFile, "serial_direct=true\n");
     fs.writeSync(configFile, "serial_translate=disabled\n");
 
@@ -49,9 +49,8 @@ export default class WinUAEEnvironment {
   }
 
   writeDiskConfig(configFile: number, disks: DiskSetup) {
-    disks.ADF.forEach((disk) => {
-      const diskNum = disk.drive[2];
-      fs.writeSync(configFile, `floppy${diskNum}=${disk.location}\n`);
+    disks.ADF.forEach((disk, diskNum) => {
+      fs.writeSync(configFile, `floppy${diskNum}=${disk}\n`);
     });
 
     let diskIdx = 0;

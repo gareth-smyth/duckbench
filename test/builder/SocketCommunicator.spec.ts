@@ -62,7 +62,7 @@ it("resolves connection when a prompt is sent over the socket", async () => {
   mockSocket.eventFunctions.data("2.A Prompt>");
   await flushTimeoutsAndPromises();
   expect(mockSocket.connect).toHaveBeenCalledTimes(1);
-  expect(mockSocket.connect).toHaveBeenCalledWith(1234, "127.0.0.1");
+  expect(mockSocket.connect).toHaveBeenCalledWith(8055, "127.0.0.1");
 
   return connectionPromise;
 });
@@ -75,7 +75,7 @@ it('resolves connection when a prompt is sent over the socket in two "packets"',
   mockSocket.eventFunctions.data("ompt>");
   await flushTimeoutsAndPromises();
   expect(mockSocket.connect).toHaveBeenCalledTimes(1);
-  expect(mockSocket.connect).toHaveBeenCalledWith(1234, "127.0.0.1");
+  expect(mockSocket.connect).toHaveBeenCalledWith(8055, "127.0.0.1");
 
   return connectionPromise;
 });

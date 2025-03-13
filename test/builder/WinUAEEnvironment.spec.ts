@@ -127,7 +127,7 @@ it("writes the non-configurable parts of the config", () => {
   expect(fs.writeSync).toHaveBeenCalledWith(112, "use_debugger=true\n");
   expect(fs.writeSync).toHaveBeenCalledWith(
     112,
-    "win32.serial_port=TCP://0.0.0.0:1234\n",
+    "win32.serial_port=TCP://0.0.0.0:8552\n",
   );
   expect(fs.writeSync).toHaveBeenCalledWith(112, "serial_direct=true\n");
   expect(fs.writeSync).toHaveBeenCalledWith(112, "serial_translate=disabled\n");
@@ -202,10 +202,7 @@ it("writes the floppy related parts of the config", () => {
     {
       executionFolder: "/some/folder",
       disks: {
-        ADF: [
-          { drive: "df0:", location: "some/disk.adf" },
-          { drive: "df2:", location: "some/disk2.adf" },
-        ],
+        ADF: ["some/disk.adf", "some/disk2.adf"],
         HDF: [],
         CD: [],
         MAPPED_DRIVE: [],
@@ -220,7 +217,7 @@ it("writes the floppy related parts of the config", () => {
     "w",
   );
   expect(fs.writeSync).toHaveBeenCalledWith(112, "floppy0=some/disk.adf\n");
-  expect(fs.writeSync).toHaveBeenCalledWith(112, "floppy2=some/disk2.adf\n");
+  expect(fs.writeSync).toHaveBeenCalledWith(112, "floppy1=some/disk2.adf\n");
 });
 
 it("writes the CD related parts of the config", () => {

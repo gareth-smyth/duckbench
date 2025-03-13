@@ -169,43 +169,30 @@ it("inserts amiga and non-amiga os ADFs", () => {
   ) as unknown as typeof Date;
   const environmentSetup = new EnvironmentSetup();
 
-  environmentSetup.insertDisk("df0", { location: "/home/disk1.adf" });
-  environmentSetup.insertDisk("df1", {
-    location: "",
-    type: "amigaos",
-    name: "amiga-os-310-workbench.adf",
-  });
-  environmentSetup.insertDisk("df5", { location: "/home/disk2.adf" });
+  environmentSetup.insertDisk("df0", "/home/disk1.adf");
+  environmentSetup.insertDisk("df1", "amiga_os_3.1.adf");
+  environmentSetup.insertDisk("df5", "/home/disk2.adf");
   const bootDiskLocation = path.join(
     BASE_DIR,
     "execution",
     "20200401202930235",
     "df0.adf",
   );
-  expect(environmentSetup.disks.ADF[0]).toEqual({
-    drive: "df0",
-    location: bootDiskLocation,
-  });
+  expect(environmentSetup.disks.ADF[0]).toEqual(bootDiskLocation);
   const wbDiskLocation = path.join(
     BASE_DIR,
     "execution",
     "20200401202930235",
     "df1.adf",
   );
-  expect(environmentSetup.disks.ADF[1]).toEqual({
-    drive: "df1",
-    location: wbDiskLocation,
-  });
+  expect(environmentSetup.disks.ADF[1]).toEqual(wbDiskLocation);
   const otherDiskLocation = path.join(
     BASE_DIR,
     "execution",
     "20200401202930235",
     "df5.adf",
   );
-  expect(environmentSetup.disks.ADF[2]).toEqual({
-    drive: "df5",
-    location: otherDiskLocation,
-  });
+  expect(environmentSetup.disks.ADF[2]).toEqual(otherDiskLocation);
 });
 
 it("sets disk permissions for non amiga os disks", () => {
@@ -214,7 +201,7 @@ it("sets disk permissions for non amiga os disks", () => {
   ) as unknown as typeof Date;
   const environmentSetup = new EnvironmentSetup();
 
-  environmentSetup.insertDisk("df0", { location: "/home/disk1.adf" });
+  environmentSetup.insertDisk("df0", "/home/disk1.adf");
   expect(fs.chmodSync).toHaveBeenCalledTimes(1);
   const diskLocation = path.join(
     BASE_DIR,
@@ -238,9 +225,10 @@ it("copies disks and sets permissions", () => {
     "df1.adf",
   );
 
-  environmentSetup.insertDisk("df1", {
-    location: "/home/os_disks/amiga-os-310-workbench.adf",
-  });
+  environmentSetup.insertDisk(
+    "df1",
+    "/home/os_disks/amiga-os-310-workbench.adf",
+  );
   expect(fs.copyFileSync).toHaveBeenCalledTimes(1);
   expect(fs.copyFileSync).toHaveBeenCalledWith(
     wbSourceLocation,

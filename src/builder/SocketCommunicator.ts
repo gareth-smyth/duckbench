@@ -97,7 +97,7 @@ export default class SocketCommunicator {
       this.status = "CONNECTING";
       this.connectedResolve = resolve;
     });
-    this.client.connect(1234, "127.0.0.1");
+    this.client.connect(8055, "127.0.0.1");
     return connectingPromise;
   }
 

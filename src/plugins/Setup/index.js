@@ -102,14 +102,12 @@ export default class Setup {
     );
 
     Logger.debug("Inserting boot disk in DF0 and workbench disk in DF1.");
-    environmentSetup.insertDisk("DF0", { location: bootDiskFileName });
-    environmentSetup.insertDisk("DF1", {
-      location: SettingsService.getValue(
-        settings,
-        "InstallWorkbench310",
-        "workbench",
-      ).file,
-    });
+    environmentSetup.insertDisk("DF0", bootDiskFileName);
+    environmentSetup.insertDisk(
+      "DF1",
+      SettingsService.getValue(settings, "InstallWorkbench310", "workbench")
+        .file,
+    );
 
     Logger.debug(`Mapping DB5: as DB_HOST_CACHE: at ${CACHE_DIR}`);
     environmentSetup.mapFolderToDrive("DB5", CACHE_DIR, "DB_HOST_CACHE");

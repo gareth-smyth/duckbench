@@ -30,18 +30,17 @@ it("inserts the boot disk", async () => {
   const setup = new Setup();
   await setup.prepare({}, environmentSetup, settings);
 
-  expect(environmentSetup.insertDisk).toHaveBeenCalledWith("DF0", {
-    location: path.join("some folder", "boot.adf"),
-  });
+  expect(environmentSetup.insertDisk).toHaveBeenCalledWith(
+    "DF0",
+    path.join("some folder", "boot.adf"),
+  );
 });
 
 it("inserts the workbench disk", async () => {
   const setup = new Setup();
   await setup.prepare({}, environmentSetup, settings);
 
-  expect(environmentSetup.insertDisk).toHaveBeenCalledWith("DF1", {
-    location: "aFile",
-  });
+  expect(environmentSetup.insertDisk).toHaveBeenCalledWith("DF1", "aFile");
 });
 
 it("maps the host cache drive", async () => {

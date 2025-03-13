@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { BASE_DIR } from "../services/BaseDirService";
-import { DiskDefinition, DiskSetup } from "../types";
+import { DiskSetup } from "../types";
 
 export default class EnvironmentSetup {
   readonly disks: DiskSetup = { ADF: [], CD: [], HDF: [], MAPPED_DRIVE: [] };
@@ -57,13 +57,12 @@ export default class EnvironmentSetup {
     this.disks.CD.push({ location });
   }
 
-  insertDisk(drive: string, diskDefinition: DiskDefinition) {
-    const startLocation = diskDefinition.location;
+  insertDisk(drive: string, fileLocation: string) {
     const location = path.join(this.executionFolder, drive + ".adf");
-    fs.copyFileSync(startLocation, location);
+    fs.copyFileSync(fileLocation, location);
     fs.chmodSync(location, 0o0666);
 
-    this.disks.ADF.push({ drive, location });
+    this.disks.ADF.push(location);
   }
 
   attachHDF(drive: string, location: string) {
