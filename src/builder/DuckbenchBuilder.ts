@@ -8,7 +8,7 @@ import Logger from "../services/LoggerService";
 export default class DuckbenchBuilder {
   async build(config: PluginConfig[], settings: Settings) {
     const environmentSetup = new EnvironmentSetup();
-    const environment = new WinUAEEnvironment(environmentSetup, settings);
+    let environment: WinUAEEnvironment | undefined = undefined;
     const communicator = new Communicator();
 
     const runner = new Runner();
@@ -16,6 +16,7 @@ export default class DuckbenchBuilder {
       await runner.configureAndSetup(config);
       runner.validate(environmentSetup, settings);
       await runner.prepare(environmentSetup, settings);
+      environment = new WinUAEEnvironment(environmentSetup, settings);
       await this.executeBuild(
         environment,
         environmentSetup,
@@ -28,7 +29,7 @@ export default class DuckbenchBuilder {
       throw err;
     } finally {
       communicator.close();
-      environment.stop();
+      environment?.stop();
       environmentSetup.destroy();
       Logger.info("Build complete.");
     }
@@ -57,6 +58,8 @@ export default class DuckbenchBuilder {
     await this.sleep(1000);
 
     await runner.finalise(environmentSetup);
+
+    return environment;
   }
 
   /* istanbul ignore next */

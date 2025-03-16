@@ -6,7 +6,7 @@ export type PluginConfig = {
   type?: string;
   id?: string;
   name: string;
-  optionValues?: Record<string, string>;
+  optionValues?: Record<string, unknown>;
 };
 
 export type Settings = Record<string, Array<Record<string, unknown>>>;
@@ -16,27 +16,27 @@ export type PluginError = {
   text: string;
 };
 
-export type Plugin = {
+export type Plugin<PluginConfigType extends PluginConfig> = {
   structure: () => Record<string, unknown>;
-  prepare: (
-    config: PluginConfig,
+  prepare?: (
+    config: PluginConfigType,
     environmentSetup: EnvironmentSetup,
-    settings: Settings,
+    settings?: Settings,
   ) => Promise<void>;
   validate?: (
-    config: PluginConfig,
+    config: PluginConfigType,
     environmentSetup: EnvironmentSetup,
     settings: Settings,
   ) => Array<PluginError>;
-  install: (
-    config: PluginConfig,
+  install?: (
+    config: PluginConfigType,
     communicator: Communicator,
     pluginStore: PluginStore,
     environmentSetup: EnvironmentSetup,
     settings: Settings,
   ) => Promise<void>;
-  finalise: (
-    config: PluginConfig,
+  finalise?: (
+    config: PluginConfigType,
     environmentSetup: EnvironmentSetup,
   ) => Promise<void>;
 };
@@ -163,3 +163,5 @@ export type Amiga = {
 export type EmulatorSettings = {
   kickstarts: { [k in Kickstart]?: string };
 };
+
+export type EmulatorType = "WinUAE" | "FS-UAE" | "Amiberry";

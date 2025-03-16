@@ -20,13 +20,26 @@ export default class SettingsService {
         .map(async (pluginDir) => {
           let PluginSettings;
 
-          const settingsFile = path.join(
+          let settingsFile = "";
+          const settingsFileTs = path.join(
+            pluginPath,
+            pluginDir.name,
+            "settings.ts",
+          );
+          const settingsFileJs = path.join(
             pluginPath,
             pluginDir.name,
             "settings.js",
           );
-          if (!fs.existsSync(settingsFile)) {
+          if (
+            !fs.existsSync(settingsFileTs) &&
+            !fs.existsSync(settingsFileJs)
+          ) {
             return Promise.resolve(undefined);
+          } else if (fs.existsSync(settingsFileTs)) {
+            settingsFile = settingsFileTs;
+          } else if (fs.existsSync(settingsFileJs)) {
+            settingsFile = settingsFileJs;
           }
 
           PluginSettings = (await import(settingsFile)).default;

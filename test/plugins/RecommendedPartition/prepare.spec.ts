@@ -1,4 +1,5 @@
 import path from "path";
+import { vi } from "vitest";
 
 import RecommendedPartition from "../../../src/plugins/RecommendedPartition/index.js";
 

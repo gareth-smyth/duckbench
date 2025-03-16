@@ -1,17 +1,12 @@
 import fs from "fs";
 import path from "path";
 import { BASE_DIR } from "../services/BaseDirService";
-import { DiskSetup } from "../types";
+import { AmigaDefinition, DiskSetup } from "../types";
 
 export default class EnvironmentSetup {
-  readonly disks: DiskSetup = { ADF: [], CD: [], HDF: [], MAPPED_DRIVE: [] };
+  disks: DiskSetup = { ADF: [], HDF: [], MAPPED_DRIVE: [], CD: [] };
   executionFolder: string;
-  systemName: string = "";
-  rom: string = "";
-  cpu: string = "";
-  chipMem: string = "";
-  fastMem: string = "";
-  floppyDrive: boolean = true;
+  amigaDefinition?: AmigaDefinition;
 
   constructor() {
     const executionNumber = new Date().toISOString().replace(/[^0-9]/g, "");
@@ -24,35 +19,6 @@ export default class EnvironmentSetup {
     fs.mkdirSync(this.executionFolder);
   }
 
-  setSystemName(systemName: string) {
-    this.systemName = systemName;
-  }
-
-  setRom(rom: string) {
-    this.rom = rom;
-  }
-
-  setCPU(cpu: string) {
-    this.cpu = cpu;
-  }
-
-  // UnADF requires an 020
-  getCPU() {
-    return Math.max(Number(this.cpu), 68020).toString();
-  }
-
-  setChipMem(chipMem: string) {
-    this.chipMem = chipMem;
-  }
-
-  setFastMem(fastMem: string) {
-    this.fastMem = fastMem;
-  }
-
-  setFloppyDrive(floppyDrive: boolean) {
-    this.floppyDrive = floppyDrive;
-  }
-
   insertCDISO(location: string) {
     this.disks.CD.push(location);
   }
@@ -60,12 +26,13 @@ export default class EnvironmentSetup {
   insertDisk(drive: string, fileLocation: string) {
     const location = path.join(this.executionFolder, drive + ".adf");
     fs.copyFileSync(fileLocation, location);
-    fs.chmodSync(location, 0o0666);
+    fs.chmodSync(location, 0o0777);
 
     this.disks.ADF.push(location);
   }
 
   attachHDF(drive: string, location: string) {
+    fs.chmodSync(location, 0o0777);
     this.disks.HDF.push({ drive, location });
   }
 

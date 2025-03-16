@@ -41,7 +41,7 @@ export default class Communicator {
   async assign(
     name: string,
     folder: string,
-    options: CommandOptions,
+    options?: CommandOptions,
     commandCallback: SocketCommandCallback = this.noCallback,
     expectedResponse?: CommandExpectedResponse,
   ) {

@@ -1,4 +1,4 @@
-import RedirectInputFile from "../../../src/plugins/RedirectInputFile/index.js";
+import RedirectInputFile from "../../../src/plugins/RedirectInputFile";
 
 it("returns the default file location", async () => {
   const communicator = { echo: vi.fn() };

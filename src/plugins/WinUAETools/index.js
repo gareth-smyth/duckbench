@@ -41,19 +41,11 @@ export default class WinUAETools {
       Logger.trace(
         `Installing win uae tools to ${config.optionValues.location}`,
       );
-      if (
-        !fs.existsSync(path.join(CACHE_DIR, "uae-configuration")) ||
-        !fs.existsSync(path.join(CACHE_DIR, "uaectrl"))
-      ) {
+      if (!fs.existsSync(path.join(CACHE_DIR, "uaectrl"))) {
         Logger.trace("Installing win uae tools to cache");
 
         const emuRoot = settings["Setup"].find(
           (setting) => setting.name === "emulatorRoot",
-        );
-        const configurationPath = path.join(
-          emuRoot.value.folder,
-          "Amiga Programs",
-          "uae-configuration",
         );
         const ctrlPath = path.join(
           emuRoot.value.folder,
@@ -61,20 +53,12 @@ export default class WinUAETools {
           "uaectrl",
         );
 
-        fs.copyFileSync(
-          configurationPath,
-          path.join(CACHE_DIR, "uae-configuration"),
-        );
         fs.copyFileSync(ctrlPath, path.join(CACHE_DIR, "uaectrl"));
       } else {
         Logger.trace(
           "Not installing win uae tools to cache - they have already been installed",
         );
       }
-      await communicator.copy(
-        "DB_HOST_CACHE:uae-configuration",
-        `${config.optionValues.location}`,
-      );
       await communicator.copy(
         "DB_HOST_CACHE:uaectrl",
         `${config.optionValues.location}`,

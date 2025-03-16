@@ -4,7 +4,7 @@ export default class HostFolder {
     const currentSetting = node.attrs.currentSetting;
     return m("input[type=text].form-control", {
       name: setting.name,
-      value: currentSetting.value.folder,
+      value: currentSetting.value,
       onchange: (event) => {
         this.settingChanged(event, currentSetting);
       },
@@ -12,6 +12,6 @@ export default class HostFolder {
   }
 
   settingChanged(event, currentSetting) {
-    currentSetting.value = { folder: event.target.value };
+    currentSetting.value = event.target.value;
   }
 }

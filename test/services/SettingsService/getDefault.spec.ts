@@ -2,11 +2,8 @@ import SettingsService from "../../../src/services/SettingsService.js";
 
 it("returns the default value for the setting and plugin", async () => {
   process.env.DUCKBENCH_EMU = "Some place";
-  const defaultValue = await SettingsService.getDefault(
-    "Setup",
-    "emulatorRoot",
-  );
-  expect(defaultValue).toEqual({ value: { folder: "Some place" } });
+  const defaultValue = await SettingsService.getDefault("Setup", "emulator");
+  expect(defaultValue).toEqual({ value: "Some place/WinUAE.exe" });
 });
 
 it("does not call default if it does not exist for the plugin", async () => {

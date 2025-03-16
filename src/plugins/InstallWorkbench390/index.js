@@ -39,7 +39,7 @@ export default class InstallWorkbench390 extends BaseInstall {
       settings,
       "InstallWorkbench390",
       "isoLocation",
-    ).file;
+    );
     if (!isoLocation) {
       validationErrors.push({
         type: "error",
@@ -62,7 +62,7 @@ export default class InstallWorkbench390 extends BaseInstall {
         "InstallWorkbench390",
         "isoLocation",
       );
-      environmentSetup.insertCDISO(isoLocation.file);
+      environmentSetup.insertCDISO(isoLocation);
     }
   }
 

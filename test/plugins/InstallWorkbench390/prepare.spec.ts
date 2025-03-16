@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import InstallWorkbench390 from "../../../src/plugins/InstallWorkbench390/index.js";
-import { MockedObject } from "vitest";
+import { MockedObject, vi } from "vitest";
 
 const pluginBasePath = "../../../src/plugins/InstallWorkbench390";
 
@@ -14,9 +14,7 @@ it("copies the installer patch", async () => {
     { optionValues: { iso390: "a_folder" } },
     { floppyDrive: true, executionFolder: "aFolder", insertCDISO: vi.fn() },
     {
-      InstallWorkbench390: [
-        { name: "isoLocation", value: { file: "isoFile" } },
-      ],
+      InstallWorkbench390: [{ name: "isoLocation", value: "isoFile" }],
     },
   );
 
@@ -88,7 +86,7 @@ it("inserts the ISO if workbench has not been cached", async () => {
 
   const insertCDISO = vi.fn();
   const installWorkbench390 = new InstallWorkbench390();
-  await installWorkbench390.prepare(
+  installWorkbench390.prepare(
     { optionValues: { iso390: "a_folder" } },
     { floppyDrive: false, executionFolder: "aFolder", insertCDISO },
     {
@@ -106,13 +104,11 @@ it("does not insert the ISO if workbench is already cached", async () => {
 
   const insertCDISO = vi.fn();
   const installWorkbench390 = new InstallWorkbench390();
-  await installWorkbench390.prepare(
+  installWorkbench390.prepare(
     { optionValues: { iso390: "a_folder" } },
     { floppyDrive: false, executionFolder: "aFolder", insertCDISO },
     {
-      InstallWorkbench390: [
-        { name: "isoLocation", value: { file: "isoFile" } },
-      ],
+      InstallWorkbench390: [{ name: "isoLocation", value: "isoFile" }],
     },
   );
 

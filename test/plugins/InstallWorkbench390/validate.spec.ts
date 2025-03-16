@@ -4,15 +4,16 @@ vi.mock("fs");
 const mockedFs = fs as MockedObject<typeof fs>;
 
 import Setup from "../../../src/plugins/InstallWorkbench390/index.js";
-import { MockedObject } from "vitest";
+import { MockedObject, vi } from "vitest";
+import { Settings } from "../../../src/types";
 
-let settings;
+let settings: Settings;
 const config = undefined;
 const environmentSetup = undefined;
 
 beforeEach(() => {
   settings = {
-    InstallWorkbench390: [{ name: "isoLocation", value: { file: "wb39.iso" } }],
+    InstallWorkbench390: [{ name: "isoLocation", value: "wb39.iso" }],
   };
 });
 
@@ -26,7 +27,7 @@ it("returns no errors when iso location is set and exists", () => {
 
 it("returns an error when iso location is not set", () => {
   mockedFs.existsSync.mockReturnValue(true);
-  settings["InstallWorkbench390"][0].value.file = "";
+  settings["InstallWorkbench390"][0].value = "";
   const errors = new Setup().validate(config, environmentSetup, settings);
   expect(errors).toContainEqual({
     type: "error",

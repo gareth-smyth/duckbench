@@ -3,16 +3,20 @@ import ValidationError from "../errors/ValidationError.js";
 import type { Plugin, PluginConfig, Settings } from "../types";
 import EnvironmentSetup from "./EnvironmentSetup";
 import Communicator from "./Communicator";
+import SetupPlugin, { SetupPluginConfig } from "../plugins/Setup";
 
 export default class Runner {
   private readonly pluginStore: PluginStore = new PluginStore();
   configs: PluginConfig[] = [];
-  setupConfig: PluginConfig = { name: "Setup" };
-  setupPlugin?: Plugin;
+  setupConfig: SetupPluginConfig = { name: "Setup", type: "internal" };
+  setupPlugin?: SetupPlugin;
 
   async configureAndSetup(configs: PluginConfig[]) {
     this.setupPlugin = await this.pluginStore.create(this.setupConfig.name);
-    this.pluginStore.add(this.setupConfig.name, this.setupPlugin!);
+    this.pluginStore.add(
+      this.setupConfig.name,
+      this.setupPlugin as Plugin<PluginConfig>,
+    );
     await this.configure(configs);
   }
 
@@ -83,8 +87,6 @@ export default class Runner {
       this.setupConfig,
       communicator,
       this.pluginStore,
-      environmentSetup,
-      settings,
     );
     for (
       let configIndex = 0;

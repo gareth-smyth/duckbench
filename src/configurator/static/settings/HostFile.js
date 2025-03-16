@@ -4,7 +4,7 @@ export default class HostFile {
     const currentSetting = node.attrs.currentSetting;
     return m("input[type=text].form-control", {
       name: setting.name,
-      value: currentSetting.value.file,
+      value: currentSetting.value,
       onchange: (event) => {
         this.settingChanged(event, currentSetting);
       },
@@ -12,6 +12,6 @@ export default class HostFile {
   }
 
   settingChanged(event, currentSetting) {
-    currentSetting.value = { file: event.target.value };
+    currentSetting.value = event.target.value;
   }
 }

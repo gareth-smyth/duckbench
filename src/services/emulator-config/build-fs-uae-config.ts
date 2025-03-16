@@ -1,9 +1,12 @@
 import { Amiga, EmulatorSettings } from "../../types";
+import Logger from "../LoggerService";
 
 export function buildFsUaeConfig(
   amiga: Amiga,
   emulatorSettings: EmulatorSettings,
 ): string {
+  Logger.trace(emulatorSettings);
+
   const configLines: string[] = [];
 
   configLines.push(
@@ -38,12 +41,25 @@ export function buildFsUaeConfig(
     configLines.push(
       `hard_drive_${diskIndex}=${mappedDriveDefinition.location}`,
     );
+    configLines.push(
+      `hard_drive_${diskIndex}_device=${mappedDriveDefinition.drive}`,
+    );
+    configLines.push(
+      `hard_drive_${diskIndex}_label=${mappedDriveDefinition.name}`,
+    );
+    configLines.push(
+      `hard_drive_${diskIndex}_read_only=${mappedDriveDefinition.writeable ? "0" : "1"}`,
+    );
     diskIndex += 1;
   });
   amiga.disks.HDF.forEach((mappedDriveDefinition) => {
     configLines.push(
       `hard_drive_${diskIndex}=${mappedDriveDefinition.location}`,
     );
+    configLines.push(
+      `hard_drive_${diskIndex}_device=${mappedDriveDefinition.drive}`,
+    );
+    configLines.push(`hard_drive_${diskIndex}_read_only=0`);
     diskIndex += 1;
   });
   configLines.push("");

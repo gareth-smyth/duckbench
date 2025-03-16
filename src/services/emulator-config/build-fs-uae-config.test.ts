@@ -66,7 +66,10 @@ it("configures  drives", () => {
       ...standardAmiga,
       disks: {
         ...standardAmiga.disks,
-        MAPPED_DRIVE: [{ location: "/drive/1" }, { location: "/drive/2" }],
+        MAPPED_DRIVE: [
+          { location: "/drive/1" },
+          { location: "/drive/2", writeable: true },
+        ],
         HDF: [
           { location: "/drive/3.hdf", drive: "df1" },
           { location: "/drive/4.hdf", drive: "df2" },

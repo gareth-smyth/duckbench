@@ -119,10 +119,12 @@ export default class InstallWorkbench310 {
       const fileSetting = settings[this.name].find(
         (setting) => setting.name === diskName,
       );
-      fs.copyFileSync(
-        fileSetting.value.file,
-        path.join(environmentSetup.executionFolder, `${diskName}.adf`),
+      const dest = path.join(
+        environmentSetup.executionFolder,
+        `${diskName}.adf`,
       );
+      fs.copyFileSync(fileSetting.value, dest);
+      fs.chmodSync(dest, 0o0777);
     }
   }
 

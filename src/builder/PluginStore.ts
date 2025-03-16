@@ -1,9 +1,9 @@
 import fs from "fs";
 import path from "path";
-import type { Plugin } from "../types";
+import type { Plugin, PluginConfig } from "../types";
 
 export default class PluginStore {
-  private readonly plugins: Record<string, Plugin> = {};
+  private readonly plugins: Record<string, Plugin<PluginConfig>> = {};
 
   static async getStructures() {
     const pluginPath = path.join(import.meta.dirname, "../", "plugins");
@@ -35,7 +35,7 @@ export default class PluginStore {
     return new Plugin();
   }
 
-  add(pluginName: string, plugin: Plugin) {
+  add(pluginName: string, plugin: Plugin<PluginConfig>) {
     this.plugins[pluginName.toLocaleLowerCase()] = plugin;
   }
 

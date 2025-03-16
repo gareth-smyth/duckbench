@@ -13,10 +13,13 @@ export default class CommandRunner {
     this.socketCommunicator = socketCommunicator;
   }
 
+  /* istanbul ignore next */
+  noCallback() {}
+
   async run(
     commandString: string,
-    options: CommandOptions,
-    commandCallback: SocketCommandCallback,
+    options?: CommandOptions,
+    commandCallback: SocketCommandCallback = this.noCallback,
     expectedResponse?: CommandExpectedResponse,
   ) {
     commandString = this.addOptions(commandString, options);
@@ -90,23 +93,24 @@ export default class CommandRunner {
     );
   }
 
-  addOptions(command: string, options: CommandOptions) {
-    const redirectIn = options.REDIRECT_IN;
-    const redirectOut = options.REDIRECT_OUT;
+  addOptions(command: string, options?: CommandOptions) {
+    const redirectIn = options?.REDIRECT_IN;
+    const redirectOut = options?.REDIRECT_OUT;
 
-    Object.keys(options)
-      .filter(
-        (optionKey) =>
-          optionKey !== "REDIRECT_IN" && optionKey !== "REDIRECT_OUT",
-      )
-      .forEach((optionKey) => {
-        const optionValue = options[optionKey];
-        if (optionValue === true) {
-          command = `${command} ${optionKey}`;
-        } else {
-          command = `${command} ${optionKey} ${optionValue}`;
-        }
-      });
+    options &&
+      Object.keys(options)
+        .filter(
+          (optionKey) =>
+            optionKey !== "REDIRECT_IN" && optionKey !== "REDIRECT_OUT",
+        )
+        .forEach((optionKey) => {
+          const optionValue = options[optionKey];
+          if (optionValue === true) {
+            command = `${command} ${optionKey}`;
+          } else {
+            command = `${command} ${optionKey} ${optionValue}`;
+          }
+        });
 
     if (redirectIn) {
       command = `${command} < ${redirectIn}`;

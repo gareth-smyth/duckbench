@@ -3,127 +3,87 @@ import path from "path";
 import { ChildProcess, spawn } from "child_process";
 import SettingsService from "../services/SettingsService.js";
 import EnvironmentSetup from "./EnvironmentSetup";
-import { DiskSetup, Settings } from "../types";
+import { Amiga, EmulatorSettings, EmulatorType, Settings } from "../types";
+import { buildWinUaeConfig } from "../services/emulator-config/build-win-uae-config";
+import { buildFsUaeConfig } from "../services/emulator-config/build-fs-uae-config";
+import { buildAmiberryConfig } from "../services/emulator-config/build-amiberry-config";
 
 export default class WinUAEEnvironment {
   private readonly settings;
   private readonly uaeRunningConfig;
-  private winuaeProcess: ChildProcess | undefined;
+  private uaeProcess: ChildProcess | undefined;
 
   constructor(environment: EnvironmentSetup, settings: Settings) {
     this.settings = settings;
 
-    this.uaeRunningConfig = path.join(environment.executionFolder, "amiga.uae");
-    const configFile = fs.openSync(this.uaeRunningConfig, "w");
-
-    fs.writeSync(configFile, "use_gui=no\n");
-    fs.writeSync(configFile, "// headless=true\n");
-    fs.writeSync(configFile, "use_debugger=true\n");
-    fs.writeSync(configFile, "win32.serial_port=TCP://0.0.0.0:8552\n");
-    fs.writeSync(configFile, "serial_direct=true\n");
-    fs.writeSync(configFile, "serial_translate=disabled\n");
-
-    const romFile = SettingsService.getValue(settings, "Setup", "rom310");
-    fs.writeSync(configFile, `kickstart_rom_file=${romFile.file}\n`);
-    fs.writeSync(
-      configFile,
-      `cpu_type=${this.getCPUType(environment.getCPU())}\n`,
-    );
-    const cpuModel = this.getCPUModel(environment.getCPU());
-    if (cpuModel) {
-      fs.writeSync(configFile, `cpu_model=${cpuModel}\n`);
+    /* istanbul ignore if @preserve */
+    if (!environment.amigaDefinition) {
+      throw Error("Could not find an amiga definition");
     }
 
-    fs.writeSync(
-      configFile,
-      `chipmem_size=${Number(environment.chipMem) * 2}\n`,
-    );
-    fs.writeSync(configFile, `z3mem_size=${environment.fastMem}\n`);
-    fs.writeSync(configFile, "floppy_speed=0\n");
-    fs.writeSync(configFile, "cpu_speed=max\n");
-    fs.writeSync(configFile, "chipset=aga\n");
+    const amiga: Amiga = {
+      definition: environment.amigaDefinition,
+      disks: environment.disks,
+    };
 
-    this.writeDiskConfig(configFile, environment.disks);
+    const emulatorSettings: EmulatorSettings = {
+      kickstarts: {
+        "3.1": SettingsService.getValue(settings, "Setup", "rom310"),
+      },
+    };
 
-    fs.closeSync(configFile);
-  }
-
-  writeDiskConfig(configFile: number, disks: DiskSetup) {
-    disks.ADF.forEach((disk, diskNum) => {
-      fs.writeSync(configFile, `floppy${diskNum}=${disk}\n`);
-    });
-
-    let diskIdx = 0;
-    disks.HDF.forEach((disk) => {
-      const hardfileLine = `hardfile2=rw,${disk.drive}:${disk.location},0,0,0,512,0,,uae${diskIdx}\n`;
-      const hfLine = `uaehf${diskIdx}=hdf,rw,${disk.drive}:${disk.location},0,0,0,512,0,,uae${diskIdx}\n`;
-      fs.writeSync(configFile, hardfileLine);
-      fs.writeSync(configFile, hfLine);
-      diskIdx += 1;
-    });
-
-    disks.MAPPED_DRIVE.forEach((disk) => {
-      const readWrite = disk.writeable ? "rw" : "ro";
-      fs.writeSync(
-        configFile,
-        `filesystem2=${readWrite},${disk.drive}:${disk.name}:${disk.location},-128\n`,
-      );
-      fs.writeSync(
-        configFile,
-        `uaehf${diskIdx}=dir,${readWrite},${disk.drive}:${disk.name}:${disk.location},-128\n`,
-      );
-      diskIdx += 1;
-    });
-
-    if (disks.CD.length) {
-      fs.writeSync(configFile, "win32.map_cd_drives=true\n");
-      disks.CD.forEach((disk, cdIdx) => {
-        fs.writeSync(configFile, `cdimage${cdIdx}=${disk}\n`);
-      });
-    }
-  }
-
-  getCPUType(cpu: string) {
-    if (cpu === "68030") {
-      return "68020";
-    } else {
-      return cpu;
-    }
-  }
-
-  getCPUModel(cpu: string) {
-    if (cpu === "68030") {
-      return "68030";
-    }
-    return;
-  }
-
-  stop() {
-    if (this.winuaeProcess) {
-      this.winuaeProcess.kill();
-    }
-  }
-
-  start() {
     const emulatorRoot = SettingsService.getValue(
       this.settings,
       "Setup",
-      "emulatorRoot",
+      "emulator",
     );
-    const path32 = path.join(emulatorRoot.folder, "WinUAE.exe");
-    const path64 = path.join(emulatorRoot.folder, "WinUAE64.exe");
-    const pathMacFsUAE = path.join(
-      emulatorRoot.folder,
-      "FS-UAE.app/Contents/MacOS/FS-UAE",
+    const emulatorType = this.getEmulatorType(emulatorRoot);
+    this.uaeRunningConfig = path.join(environment.executionFolder, "amiga.uae");
+    /* istanbul ignore else @preserve */
+    if (emulatorType === "WinUAE") {
+      const config = buildWinUaeConfig(amiga, emulatorSettings);
+      fs.writeFileSync(this.uaeRunningConfig, config);
+    } else if (emulatorType === "FS-UAE") {
+      const config = buildFsUaeConfig(amiga, emulatorSettings);
+      fs.writeFileSync(this.uaeRunningConfig, config);
+    } else if (emulatorType === "Amiberry") {
+      const config = buildAmiberryConfig(amiga, emulatorSettings);
+      fs.writeFileSync(this.uaeRunningConfig, config);
+    } else {
+      throw Error("Could not find an emulator");
+    }
+  }
+
+  stop() {
+    if (this.uaeProcess) {
+      this.uaeProcess.kill();
+    }
+  }
+
+  private getEmulatorType(emulator: string): EmulatorType | undefined {
+    /* istanbul ignore else @preserve */
+    if (emulator.toLowerCase().includes("winuae")) {
+      return "WinUAE";
+    } else if (emulator.toLowerCase().includes("amiberry")) {
+      return "Amiberry";
+    } else if (emulator.toLowerCase().includes("fs-uae")) {
+      return "FS-UAE";
+    }
+
+    /* istanbul ignore next @preserve */
+    return undefined;
+  }
+
+  start() {
+    const emulator = SettingsService.getValue(
+      this.settings,
+      "Setup",
+      "emulator",
     );
-    const executablePath = fs.existsSync(path32)
-      ? path32
-      : fs.existsSync(path64)
-        ? path64
-        : pathMacFsUAE;
-    this.winuaeProcess = spawn(executablePath, [
+    this.uaeProcess = spawn(emulator, [
       "-f",
       path.join(this.uaeRunningConfig),
+      "-G",
     ]);
   }
 }

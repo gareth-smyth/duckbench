@@ -132,7 +132,7 @@ export default class InstallWorkbench320 {
         (setting) => setting.name === diskName,
       );
       fs.copyFileSync(
-        fileSetting.value.file,
+        fileSetting.value,
         path.join(environmentSetup.executionFolder, `${diskName}.adf`),
       );
     }
