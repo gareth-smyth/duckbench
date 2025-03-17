@@ -2,6 +2,10 @@ import PluginStore from "./PluginStore";
 import type { Plugin, PluginConfig } from "../types";
 import { vi } from "vitest";
 
+beforeAll(() => {
+  vi.unmock("node:fs");
+});
+
 describe("access plugin store", () => {
   it("adds plugins to store", () => {
     const pluginStore = new PluginStore();

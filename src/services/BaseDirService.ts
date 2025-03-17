@@ -7,7 +7,7 @@ const TOOLS_DIR = path.join(BASE_DIR, "external_tools");
 const CACHE_DIR = path.join(BASE_DIR, "cache");
 
 if (!fs.existsSync(CACHE_DIR)) {
-  fs.mkdirSync(CACHE_DIR);
+  fs.mkdirSync(CACHE_DIR, { recursive: true });
 }
 
 if (!fs.existsSync(TOOLS_DIR)) {

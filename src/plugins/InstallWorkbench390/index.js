@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import BaseInstall from "../InstallWorkbench310/index.js";
-import SettingsService from "../../services/SettingsService.js";
+import SettingsService from "../../services/SettingsService/SettingsService.ts";
 import Logger from "../../services/LoggerService.js";
 import { CACHE_DIR } from "../../services/BaseDirService.js";
 

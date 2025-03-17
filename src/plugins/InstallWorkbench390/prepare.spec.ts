@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import InstallWorkbench390 from "../../../src/plugins/InstallWorkbench390/index.js";
+import InstallWorkbench390 from "./index.js";
 import { MockedObject, vi } from "vitest";
 
 const pluginBasePath = "../../../src/plugins/InstallWorkbench390";
@@ -90,9 +90,7 @@ it("inserts the ISO if workbench has not been cached", async () => {
     { optionValues: { iso390: "a_folder" } },
     { floppyDrive: false, executionFolder: "aFolder", insertCDISO },
     {
-      InstallWorkbench390: [
-        { name: "isoLocation", value: { file: "isoFile" } },
-      ],
+      InstallWorkbench390: [{ name: "isoLocation", value: "isoFile" }],
     },
   );
 

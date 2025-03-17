@@ -1,4 +1,9 @@
-import SettingsService from "../../../src/services/SettingsService.js";
+import SettingsService from "./SettingsService.js";
+import { vi } from "vitest";
+
+beforeAll(() => {
+  vi.unmock("node:fs");
+});
 
 it("returns settings for all plugins", async () => {
   const settings = await SettingsService.getAvailable();

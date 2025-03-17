@@ -115,6 +115,7 @@ it("creates a runner, configures, prepares, installs and finalises", async () =>
   expect(mockRunnerInstance.finalise).toHaveBeenCalledTimes(1);
   expect(mockRunnerInstance.finalise).toHaveBeenCalledWith(
     mockEnvironmentSetupInstance,
+    {},
   );
 });
 
@@ -155,6 +156,7 @@ it("throws an exception when finalising the environment fails", async () => {
       expect(mockRunnerInstance.finalise).toHaveBeenCalledTimes(1);
       expect(mockRunnerInstance.finalise).toHaveBeenCalledWith(
         mockEnvironmentSetupInstance,
+        {},
       );
     });
 });

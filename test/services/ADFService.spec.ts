@@ -3,9 +3,14 @@ import os from "os";
 import path from "path";
 
 import adfService from "../../src/services/ADFService.js";
+import { vi } from "vitest";
 
 const createdFiles: string[] = [];
 const littleTempFileName = path.join(os.tmpdir(), "testfile.txt");
+
+beforeAll(() => {
+  vi.unmock("node:fs");
+});
 
 beforeEach(() => {
   fs.writeFileSync(littleTempFileName, Buffer.alloc(10, 2, "utf-8"));
@@ -58,6 +63,7 @@ it("handles attempts to overfill the disk", () => {
       adfService.createFile(diskFileName, `test-data${i}.txt`, bigTempFileName);
     }
   } catch (err) {
+    // @ts-expect-error err will have message
     expect(err.message).toEqual("Could not allocate free block");
     return;
   }

@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
-import { ScreenMode } from "../../../src/services/prefs/ScreenMode.js";
-import InstallWorkbench310 from "../../../src/plugins/InstallWorkbench310/index.js";
+import { ScreenMode } from "../../services/prefs/ScreenMode.js";
+import InstallWorkbench310 from "./index.js";
+import { vi } from "vitest";
 
 const pluginBasePath = "../../../src/plugins/InstallWorkbench310";
 

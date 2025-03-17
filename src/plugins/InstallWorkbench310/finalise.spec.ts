@@ -1,13 +1,14 @@
 import fs from "fs";
 import path from "path";
 
-import InstallWorkbench320 from "../../../src/plugins/InstallWorkbench320/index.js";
+import InstallWorkbench310 from "./index.js";
+import { vi } from "vitest";
 
 vi.mock("fs");
 
 it("copies the hard drive after installation is complete", async () => {
-  const installWorkbench320 = new InstallWorkbench320();
-  installWorkbench320.finalise(
+  const installWorkbench310 = new InstallWorkbench310();
+  installWorkbench310.finalise(
     {},
     { executionFolder: "/some folder/", systemName: "A7000+" },
   );
@@ -15,7 +16,7 @@ it("copies the hard drive after installation is complete", async () => {
   expect(fs.copyFileSync).toHaveBeenCalledTimes(1);
   const expectedOutputFolder = path.join(
     process.cwd(),
-    "InstallWorkbench320_A7000+.hdf",
+    "InstallWorkbench310_A7000+.hdf",
   );
   const expectedInputFolder = path.join("/some folder/", "NewWorkbench.hdf");
   expect(fs.copyFileSync).toHaveBeenCalledWith(

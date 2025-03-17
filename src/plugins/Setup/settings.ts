@@ -22,6 +22,16 @@ export default class SetupSettings {
           label: "Kickstart 3.1",
           hasDefaultSearch: true,
         },
+        {
+          name: "outputLocation",
+          type: "hostFolder",
+          label: "Output location",
+        },
+        {
+          name: "outputConfig",
+          type: "boolean",
+          label: "Output location",
+        },
       ],
     };
   }

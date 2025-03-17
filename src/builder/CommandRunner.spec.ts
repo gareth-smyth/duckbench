@@ -23,12 +23,12 @@ it("throws an error when the socket communicator throws an error", async () => {
 it("runs the command without options when none are supplied", async () => {
   socketCommunicator.runCommand.mockResolvedValue([]);
 
-  await commandRunner.run("aCommand", {}, callback);
+  await commandRunner.run("aCommand", {});
 
   expect(socketCommunicator.runCommand).toHaveBeenCalledTimes(1);
   expect(socketCommunicator.runCommand).toHaveBeenCalledWith(
     "aCommand",
-    callback,
+    commandRunner.noCallback,
   );
 });
 

@@ -38,12 +38,14 @@ export type Plugin<PluginConfigType extends PluginConfig> = {
   finalise?: (
     config: PluginConfigType,
     environmentSetup: EnvironmentSetup,
+    settings?: Settings,
   ) => Promise<void>;
 };
 
 export type HdfDefinition = {
   drive: string;
   location: string;
+  name?: string;
 };
 
 export type MappedDriveDefinition = {

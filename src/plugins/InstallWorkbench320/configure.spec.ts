@@ -1,4 +1,4 @@
-import InstallWorkbench320 from "../../../src/plugins/InstallWorkbench320/index.js";
+import InstallWorkbench320 from "./index.js";
 
 it("returns UnADF dependency", () => {
   const installWorkbench320 = new InstallWorkbench320();

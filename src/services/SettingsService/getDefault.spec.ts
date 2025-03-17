@@ -1,4 +1,4 @@
-import SettingsService from "../../../src/services/SettingsService.js";
+import SettingsService from "./SettingsService.js";
 
 it("returns the default value for the setting and plugin", async () => {
   process.env.DUCKBENCH_EMU = "Some place";

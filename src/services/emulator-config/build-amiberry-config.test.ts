@@ -19,11 +19,9 @@ it("loads base config", () => {
   expect(config).toContain("serial_port=TCP://0.0.0.0:8055");
   expect(config).toContain("serial_direct=true");
   expect(config).toContain("serial_translate=disabled");
-  expect(config).toContain(`cpu_type=${standardAmiga.definition.cpu}`);
-  expect(config).toContain(`z3mem_size=${standardAmiga.definition.fastMemory}`);
-  expect(config).toContain(
-    `chipmem_size=${standardAmiga.definition.chipMemory}`,
-  );
+  expect(config).toContain(`cpu_model=${standardAmiga.definition.cpu}`);
+  expect(config).toContain(`fastmem_size=4`);
+  expect(config).toContain(`chipmem_size=4`);
   expect(config).toContain(`chipset=${standardAmiga.definition.chipset}`);
   expect(config).toContain(
     `kickstart_rom_file=${standardEmulatorSettings.kickstarts[standardAmiga.definition.kickstart]}`,

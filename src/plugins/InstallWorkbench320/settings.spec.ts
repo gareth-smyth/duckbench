@@ -4,13 +4,14 @@ import fs from "fs";
 vi.mock("fs");
 const mockedFs = fs as MockedObject<typeof fs>;
 
-import SystemDiskService from "../../../src/services/SystemDiskService.js";
+import SystemDiskService from "../../services/SystemDiskService.js";
 vi.mock("../../../src/services/SystemDiskService");
 const mockedSystemDiskService = SystemDiskService as MockedObject<
   typeof SystemDiskService
 >;
 
-import Settings from "../../../src/plugins/InstallWorkbench320/settings.js";
+import Settings from "./settings.js";
+import { MockedObject, vi } from "vitest";
 
 describe("get", () => {
   it("returns the top level details", () => {

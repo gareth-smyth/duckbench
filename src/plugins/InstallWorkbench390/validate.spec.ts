@@ -3,9 +3,9 @@ import fs from "fs";
 vi.mock("fs");
 const mockedFs = fs as MockedObject<typeof fs>;
 
-import Setup from "../../../src/plugins/InstallWorkbench390/index.js";
+import Setup from "./index.js";
 import { MockedObject, vi } from "vitest";
-import { Settings } from "../../../src/types";
+import { Settings } from "../../types";
 
 let settings: Settings;
 const config = undefined;

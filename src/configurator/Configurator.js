@@ -5,7 +5,7 @@ import { URL } from "url";
 import { WebSocketServer } from "ws";
 import DuckbenchBuilder from "../builder/DuckbenchBuilder.js";
 import PluginStore from "../builder/PluginStore.js";
-import SettingsService from "../services/SettingsService.js";
+import SettingsService from "../services/SettingsService/SettingsService.ts";
 import ValidationError from "../errors/ValidationError.js";
 import Logger from "../services/LoggerService.js";
 

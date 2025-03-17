@@ -1,6 +1,11 @@
 import LhaService from "../../../src/services/LhaService.js";
 import path from "path";
 import fs from "fs";
+import { vi } from "vitest";
+
+beforeAll(() => {
+  vi.unmock("node:fs");
+});
 
 const TEMP_FILE_PATH = import.meta.dirname;
 

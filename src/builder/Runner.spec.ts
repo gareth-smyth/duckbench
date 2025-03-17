@@ -1,5 +1,5 @@
 import PluginStore from "./PluginStore";
-import type { Plugin, PluginConfig } from "../types";
+import type { Plugin, PluginConfig, Settings } from "../types";
 
 vi.mock("../../src/builder/PluginStore");
 
@@ -348,7 +348,7 @@ describe("finalise", () => {
     const runner = new Runner();
     runner.configs = [{ name: "a" }, { name: "b" }, { name: "c" }];
     const env = {} as unknown as EnvironmentSetup;
-    await runner.finalise(env);
+    await runner.finalise(env, {} as unknown as Settings);
 
     expect(finaliseFunc1).toHaveBeenCalledTimes(1);
     expect(finaliseFunc1).toHaveBeenCalledWith({ name: "a" }, env);

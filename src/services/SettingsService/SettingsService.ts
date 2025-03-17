@@ -1,11 +1,12 @@
 import fs from "fs";
 import path from "path";
-import Logger from "./LoggerService.js";
-import { BASE_DIR } from "./BaseDirService.js";
+import Logger from "../LoggerService.js";
+import { BASE_DIR } from "../BaseDirService.js";
+import { Settings } from "../../types";
 
 export default class SettingsService {
   static async getAvailable() {
-    const pluginPath = path.join(import.meta.dirname, "../", "plugins");
+    const pluginPath = path.join(import.meta.dirname, "../../", "plugins");
     const pluginsDir = fs.opendirSync(pluginPath);
     const plugins = [];
     let directoryEntry;
@@ -18,8 +19,6 @@ export default class SettingsService {
       plugins
         .filter((pluginDir) => pluginDir.isDirectory())
         .map(async (pluginDir) => {
-          let PluginSettings;
-
           let settingsFile = "";
           const settingsFileTs = path.join(
             pluginPath,
@@ -31,6 +30,8 @@ export default class SettingsService {
             pluginDir.name,
             "settings.js",
           );
+
+          /* istanbul ignore else @preserve */
           if (
             !fs.existsSync(settingsFileTs) &&
             !fs.existsSync(settingsFileJs)
@@ -42,7 +43,7 @@ export default class SettingsService {
             settingsFile = settingsFileJs;
           }
 
-          PluginSettings = (await import(settingsFile)).default;
+          const PluginSettings = (await import(settingsFile)).default;
           Logger.trace(`Loading settings for ${pluginDir.name}`);
           const pluginSettings = new PluginSettings();
           return pluginSettings.get();
@@ -50,7 +51,7 @@ export default class SettingsService {
     );
 
     /* Only two plugins have settings as yet and tests use real plugins so can't test sort fully */
-    /* istanbul ignore next */
+    /* istanbul ignore next @preserve */
     return settings
       .filter((settings) => settings !== undefined)
       .sort((plugin1, plugin2) => {
@@ -69,13 +70,13 @@ export default class SettingsService {
     return {};
   }
 
-  static saveCurrent(settings) {
+  static saveCurrent(settings: Settings) {
     const settingsPath = path.join(BASE_DIR, "db_settings.json");
     fs.writeFileSync(settingsPath, JSON.stringify(settings));
   }
 
-  static async getDefault(pluginName, settingName) {
-    const pluginPath = path.join(import.meta.dirname, "../", "plugins");
+  static async getDefault(pluginName: string, settingName: string) {
+    const pluginPath = path.join(import.meta.dirname, "../../", "plugins");
     const PluginSettings = (
       await import(path.join(pluginPath, pluginName, "settings.js"))
     ).default;
@@ -84,10 +85,21 @@ export default class SettingsService {
     if (settings.default) {
       return { value: await settings.default(settingName) };
     }
+
+    return undefined;
   }
 
-  static getValue(settings, pluginName, settingName) {
-    return settings[pluginName].find((setting) => setting.name === settingName)
+  static getValue(settings: Settings, pluginName: string, settingName: string) {
+    return settings[pluginName].find((setting) => setting.name === settingName)!
       .value;
+  }
+
+  static getValueIfDefined(
+    settings: Settings,
+    pluginName: string,
+    settingName: string,
+  ) {
+    return settings[pluginName].find((setting) => setting.name === settingName)
+      ?.value;
   }
 }

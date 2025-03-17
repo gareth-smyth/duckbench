@@ -2,8 +2,8 @@ import fs from "fs";
 vi.mock("fs");
 const mockedFs = fs as MockedObject<typeof fs>;
 
-import SettingsService from "../../../src/services/SettingsService.js";
-import { MockedObject } from "vitest";
+import SettingsService from "./SettingsService.js";
+import { MockedObject, vi } from "vitest";
 
 it("returns an empty object when settings file does not exist", () => {
   mockedFs.existsSync.mockReturnValueOnce(false);

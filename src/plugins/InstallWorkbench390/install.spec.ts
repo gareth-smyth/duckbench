@@ -1,14 +1,14 @@
 import fs from "fs";
-import InstallWorkbench390 from "../../../src/plugins/InstallWorkbench390/index.js";
+import InstallWorkbench390 from "./index.js";
 
-import Communicator from "../../../src/builder/Communicator.js";
-import PluginStore from "../../../src/builder/PluginStore";
-import InstallLG from "../../../src/plugins/InstallerLG/index.js";
-import Patch from "../../../src/plugins/Patch/index.js";
-import WinUAETools from "../../../src/plugins/WinUAETools/index.js";
-import UnADF from "../../../src/plugins/UnADF/index.js";
+import Communicator from "../../builder/Communicator.js";
+import PluginStore from "../../builder/PluginStore";
+import InstallLG from "../InstallerLG";
+import Patch from "../Patch";
+import WinUAETools from "../WinUAETools";
+import UnADF from "../UnADF";
 import { MockedObject, vi } from "vitest";
-import Logger from "../../../src/services/LoggerService.js";
+import Logger from "../../services/LoggerService.js";
 
 vi.mock("fs");
 vi.mock("../../../src/services/LoggerService");
@@ -420,7 +420,7 @@ describe("setting up the new workbench", () => {
         if (callback) {
           callback({ message: "DATA_EVENT", data: "!NOTWORK!! [MOUNTED]" });
         }
-        return Promise.resolve([""]);
+        return Promise.resolve();
       },
     );
 
@@ -445,7 +445,7 @@ describe("setting up the new workbench", () => {
         if (callback) {
           callback({ message: "DATA_EVENT", data: "WORK [MOUNTED]" });
         }
-        return Promise.resolve([""]);
+        return Promise.resolve();
       },
     );
 

@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
-import InstallWorkbench320 from "../../../src/plugins/InstallWorkbench320/index.js";
+import InstallWorkbench320 from "./index.js";
+import { vi } from "vitest";
 
 const pluginBasePath = "../../../src/plugins/InstallWorkbench320";
 

@@ -51,13 +51,13 @@ export default class DuckbenchBuilder {
     communicator.close();
 
     Logger.info("Pausing before shutting down the emulator.");
-    await this.sleep(20000);
+    await this.sleep(10000);
     environment.stop();
 
     Logger.info("Pausing to let the emulator shutdown.");
     await this.sleep(1000);
 
-    await runner.finalise(environmentSetup);
+    await runner.finalise(environmentSetup, settings);
 
     return environment;
   }

@@ -1,7 +1,9 @@
-import RedirectInputFile from "../../../src/plugins/RedirectInputFile";
+import { vi } from "vitest";
+import RedirectInputFile from "./index";
+import Communicator from "../../builder/Communicator";
 
 it("returns the default file location", async () => {
-  const communicator = { echo: vi.fn() };
+  const communicator = { echo: vi.fn() } as unknown as Communicator;
   const redirectInputFile = new RedirectInputFile();
   expect(
     await redirectInputFile.createInput(["a", "b", "c"], communicator),
@@ -9,7 +11,7 @@ it("returns the default file location", async () => {
 });
 
 it("returns the file location", async () => {
-  const communicator = { echo: vi.fn() };
+  const communicator = { echo: vi.fn() } as unknown as Communicator;
   const redirectInputFile = new RedirectInputFile();
   expect(
     await redirectInputFile.createInput(
@@ -21,7 +23,7 @@ it("returns the file location", async () => {
 });
 
 it("echos the output", async () => {
-  const communicator = { echo: vi.fn() };
+  const communicator = { echo: vi.fn() } as unknown as Communicator;
   const redirectInputFile = new RedirectInputFile();
   await redirectInputFile.createInput(
     ["a", "b", "c"],

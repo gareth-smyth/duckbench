@@ -107,7 +107,7 @@ export default class Runner {
     }
   }
 
-  async finalise(environmentSetup: EnvironmentSetup) {
+  async finalise(environmentSetup: EnvironmentSetup, settings: Settings) {
     for (
       let configIndex = 0;
       configIndex < this.configs.length;
@@ -118,6 +118,11 @@ export default class Runner {
       if (plugin.finalise) {
         await plugin.finalise(config, environmentSetup);
       }
+      await this.setupPlugin?.finalise(
+        this.setupConfig,
+        environmentSetup,
+        settings,
+      );
     }
   }
 }

@@ -15,9 +15,14 @@ export function buildAmiberryConfig(
   configLines.push("serial_translate=disabled");
   configLines.push("");
 
-  configLines.push(`cpu_type=${amiga.definition.cpu}`);
-  configLines.push(`z3mem_size=${amiga.definition.fastMemory}`);
-  configLines.push(`chipmem_size=${amiga.definition.chipMemory}`);
+  configLines.push(`cpu_model=${amiga.definition.cpu}`);
+  configLines.push(`cpu_speed=0`);
+  configLines.push(
+    `fastmem_size=${Math.floor(amiga.definition.fastMemory / 1000)}`,
+  );
+  configLines.push(
+    `chipmem_size=${Math.floor(amiga.definition.chipMemory / 1000) * 2}`,
+  );
   configLines.push(`chipset=${amiga.definition.chipset}`);
   configLines.push("");
 

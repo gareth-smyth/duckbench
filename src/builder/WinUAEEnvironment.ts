@@ -1,12 +1,10 @@
 import fs from "fs";
 import path from "path";
 import { ChildProcess, spawn } from "child_process";
-import SettingsService from "../services/SettingsService.js";
+import SettingsService from "../services/SettingsService/SettingsService.js";
 import EnvironmentSetup from "./EnvironmentSetup";
-import { Amiga, EmulatorSettings, EmulatorType, Settings } from "../types";
-import { buildWinUaeConfig } from "../services/emulator-config/build-win-uae-config";
-import { buildFsUaeConfig } from "../services/emulator-config/build-fs-uae-config";
-import { buildAmiberryConfig } from "../services/emulator-config/build-amiberry-config";
+import { Amiga, EmulatorSettings, Settings } from "../types";
+import { buildConfig } from "../services/emulator-config/build-config";
 
 export default class WinUAEEnvironment {
   private readonly settings;
@@ -28,7 +26,7 @@ export default class WinUAEEnvironment {
 
     const emulatorSettings: EmulatorSettings = {
       kickstarts: {
-        "3.1": SettingsService.getValue(settings, "Setup", "rom310"),
+        "3.1": SettingsService.getValue(settings, "Setup", "rom310") as string,
       },
     };
 
@@ -36,22 +34,10 @@ export default class WinUAEEnvironment {
       this.settings,
       "Setup",
       "emulator",
-    );
-    const emulatorType = this.getEmulatorType(emulatorRoot);
+    ) as string;
+    const config = buildConfig(amiga, emulatorSettings, emulatorRoot);
     this.uaeRunningConfig = path.join(environment.executionFolder, "amiga.uae");
-    /* istanbul ignore else @preserve */
-    if (emulatorType === "WinUAE") {
-      const config = buildWinUaeConfig(amiga, emulatorSettings);
-      fs.writeFileSync(this.uaeRunningConfig, config);
-    } else if (emulatorType === "FS-UAE") {
-      const config = buildFsUaeConfig(amiga, emulatorSettings);
-      fs.writeFileSync(this.uaeRunningConfig, config);
-    } else if (emulatorType === "Amiberry") {
-      const config = buildAmiberryConfig(amiga, emulatorSettings);
-      fs.writeFileSync(this.uaeRunningConfig, config);
-    } else {
-      throw Error("Could not find an emulator");
-    }
+    fs.writeFileSync(this.uaeRunningConfig, config);
   }
 
   stop() {
@@ -60,26 +46,12 @@ export default class WinUAEEnvironment {
     }
   }
 
-  private getEmulatorType(emulator: string): EmulatorType | undefined {
-    /* istanbul ignore else @preserve */
-    if (emulator.toLowerCase().includes("winuae")) {
-      return "WinUAE";
-    } else if (emulator.toLowerCase().includes("amiberry")) {
-      return "Amiberry";
-    } else if (emulator.toLowerCase().includes("fs-uae")) {
-      return "FS-UAE";
-    }
-
-    /* istanbul ignore next @preserve */
-    return undefined;
-  }
-
   start() {
     const emulator = SettingsService.getValue(
       this.settings,
       "Setup",
       "emulator",
-    );
+    ) as string;
     this.uaeProcess = spawn(emulator, [
       "-f",
       path.join(this.uaeRunningConfig),

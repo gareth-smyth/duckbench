@@ -10,6 +10,10 @@ vi.mock("../../../src/services/BaseDirService", () => ({
   CACHE_DIR: import.meta.dirname,
 }));
 
+beforeAll(() => {
+  vi.unmock("node:fs");
+});
+
 const TEMP_FILE_PATH = import.meta.dirname;
 
 function cleanTemp() {
