@@ -1,4 +1,4 @@
-import fs from "fs";
+import { copyFileSync, existsSync } from "fs";
 import path from "path";
 import Logger from "../../services/LoggerService.js";
 import { CACHE_DIR } from "../../services/BaseDirService.js";
@@ -41,7 +41,7 @@ export default class WinUAETools {
       Logger.trace(
         `Installing win uae tools to ${config.optionValues.location}`,
       );
-      if (!fs.existsSync(path.join(CACHE_DIR, "uaectrl"))) {
+      if (!existsSync(path.join(CACHE_DIR, "uaectrl"))) {
         Logger.trace("Installing win uae tools to cache");
 
         const emuRoot = settings["Setup"].find(
@@ -53,7 +53,7 @@ export default class WinUAETools {
           "uaectrl",
         );
 
-        fs.copyFileSync(ctrlPath, path.join(CACHE_DIR, "uaectrl"));
+        copyFileSync(ctrlPath, path.join(CACHE_DIR, "uaectrl"));
       } else {
         Logger.trace(
           "Not installing win uae tools to cache - they have already been installed",

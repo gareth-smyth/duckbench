@@ -1,4 +1,4 @@
-import fs from "fs";
+import { copyFileSync } from "fs";
 import path from "path";
 import { ScreenMode } from "../../services/prefs/ScreenMode.js";
 import InstallWorkbench310 from "./index.js";
@@ -6,7 +6,6 @@ import { vi } from "vitest";
 
 const pluginBasePath = "../../../src/plugins/InstallWorkbench310";
 
-vi.mock("fs");
 vi.mock("../../../src/services/prefs/ScreenMode");
 
 const settings = {
@@ -34,10 +33,7 @@ it("copies the installer patch", async () => {
     "wb3.1_install.patch",
   );
   const expectedCopyTo = path.join("aFolder", "wb3.1_install.patch");
-  expect(fs.copyFileSync).toHaveBeenCalledWith(
-    expectedCopyFrom,
-    expectedCopyTo,
-  );
+  expect(copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });
 
 it("copies the install key", async () => {
@@ -51,10 +47,7 @@ it("copies the install key", async () => {
     "wb3.1_install_key",
   );
   const expectedCopyTo = path.join("aFolder", "wb3.1_install_key");
-  expect(fs.copyFileSync).toHaveBeenCalledWith(
-    expectedCopyFrom,
-    expectedCopyTo,
-  );
+  expect(copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });
 
 it("copies the startup sequence patch when floppy is false", async () => {
@@ -72,10 +65,7 @@ it("copies the startup sequence patch when floppy is false", async () => {
     "wb3.1_no_floppy_startup.patch",
   );
   const expectedCopyTo = path.join("aFolder", "wb3.1_no_floppy_startup.patch");
-  expect(fs.copyFileSync).toHaveBeenCalledWith(
-    expectedCopyFrom,
-    expectedCopyTo,
-  );
+  expect(copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });
 
 it("creates the screen mode prefs file when customisePrefs is set", async () => {

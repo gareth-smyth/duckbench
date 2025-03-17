@@ -1,7 +1,8 @@
-import fs from "fs";
+import { copyFileSync, existsSync } from "fs";
 import path from "path";
 import Logger from "../../services/LoggerService.js";
 import { CACHE_DIR } from "../../services/BaseDirService.js";
+import { closeSync, openSync } from "fs-extra";
 
 export default class InstallWorkbench320 {
   constructor() {
@@ -121,7 +122,7 @@ export default class InstallWorkbench320 {
       `Copying ${this.readableName} install script redirected input file from "${installKeySource}" ` +
         `to "${installKeyDestination}".`,
     );
-    fs.copyFileSync(installKeySource, installKeyDestination);
+    copyFileSync(installKeySource, installKeyDestination);
   }
 
   prepareDisks(settings, environmentSetup) {
@@ -131,7 +132,7 @@ export default class InstallWorkbench320 {
       const fileSetting = settings[this.name].find(
         (setting) => setting.name === diskName,
       );
-      fs.copyFileSync(
+      copyFileSync(
         fileSetting.value,
         path.join(environmentSetup.executionFolder, `${diskName}.adf`),
       );
@@ -150,7 +151,7 @@ export default class InstallWorkbench320 {
         `Copying startup sequence no floppy patch file from "${floppyPatchSource}" ` +
           `to "${floppyPatchDestination}".`,
       );
-      fs.copyFileSync(floppyPatchSource, floppyPatchDestination);
+      copyFileSync(floppyPatchSource, floppyPatchDestination);
     }
   }
 
@@ -167,7 +168,7 @@ export default class InstallWorkbench320 {
     Logger.debug(
       `Copying ${this.readableName} install patch file from "${patchSource}" to "${patchDestination}".`,
     );
-    fs.copyFileSync(patchSource, patchDestination);
+    copyFileSync(patchSource, patchDestination);
   }
 
   async install(config, communicator, pluginStore, environmentSetup) {
@@ -225,7 +226,7 @@ export default class InstallWorkbench320 {
 
   async installToCache(communicator, unADF, patch, installerLg) {
     const cacheMarkerPath = path.join(CACHE_DIR, this.cacheName);
-    if (!fs.existsSync(cacheMarkerPath)) {
+    if (!existsSync(cacheMarkerPath)) {
       Logger.debug(`${this.readableName} not yet cached. Building cache.`);
 
       await communicator.delete(
@@ -276,7 +277,7 @@ export default class InstallWorkbench320 {
         this.installationSuccessMessage,
       );
 
-      fs.closeSync(fs.openSync(cacheMarkerPath, "w"));
+      closeSync(openSync(cacheMarkerPath, "w"));
     }
   }
 
@@ -319,6 +320,6 @@ export default class InstallWorkbench320 {
       process.cwd(),
       `${this.name}_${environmentSetup.systemName}.hdf`,
     );
-    fs.copyFileSync(runningLocation, saveLocation);
+    copyFileSync(runningLocation, saveLocation);
   }
 }

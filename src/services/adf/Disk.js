@@ -1,4 +1,4 @@
-import fs from "fs";
+import { closeSync, openSync, readFileSync, writeSync } from "fs";
 
 import Bitmap from "./Bitmap.js";
 import DiskConfig from "./DiskConfig.js";
@@ -12,7 +12,7 @@ export default class Disk {
     if (!diskFile) {
       this.diskBuffer = Buffer.alloc(this.diskConfig.DISK_SIZE_BYTES, 0);
     } else {
-      this.diskBuffer = fs.readFileSync(diskFile);
+      this.diskBuffer = readFileSync(diskFile);
     }
     this.bootBlock = new BootBlock(this.diskBuffer, this.diskConfig);
     this.rootBlock = new RootBlock(this.diskBuffer, this.diskConfig);
@@ -34,9 +34,9 @@ export default class Disk {
   }
 
   save(fileName) {
-    const adfFile = fs.openSync(fileName, "w");
-    fs.writeSync(adfFile, this.diskBuffer, 0, this.diskBuffer.length, 0);
-    fs.closeSync(adfFile);
+    const adfFile = openSync(fileName, "w");
+    writeSync(adfFile, this.diskBuffer, 0, this.diskBuffer.length, 0);
+    closeSync(adfFile);
   }
 
   list(path = "") {
@@ -64,7 +64,7 @@ export default class Disk {
     const pathPart = this.pathPart(path);
     const filePart = this.filePart(path);
     const directory = this.rootBlock.findDirectory(pathPart);
-    directory.addFile(filePart, fs.readFileSync(source));
+    directory.addFile(filePart, readFileSync(source));
   }
 
   pathPart(path) {

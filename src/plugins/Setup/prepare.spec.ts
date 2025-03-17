@@ -1,4 +1,4 @@
-import fs from "fs";
+import { existsSync } from "fs";
 import path from "path";
 import { CACHE_DIR } from "../../services/BaseDirService";
 
@@ -6,14 +6,12 @@ import EnvironmentSetup from "../../builder/EnvironmentSetup.js";
 import ADFService from "../../services/ADFService.js";
 import HardDriveService from "../../services/HardDriveService.js";
 
-vi.mock("fs");
-const mockedFs = fs as MockedObject<typeof fs>;
 vi.mock("../../../src/builder/EnvironmentSetup");
 vi.mock("../../../src/services/ADFService");
 vi.mock("../../../src/services/HardDriveService");
 
 import Setup, { SetupPluginConfig } from "./index.js";
-import { MockedObject, vi } from "vitest";
+import { vi } from "vitest";
 
 const settings = {
   InstallWorkbench310: [{ name: "workbench", value: "aFile" }],
@@ -79,7 +77,7 @@ it("maps the running execution drive", async () => {
 });
 
 it("creates and adds the cache partition when it does not exist", async () => {
-  mockedFs.existsSync.mockReturnValueOnce(false);
+  vi.mocked(existsSync).mockReturnValueOnce(false);
   const setup = new Setup();
   await setup.prepare(config, environmentSetup, settings);
 
@@ -99,7 +97,7 @@ it("creates and adds the cache partition when it does not exist", async () => {
 });
 
 it("does not create the cache partition when it already exists", async () => {
-  mockedFs.existsSync.mockReturnValueOnce(true);
+  vi.mocked(existsSync).mockReturnValueOnce(true);
   const setup = new Setup();
   await setup.prepare(config, environmentSetup, settings);
 

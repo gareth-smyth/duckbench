@@ -1,4 +1,4 @@
-import fs from "fs";
+import { closeSync, existsSync, openSync } from "fs";
 import path from "path";
 
 import BaseInstall from "../InstallWorkbench310/index.js";
@@ -45,7 +45,7 @@ export default class InstallWorkbench390 extends BaseInstall {
         type: "error",
         text: "Workbench 3.9 ISO could not be found",
       });
-    } else if (!fs.existsSync(isoLocation)) {
+    } else if (!existsSync(isoLocation)) {
       validationErrors.push({
         type: "error",
         text: `Workbench 3.9 ISO could not be found at ${isoLocation}`,
@@ -56,7 +56,7 @@ export default class InstallWorkbench390 extends BaseInstall {
 
   prepareDisks(settings, environmentSetup) {
     const cacheMarkerPath = path.join(CACHE_DIR, this.cacheName);
-    if (!fs.existsSync(cacheMarkerPath)) {
+    if (!existsSync(cacheMarkerPath)) {
       const isoLocation = SettingsService.getValue(
         settings,
         "InstallWorkbench390",
@@ -68,7 +68,7 @@ export default class InstallWorkbench390 extends BaseInstall {
 
   async installToCache(communicator, unADF, patch, installerLg) {
     const cacheMarkerPath = path.join(CACHE_DIR, this.cacheName);
-    if (!fs.existsSync(cacheMarkerPath)) {
+    if (!existsSync(cacheMarkerPath)) {
       Logger.debug(`${this.readableName} not yet cached. Building cache.`);
 
       await communicator.delete(
@@ -113,7 +113,7 @@ export default class InstallWorkbench390 extends BaseInstall {
         this.installationSuccessMessage,
       );
 
-      fs.closeSync(fs.openSync(cacheMarkerPath, "w"));
+      closeSync(openSync(cacheMarkerPath, "w"));
     }
   }
 }

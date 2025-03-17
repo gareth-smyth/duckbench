@@ -1,15 +1,15 @@
 import IFFFIle from "../../../src/services/IFF/IFFFile.js";
 import { HIRES_LACED } from "../../../src/services/prefs/ScreenMode.js";
-import fs from "fs";
 import IFFWrapperChunk from "../../../src/services/IFF/IFFWrapperChunk.js";
 import { vi } from "vitest";
+import { unlinkSync } from "fs";
 
 beforeAll(() => {
   vi.unmock("node:fs");
 });
 
 afterAll(() => {
-  fs.unlinkSync("./test/services/IFF/testfile-test.iff");
+  unlinkSync("./test/services/IFF/testfile-test.iff");
 });
 
 it("reads a file correctly", () => {

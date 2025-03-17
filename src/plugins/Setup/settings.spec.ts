@@ -1,14 +1,12 @@
 import RomFinderService from "../../services/RomFinderService.js";
-import fs from "fs";
+import { existsSync } from "fs";
 import path from "path";
-vi.mock("fs");
 vi.mock("../../../src/services/RomFinderService");
 
-const mockedFs = fs as MockedObject<typeof fs>;
 RomFinderService.find = vi.fn();
 
 import Settings from "./settings.js";
-import { MockedObject, vi } from "vitest";
+import { vi } from "vitest";
 
 describe("emulatorRoot", () => {
   it("defaults emulator root to DUCKBENCH_EMU when it is set", () => {
@@ -20,7 +18,7 @@ describe("emulatorRoot", () => {
   it("defaults emulator root to C:/Program Files/WinUAE when DUCKBENCH_EMU is not set", () => {
     const settings = new Settings();
     delete process.env.DUCKBENCH_EMU;
-    mockedFs.existsSync
+    vi.mocked(existsSync)
       .mockReturnValueOnce(true)
       .mockReturnValueOnce(false)
       .mockReturnValueOnce(false);
@@ -32,7 +30,7 @@ describe("emulatorRoot", () => {
   it("defaults emulator root to C:/Program Files (x86)/WinUAE when DUCKBENCH_EMU is not set", () => {
     const settings = new Settings();
     delete process.env.DUCKBENCH_EMU;
-    mockedFs.existsSync
+    vi.mocked(existsSync)
       .mockReturnValueOnce(false)
       .mockReturnValueOnce(true)
       .mockReturnValueOnce(false);
@@ -44,7 +42,7 @@ describe("emulatorRoot", () => {
   it("defaults emulator root to /Applications when DUCKBENCH_EMU is not set", () => {
     const settings = new Settings();
     delete process.env.DUCKBENCH_EMU;
-    mockedFs.existsSync
+    vi.mocked(existsSync)
       .mockReturnValueOnce(false)
       .mockReturnValueOnce(false)
       .mockReturnValueOnce(true);
@@ -56,7 +54,7 @@ describe("emulatorRoot", () => {
   it("defaults emulator root to /Applications when DUCKBENCH_EMU is not set", () => {
     const settings = new Settings();
     delete process.env.DUCKBENCH_EMU;
-    mockedFs.existsSync
+    vi.mocked(existsSync)
       .mockReturnValueOnce(false)
       .mockReturnValueOnce(false)
       .mockReturnValueOnce(false)
@@ -69,7 +67,7 @@ describe("emulatorRoot", () => {
   it("defaults emulator root to undefined when DUCKBENCH_EMU is not set and not found in program files", () => {
     const settings = new Settings();
     delete process.env.DUCKBENCH_EMU;
-    mockedFs.existsSync.mockReturnValueOnce(false).mockReturnValueOnce(false);
+    vi.mocked(existsSync).mockReturnValueOnce(false).mockReturnValueOnce(false);
     expect(settings.default("emulator")).toEqual({});
   });
 });

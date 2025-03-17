@@ -43,7 +43,7 @@ yargs
 
       const duckbenchBuilder = new DuckbenchBuilder();
       await duckbenchBuilder.build(
-        JSON.parse(fs.readFileSync(args.db)),
+        JSON.parse(readFileSync(args.db)),
         WinUAEEnvironment,
         Communicator,
       );

@@ -1,10 +1,6 @@
-import fs from "fs";
-
-vi.mock("fs");
-const mockedFs = fs as MockedObject<typeof fs>;
-
+import { existsSync } from "fs";
 import Setup from "./index.js";
-import { MockedObject, vi } from "vitest";
+import { vi } from "vitest";
 import { Settings } from "../../types";
 
 let settings: Settings;
@@ -18,15 +14,15 @@ beforeEach(() => {
 });
 
 it("returns no errors when iso location is set and exists", () => {
-  mockedFs.existsSync.mockReturnValue(true);
+  vi.mocked(existsSync).mockReturnValue(true);
   const errors = new Setup().validate(config, environmentSetup, settings);
   expect(errors).toEqual([]);
-  expect(fs.existsSync).toHaveBeenCalledWith("wb39.iso");
-  expect(fs.existsSync).toHaveBeenCalledTimes(1);
+  expect(existsSync).toHaveBeenCalledWith("wb39.iso");
+  expect(existsSync).toHaveBeenCalledTimes(1);
 });
 
 it("returns an error when iso location is not set", () => {
-  mockedFs.existsSync.mockReturnValue(true);
+  vi.mocked(existsSync).mockReturnValue(true);
   settings["InstallWorkbench390"][0].value = "";
   const errors = new Setup().validate(config, environmentSetup, settings);
   expect(errors).toContainEqual({
@@ -37,11 +33,11 @@ it("returns an error when iso location is not set", () => {
 });
 
 it("returns an error when iso location is set but does not exist", () => {
-  mockedFs.existsSync.mockReturnValue(false);
+  vi.mocked(existsSync).mockReturnValue(false);
   const errors = new Setup().validate(config, environmentSetup, settings);
   expect(errors).toContainEqual({
     type: "error",
     text: "Workbench 3.9 ISO could not be found at wb39.iso",
   });
-  expect(fs.existsSync).toHaveBeenCalledWith("wb39.iso");
+  expect(existsSync).toHaveBeenCalledWith("wb39.iso");
 });

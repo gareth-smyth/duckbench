@@ -1,5 +1,5 @@
 import Setup, { SetupPluginConfig } from "./index";
-import { copyFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, writeFileSync } from "fs";
 import EnvironmentSetup from "../../builder/EnvironmentSetup";
 
 const config: SetupPluginConfig = { name: "Setup", type: "internal" };

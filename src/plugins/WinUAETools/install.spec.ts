@@ -1,11 +1,9 @@
-import fs from "fs";
+import { copyFileSync, existsSync } from "fs";
 import path from "path";
 
 import Communicator from "../../builder/Communicator.js";
 import { CACHE_DIR } from "../../services/BaseDirService";
 
-vi.mock("fs");
-const mockedFs = fs as MockedObject<typeof fs>;
 vi.mock("../../../src/builder/Communicator");
 
 import WinUAETools from "./index.js";
@@ -25,7 +23,7 @@ const settings = {
 };
 
 it("copies the tools to the cache when both not already there", async () => {
-  mockedFs.existsSync.mockReturnValueOnce(false).mockReturnValue(true);
+  vi.mocked(existsSync).mockReturnValueOnce(false).mockReturnValue(true);
 
   const winUAETools = new WinUAETools();
   await winUAETools.install(
@@ -52,15 +50,15 @@ it("copies the tools to the cache when both not already there", async () => {
 
   const emuRoot = "c:/some_place/";
   const ctrlPath = path.join(emuRoot, "Amiga Programs", "uaectrl");
-  expect(fs.copyFileSync).toHaveBeenCalledTimes(1);
-  expect(fs.copyFileSync).toHaveBeenCalledWith(
+  expect(copyFileSync).toHaveBeenCalledTimes(1);
+  expect(copyFileSync).toHaveBeenCalledWith(
     ctrlPath,
     path.join(CACHE_DIR, "uaectrl"),
   );
 });
 
 it("copies the tools to the cache when either not already there", async () => {
-  mockedFs.existsSync
+  vi.mocked(existsSync)
     .mockReturnValueOnce(true)
     .mockReturnValueOnce(false)
     .mockReturnValue(true);
@@ -90,15 +88,15 @@ it("copies the tools to the cache when either not already there", async () => {
 
   const emuRoot = "c:/some_place/";
   const ctrlPath = path.join(emuRoot, "Amiga Programs", "uaectrl");
-  expect(fs.copyFileSync).toHaveBeenCalledTimes(1);
-  expect(fs.copyFileSync).toHaveBeenCalledWith(
+  expect(copyFileSync).toHaveBeenCalledTimes(1);
+  expect(copyFileSync).toHaveBeenCalledWith(
     ctrlPath,
     path.join(CACHE_DIR, "uaectrl"),
   );
 });
 
 it("does not copy the tools to the cache when both already exist", async () => {
-  mockedFs.existsSync.mockReturnValue(true);
+  vi.mocked(existsSync).mockReturnValue(true);
 
   const winUAETools = new WinUAETools();
   await winUAETools.install(
@@ -123,7 +121,7 @@ it("does not copy the tools to the cache when both already exist", async () => {
     settings,
   );
 
-  expect(fs.copyFileSync).toHaveBeenCalledTimes(0);
+  expect(copyFileSync).toHaveBeenCalledTimes(0);
 });
 
 it("copies the tools to the requested location", async () => {

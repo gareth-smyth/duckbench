@@ -1,4 +1,4 @@
-import fs from "fs";
+import { opendirSync } from "fs";
 import path from "path";
 import Logger from "./LoggerService.js";
 
@@ -6,7 +6,7 @@ import Logger from "./LoggerService.js";
 /* istanbul ignore next */
 export default class RomFinderService {
   static find(romVersion, romPath) {
-    const romDir = fs.opendirSync(romPath);
+    const romDir = opendirSync(romPath);
     const roms = [];
     let directoryEntry;
     while ((directoryEntry = romDir.readSync()) !== null) {

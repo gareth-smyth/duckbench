@@ -1,4 +1,4 @@
-import fs from "fs";
+import { opendirSync } from "fs";
 import path from "path";
 
 import ADFService from "./ADFService.js";
@@ -8,7 +8,7 @@ import Logger from "./LoggerService.js";
 /* istanbul ignore next */
 export default class SystemDiskService {
   static async find(os, disk, diskPath) {
-    const diskDir = fs.opendirSync(diskPath);
+    const diskDir = opendirSync(diskPath);
     const disks = [];
     let directoryEntry;
     while ((directoryEntry = diskDir.readSync()) !== null) {

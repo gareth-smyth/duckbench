@@ -1,11 +1,8 @@
-import fs from "fs";
+import { copyFileSync } from "fs";
 import path from "path";
 import InstallWorkbench320 from "./index.js";
-import { vi } from "vitest";
 
 const pluginBasePath = "../../../src/plugins/InstallWorkbench320";
-
-vi.mock("fs");
 
 const settings = {
   InstallWorkbench320: [
@@ -38,10 +35,7 @@ it("copies the installer patch", async () => {
     "wb3.2_install.patch",
   );
   const expectedCopyTo = path.join("aFolder", "wb3.2_install.patch");
-  expect(fs.copyFileSync).toHaveBeenCalledWith(
-    expectedCopyFrom,
-    expectedCopyTo,
-  );
+  expect(copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });
 
 it("copies the install key", async () => {
@@ -59,10 +53,7 @@ it("copies the install key", async () => {
     "wb3.2_install_key",
   );
   const expectedCopyTo = path.join("aFolder", "wb3.2_install_key");
-  expect(fs.copyFileSync).toHaveBeenCalledWith(
-    expectedCopyFrom,
-    expectedCopyTo,
-  );
+  expect(copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });
 
 it("copies the startup sequence patch when floppy is false", async () => {
@@ -80,8 +71,5 @@ it("copies the startup sequence patch when floppy is false", async () => {
     "wb3.2_no_floppy_startup.patch",
   );
   const expectedCopyTo = path.join("aFolder", "wb3.2_no_floppy_startup.patch");
-  expect(fs.copyFileSync).toHaveBeenCalledWith(
-    expectedCopyFrom,
-    expectedCopyTo,
-  );
+  expect(copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });

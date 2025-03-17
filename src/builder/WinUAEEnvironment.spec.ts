@@ -1,6 +1,6 @@
 import { ChildProcess, spawn } from "child_process";
 import path from "path";
-import fs from "fs";
+import { writeFileSync } from "fs";
 
 import WinUAEEnvironment from "./WinUAEEnvironment.js";
 import { vi } from "vitest";
@@ -9,7 +9,6 @@ import { Settings } from "../types";
 import { Amiga1200 } from "../amigas";
 
 vi.mock("child_process");
-vi.mock("fs");
 
 const settings: Settings = {
   Setup: [
@@ -126,7 +125,7 @@ it("writes the config", () => {
     } as unknown as EnvironmentSetup,
     settings,
   );
-  expect(fs.writeFileSync).toHaveBeenCalledWith(
+  expect(writeFileSync).toHaveBeenCalledWith(
     path.join("/some/folder/", "amiga.uae"),
     expect.any(String),
   );

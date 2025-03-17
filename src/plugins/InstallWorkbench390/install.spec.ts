@@ -1,4 +1,4 @@
-import fs from "fs";
+import { existsSync } from "fs";
 import InstallWorkbench390 from "./index.js";
 
 import Communicator from "../../builder/Communicator.js";
@@ -10,7 +10,6 @@ import UnADF from "../UnADF";
 import { MockedObject, vi } from "vitest";
 import Logger from "../../services/LoggerService.js";
 
-vi.mock("fs");
 vi.mock("../../../src/services/LoggerService");
 vi.mock("../../../src/builder/Communicator");
 vi.mock("../../../src/builder/PluginStore");
@@ -25,7 +24,6 @@ let installerLG: MockedObject<InstallLG>;
 let winUAETools: MockedObject<WinUAETools>;
 let patch: MockedObject<Patch>;
 let unADF: MockedObject<UnADF>;
-const mockedFs = fs as MockedObject<typeof fs>;
 
 beforeEach(() => {
   communicator = vi.mocked(new Communicator());
@@ -45,7 +43,7 @@ const config = { optionValues: { customisePrefs: "Yes" } };
 
 describe("when the cache does not exist", () => {
   beforeEach(() => {
-    mockedFs.existsSync.mockReturnValueOnce(false);
+    vi.mocked(existsSync).mockReturnValueOnce(false);
   });
 
   it("deletes and recreates the wb install cache", async () => {
@@ -275,7 +273,7 @@ describe("when the cache does not exist", () => {
 
 describe("when the cache is already populated", () => {
   beforeEach(() => {
-    mockedFs.existsSync.mockReturnValueOnce(true);
+    vi.mocked(existsSync).mockReturnValueOnce(true);
   });
 
   it("does not delete and recreate the wb install cache", async () => {
@@ -365,7 +363,7 @@ describe("when the cache is already populated", () => {
 
 describe("setting up the new workbench", () => {
   beforeEach(() => {
-    mockedFs.existsSync.mockReturnValueOnce(true);
+    vi.mocked(existsSync).mockReturnValueOnce(true);
   });
 
   it("copies AUX: to devs and adds newshell to user-startup", async () => {

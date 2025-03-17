@@ -1,4 +1,4 @@
-import fs from "fs";
+import { readFileSync } from "fs";
 import path from "path";
 
 import CheckSum from "./CheckSum.js";
@@ -31,7 +31,7 @@ export default class RootBlock {
   }
 
   makeBootable() {
-    const bootCode = fs.readFileSync(
+    const bootCode = readFileSync(
       path.resolve(import.meta.dirname, "bootcode.bin"),
     );
     bootCode.copy(this.buffer, 12, 0, bootCode.length);

@@ -1,4 +1,4 @@
-import fs from "fs";
+import { unlinkSync, writeFileSync } from "fs";
 import os from "os";
 import path from "path";
 
@@ -13,13 +13,13 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-  fs.writeFileSync(littleTempFileName, Buffer.alloc(10, 2, "utf-8"));
+  writeFileSync(littleTempFileName, Buffer.alloc(10, 2, "utf-8"));
   createdFiles.push(littleTempFileName);
 });
 
 afterEach(() => {
   createdFiles.forEach((file) => {
-    fs.unlinkSync(file);
+    unlinkSync(file);
   });
   createdFiles.length = 0;
 });
@@ -53,7 +53,7 @@ it("creates files", () => {
 
 it("handles attempts to overfill the disk", () => {
   const bigTempFileName = path.join(os.tmpdir(), "bigTestFile.txt");
-  fs.writeFileSync(bigTempFileName, Buffer.alloc(35000, 2, "utf-8"));
+  writeFileSync(bigTempFileName, Buffer.alloc(35000, 2, "utf-8"));
   const diskFileName = path.join(os.tmpdir(), "testCreated7.adf");
   createdFiles.push(diskFileName);
   createdFiles.push(bigTempFileName);

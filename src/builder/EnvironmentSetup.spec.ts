@@ -1,14 +1,12 @@
 /* eslint-disable no-global-assign */
 import { when } from "jest-when";
-import fs from "fs";
+import { chmodSync, copyFileSync, existsSync, mkdirSync, rmdirSync } from "fs";
 import path from "path";
 import { vi } from "vitest";
 
 import EnvironmentSetup from "./EnvironmentSetup.js";
 import { BASE_DIR } from "../services/BaseDirService";
 import { Amiga1000 } from "../amigas";
-
-vi.mock("fs");
 
 let RealDate: typeof Date;
 
@@ -21,7 +19,7 @@ afterEach(() => {
 });
 
 it("creates the execution root folder and execution folder if it does not exist", () => {
-  when(fs.existsSync)
+  when(existsSync)
     .expectCalledWith(path.join(BASE_DIR, "execution"))
     .mockReturnValueOnce(false);
 
@@ -31,15 +29,15 @@ it("creates the execution root folder and execution folder if it does not exist"
 
   new EnvironmentSetup();
 
-  expect(fs.mkdirSync).toHaveBeenCalledTimes(2);
-  expect(fs.mkdirSync).toHaveBeenCalledWith(path.join(BASE_DIR, "execution"));
-  expect(fs.mkdirSync).toHaveBeenCalledWith(
+  expect(mkdirSync).toHaveBeenCalledTimes(2);
+  expect(mkdirSync).toHaveBeenCalledWith(path.join(BASE_DIR, "execution"));
+  expect(mkdirSync).toHaveBeenCalledWith(
     path.join(BASE_DIR, "execution", "20200401172930235"),
   );
 });
 
 it("deletes the execution folder when destroy is called.", () => {
-  when(fs.existsSync)
+  when(existsSync)
     .expectCalledWith(path.join(BASE_DIR, "execution"))
     .mockReturnValueOnce(false);
 
@@ -50,15 +48,15 @@ it("deletes the execution folder when destroy is called.", () => {
   const environmentSetup = new EnvironmentSetup();
   environmentSetup.destroy();
 
-  expect(fs.rmdirSync).toHaveBeenCalledTimes(1);
+  expect(rmdirSync).toHaveBeenCalledTimes(1);
   const executionFolder = path.join(BASE_DIR, "execution", "20200401172930235");
-  expect(fs.rmdirSync).toHaveBeenCalledWith(executionFolder, {
+  expect(rmdirSync).toHaveBeenCalledWith(executionFolder, {
     recursive: true,
   });
 });
 
 it("creates only the execution folder if the root folder exists", () => {
-  when(fs.existsSync)
+  when(existsSync)
     .expectCalledWith(path.join(BASE_DIR, "execution"))
     .mockReturnValueOnce(true);
 
@@ -68,8 +66,8 @@ it("creates only the execution folder if the root folder exists", () => {
 
   new EnvironmentSetup();
 
-  expect(fs.mkdirSync).toHaveBeenCalledTimes(1);
-  expect(fs.mkdirSync).toHaveBeenCalledWith(
+  expect(mkdirSync).toHaveBeenCalledTimes(1);
+  expect(mkdirSync).toHaveBeenCalledWith(
     path.join(BASE_DIR, "execution", "20200401182930235"),
   );
 });
@@ -159,14 +157,14 @@ it("sets disk permissions for non amiga os disks", () => {
   const environmentSetup = new EnvironmentSetup();
 
   environmentSetup.insertDisk("df0", "/home/disk1.adf");
-  expect(fs.chmodSync).toHaveBeenCalledTimes(1);
+  expect(chmodSync).toHaveBeenCalledTimes(1);
   const diskLocation = path.join(
     BASE_DIR,
     "execution",
     "20200401202930235",
     "df0.adf",
   );
-  expect(fs.chmodSync).toHaveBeenCalledWith(diskLocation, 0o0777);
+  expect(chmodSync).toHaveBeenCalledWith(diskLocation, 0o0777);
 });
 
 it("copies disks and sets permissions", () => {
@@ -186,17 +184,14 @@ it("copies disks and sets permissions", () => {
     "df1",
     "/home/os_disks/amiga-os-310-workbench.adf",
   );
-  expect(fs.copyFileSync).toHaveBeenCalledTimes(1);
-  expect(fs.copyFileSync).toHaveBeenCalledWith(
-    wbSourceLocation,
-    wbDestLocation,
-  );
-  expect(fs.chmodSync).toHaveBeenCalledTimes(1);
+  expect(copyFileSync).toHaveBeenCalledTimes(1);
+  expect(copyFileSync).toHaveBeenCalledWith(wbSourceLocation, wbDestLocation);
+  expect(chmodSync).toHaveBeenCalledTimes(1);
   const diskLocation = path.join(
     BASE_DIR,
     "execution",
     "20200401202930235",
     "df1.adf",
   );
-  expect(fs.chmodSync).toHaveBeenCalledWith(diskLocation, 0o0777);
+  expect(chmodSync).toHaveBeenCalledWith(diskLocation, 0o0777);
 });

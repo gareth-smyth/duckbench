@@ -1,4 +1,4 @@
-import fs from "fs";
+import { closeSync, openSync, statSync, writeSync } from "fs";
 import FileSystem from "./FileSystem.js";
 import FileSystemSegList from "./FileSystemSegList.js";
 import HardDriveConfig from "./HardDriveConfig.js";
@@ -7,8 +7,8 @@ import RigidDiskBlock from "./RigidDiskBlock.js";
 
 export default class HardDrive {
   read(diskFile) {
-    this.fileDescriptor = fs.openSync(diskFile, "r");
-    this.size = fs.statSync(diskFile).size;
+    this.fileDescriptor = openSync(diskFile, "r");
+    this.size = statSync(diskFile).size;
     this.rigidDiskBlock = new RigidDiskBlock(this.fileDescriptor);
     this.diskConfig = new HardDriveConfig(
       this.rigidDiskBlock.getCylinders(),
@@ -57,9 +57,9 @@ export default class HardDrive {
   }
 
   save(hardDriveConfig, diskFile) {
-    const fileDescriptor = fs.openSync(diskFile, "w+");
+    const fileDescriptor = openSync(diskFile, "w+");
 
-    fs.writeSync(
+    writeSync(
       fileDescriptor,
       Buffer.alloc(1),
       0,
@@ -76,7 +76,7 @@ export default class HardDrive {
     this.fileSystemSegLists.forEach((fileSystemLoadSegList) => {
       fileSystemLoadSegList.write(hardDriveConfig, fileDescriptor);
     });
-    fs.closeSync(fileDescriptor);
+    closeSync(fileDescriptor);
   }
 
   getPartitions() {

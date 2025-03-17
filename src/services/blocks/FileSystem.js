@@ -1,11 +1,11 @@
-import fs from "fs";
+import { readSync, writeSync } from "fs";
 
 export default class FileSystem {
   read(file, blockPointer, hardDriveConfig) {
     this.hardDriveConfig = hardDriveConfig;
     this.buffer = Buffer.alloc(256, 0);
     this.blockPointer = blockPointer;
-    fs.readSync(
+    readSync(
       file,
       this.buffer,
       0,
@@ -15,7 +15,7 @@ export default class FileSystem {
   }
 
   write(hardDriveConfig, file) {
-    fs.writeSync(
+    writeSync(
       file,
       this.buffer,
       0,

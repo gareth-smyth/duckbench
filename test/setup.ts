@@ -3,11 +3,12 @@ import createFetchMock from "vitest-fetch-mock";
 import { vi } from "vitest";
 import "vitest-fetch-mock";
 
-vi.mock("node:fs", async (importOriginal) => {
-  const actual = await importOriginal();
+vi.mock("node:fs", async () => {
   const fakeFs = {
-    // @ts-expect-error Spread operator usage
-    ...actual,
+    readFileSync: vi.fn(),
+    existsSync: vi.fn(),
+    openSync: vi.fn(),
+    closeSync: vi.fn(),
     chmodSync: vi.fn(),
     copyFileSync: vi.fn(),
     mkdirSync: vi.fn(),
@@ -17,8 +18,6 @@ vi.mock("node:fs", async (importOriginal) => {
     writeSync: vi.fn(),
   };
   return {
-    // @ts-expect-error Spread operator usage
-    ...actual,
     default: fakeFs,
     ...fakeFs,
   };

@@ -1,4 +1,4 @@
-import fs from "fs";
+import { existsSync } from "fs";
 import path from "path";
 import { CACHE_DIR } from "../../services/BaseDirService.js";
 
@@ -13,7 +13,7 @@ export default class Settings {
           name: "isoLocation",
           type: "hostFile",
           label: "3.9 .ISO file",
-          cached: fs.existsSync(cacheMarkerPath),
+          cached: existsSync(cacheMarkerPath),
         },
       ],
     };

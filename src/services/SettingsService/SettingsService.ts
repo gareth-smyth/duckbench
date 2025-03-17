@@ -1,4 +1,4 @@
-import fs from "fs";
+import { opendirSync, readFileSync, existsSync, writeFileSync } from "node:fs";
 import path from "path";
 import Logger from "../LoggerService.js";
 import { BASE_DIR } from "../BaseDirService.js";
@@ -7,7 +7,7 @@ import { Settings } from "../../types";
 export default class SettingsService {
   static async getAvailable() {
     const pluginPath = path.join(import.meta.dirname, "../../", "plugins");
-    const pluginsDir = fs.opendirSync(pluginPath);
+    const pluginsDir = opendirSync(pluginPath);
     const plugins = [];
     let directoryEntry;
     while ((directoryEntry = pluginsDir.readSync()) !== null) {
@@ -32,14 +32,11 @@ export default class SettingsService {
           );
 
           /* istanbul ignore else @preserve */
-          if (
-            !fs.existsSync(settingsFileTs) &&
-            !fs.existsSync(settingsFileJs)
-          ) {
+          if (!existsSync(settingsFileTs) && !existsSync(settingsFileJs)) {
             return Promise.resolve(undefined);
-          } else if (fs.existsSync(settingsFileTs)) {
+          } else if (existsSync(settingsFileTs)) {
             settingsFile = settingsFileTs;
-          } else if (fs.existsSync(settingsFileJs)) {
+          } else if (existsSync(settingsFileJs)) {
             settingsFile = settingsFileJs;
           }
 
@@ -63,8 +60,8 @@ export default class SettingsService {
 
   static loadCurrent() {
     const settingsPath = path.join(BASE_DIR, "db_settings.json");
-    if (fs.existsSync(settingsPath)) {
-      return JSON.parse(fs.readFileSync(settingsPath).toString());
+    if (existsSync(settingsPath)) {
+      return JSON.parse(readFileSync(settingsPath).toString());
     }
 
     return {};
@@ -72,7 +69,7 @@ export default class SettingsService {
 
   static saveCurrent(settings: Settings) {
     const settingsPath = path.join(BASE_DIR, "db_settings.json");
-    fs.writeFileSync(settingsPath, JSON.stringify(settings));
+    writeFileSync(settingsPath, JSON.stringify(settings));
   }
 
   static async getDefault(pluginName: string, settingName: string) {

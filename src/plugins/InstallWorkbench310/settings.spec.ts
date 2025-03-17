@@ -1,8 +1,6 @@
 import path from "path";
 
-import fs from "fs";
-vi.mock("fs");
-const mockedFs = fs as MockedObject<typeof fs>;
+import { existsSync } from "fs";
 
 import SystemDiskService from "../../services/SystemDiskService.js";
 vi.mock("../../../src/services/SystemDiskService");
@@ -32,7 +30,7 @@ describe("get", () => {
   });
 
   it("returns cached true setting when cache marker exists", () => {
-    mockedFs.existsSync.mockReturnValue(true);
+    vi.mocked(existsSync).mockReturnValue(true);
     const settings = new Settings();
     const wb310Settings = settings.get();
     expect(wb310Settings.settings.length).toEqual(6);
@@ -40,7 +38,7 @@ describe("get", () => {
   });
 
   it("returns cached false setting when cache marker does not exist", () => {
-    mockedFs.existsSync.mockReturnValue(false);
+    vi.mocked(existsSync).mockReturnValue(false);
     const settings = new Settings();
     const wb310Settings = settings.get();
     expect(wb310Settings.settings.length).toEqual(6);

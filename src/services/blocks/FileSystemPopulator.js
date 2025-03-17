@@ -1,4 +1,4 @@
-import fs from "fs";
+import { readFileSync, statSync } from "fs";
 import path from "path";
 import AminetService from "../AminetService.js";
 import LhaService from "../LhaService.js";
@@ -43,7 +43,7 @@ export default class FileSystemPopulator {
         partitions,
       );
       fileSystemConfig.blockPtr = firstFileSystemHeaderBlock + fileSystemIndex;
-      fileSystemConfig.fileSystemBinary = fs.readFileSync(
+      fileSystemConfig.fileSystemBinary = readFileSync(
         fileSystemConfig.fileSystemPath,
       );
 
@@ -83,7 +83,7 @@ export default class FileSystemPopulator {
 
       const fileSystemPath = path.join(CACHE_DIR, "pfs3aio");
 
-      const stats = fs.statSync(fileSystemPath);
+      const stats = statSync(fileSystemPath);
       const fileSize = stats.size;
       const reservedBlocks = Math.ceil(fileSize / (blockSize - 20));
 

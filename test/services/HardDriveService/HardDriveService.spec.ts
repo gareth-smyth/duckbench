@@ -1,4 +1,4 @@
-import fs from "fs";
+import { existsSync, unlinkSync } from "fs";
 import path from "path";
 import { vi } from "vitest";
 
@@ -19,8 +19,8 @@ const TEMP_FILE_PATH = import.meta.dirname;
 function cleanTemp() {
   for (let index = 1; index <= 3; index++) {
     const fileName = path.join(TEMP_FILE_PATH, `test${index}.hdf`);
-    if (fs.existsSync(fileName)) {
-      fs.unlinkSync(fileName);
+    if (existsSync(fileName)) {
+      unlinkSync(fileName);
     }
   }
 }

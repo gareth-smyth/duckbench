@@ -1,12 +1,9 @@
-import fs from "fs";
+import { copyFileSync, existsSync } from "fs";
 import path from "path";
 import InstallWorkbench390 from "./index.js";
-import { MockedObject, vi } from "vitest";
+import { vi } from "vitest";
 
 const pluginBasePath = "../../../src/plugins/InstallWorkbench390";
-
-vi.mock("fs");
-const mockedFs = fs as MockedObject<typeof fs>;
 
 it("copies the installer patch", async () => {
   const installWorkbench390 = new InstallWorkbench390();
@@ -25,10 +22,7 @@ it("copies the installer patch", async () => {
     "wb3.9_install.patch",
   );
   const expectedCopyTo = path.join("aFolder", "wb3.9_install.patch");
-  expect(fs.copyFileSync).toHaveBeenCalledWith(
-    expectedCopyFrom,
-    expectedCopyTo,
-  );
+  expect(copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });
 
 it("copies the install key", async () => {
@@ -50,10 +44,7 @@ it("copies the install key", async () => {
     "wb3.9_install_key",
   );
   const expectedCopyTo = path.join("aFolder", "wb3.9_install_key");
-  expect(fs.copyFileSync).toHaveBeenCalledWith(
-    expectedCopyFrom,
-    expectedCopyTo,
-  );
+  expect(copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });
 
 it("copies the startup sequence patch when floppy is false", async () => {
@@ -75,14 +66,11 @@ it("copies the startup sequence patch when floppy is false", async () => {
     "wb3.9_no_floppy_startup.patch",
   );
   const expectedCopyTo = path.join("aFolder", "wb3.9_no_floppy_startup.patch");
-  expect(fs.copyFileSync).toHaveBeenCalledWith(
-    expectedCopyFrom,
-    expectedCopyTo,
-  );
+  expect(copyFileSync).toHaveBeenCalledWith(expectedCopyFrom, expectedCopyTo);
 });
 
 it("inserts the ISO if workbench has not been cached", async () => {
-  mockedFs.existsSync.mockReturnValueOnce(false);
+  vi.mocked(existsSync).mockReturnValueOnce(false);
 
   const insertCDISO = vi.fn();
   const installWorkbench390 = new InstallWorkbench390();
@@ -98,7 +86,7 @@ it("inserts the ISO if workbench has not been cached", async () => {
 });
 
 it("does not insert the ISO if workbench is already cached", async () => {
-  mockedFs.existsSync.mockReturnValueOnce(true);
+  vi.mocked(existsSync).mockReturnValueOnce(true);
 
   const insertCDISO = vi.fn();
   const installWorkbench390 = new InstallWorkbench390();

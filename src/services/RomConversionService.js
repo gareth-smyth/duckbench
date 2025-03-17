@@ -1,4 +1,4 @@
-import fs from "fs";
+import { closeSync, existsSync, openSync, writeSync, readFileSync } from "fs";
 import path from "path";
 import Logger from "./LoggerService.js";
 
@@ -23,12 +23,12 @@ export default class RomConversionService {
     let outFile;
 
     try {
-      inputFiles.forEach((input) => inFiles.push(fs.readFileSync(input)));
-      if (fs.existsSync(outputFile) && !force) {
+      inputFiles.forEach((input) => inFiles.push(readFileSync(input)));
+      if (existsSync(outputFile) && !force) {
         throw Error("output file already exists");
       }
 
-      outFile = fs.openSync(outputFile, "w");
+      outFile = openSync(outputFile, "w");
 
       const outputSizeBytes = OUTPUT_SIZE_MAP[outputSize] * twoFiveSixKb;
       const repeatTimes = Math.max(
@@ -40,8 +40,8 @@ export default class RomConversionService {
       for (let repeat = 0; repeat < repeatTimes; repeat++) {
         for (let idx = 0; idx < repeatSize; idx += 2) {
           inFiles.forEach((fileContent) => {
-            fs.writeSync(outFile, fileContent, idx + 1, 1, null);
-            fs.writeSync(outFile, fileContent, idx, 1, null);
+            writeSync(outFile, fileContent, idx + 1, 1, null);
+            writeSync(outFile, fileContent, idx, 1, null);
           });
         }
       }
@@ -51,7 +51,7 @@ export default class RomConversionService {
       Logger.trace(err.stack);
     } finally {
       if (outFile) {
-        fs.closeSync(outFile);
+        closeSync(outFile);
       }
     }
   }
@@ -86,13 +86,13 @@ export default class RomConversionService {
         outFiles.push(outputFile);
       }
 
-      inFile = fs.readFileSync(inputFile);
+      inFile = readFileSync(inputFile);
       for (let outFileIdx = 0; outFileIdx < outFiles.length; outFileIdx++) {
         const outFile = outFiles[outFileIdx];
-        if (fs.existsSync(outFile) && !force) {
+        if (existsSync(outFile) && !force) {
           throw Error(`output file "${outFile}" already exists`);
         }
-        outFileContents.push(fs.openSync(outFile, "w"));
+        outFileContents.push(openSync(outFile, "w"));
       }
 
       const outputSizeBytes = OUTPUT_SIZE_MAP[outputSize] * twoFiveSixKb;
@@ -105,14 +105,14 @@ export default class RomConversionService {
       for (let repeat = 0; repeat < repeatTimes; repeat++) {
         for (let idx = 0; idx < repeatSize; idx += 4 / (3 - numOutputs)) {
           for (let outFileIdx = 0; outFileIdx < numOutputs; outFileIdx++) {
-            fs.writeSync(
+            writeSync(
               outFileContents[outFileIdx],
               inFile,
               idx + 1 + 2 * outFileIdx,
               1,
               null,
             );
-            fs.writeSync(
+            writeSync(
               outFileContents[outFileIdx],
               inFile,
               idx + 2 * outFileIdx,
@@ -128,7 +128,7 @@ export default class RomConversionService {
       Logger.trace(err.stack);
     } finally {
       outFileContents.forEach((outFile) => {
-        fs.closeSync(outFile);
+        closeSync(outFile);
       });
     }
   }

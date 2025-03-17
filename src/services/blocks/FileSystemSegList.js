@@ -1,4 +1,4 @@
-import fs from "fs";
+import { readSync, writeSync } from "fs";
 
 export default class FileSystemSegList {
   read(file, firstBlockPtr, hardDriveConfig) {
@@ -13,7 +13,7 @@ export default class FileSystemSegList {
 
       const bytePositionOfBlock =
         nextLoadSegBlock * this.hardDriveConfig.blockSize;
-      fs.readSync(
+      readSync(
         file,
         this.buffers[bufferIndex],
         0,
@@ -30,7 +30,7 @@ export default class FileSystemSegList {
     this.buffers.forEach((buffer, bufferIndex) => {
       const bytePositionOfBlock =
         (this.firstBlockPointer + bufferIndex) * hardDriveConfig.blockSize;
-      fs.writeSync(file, buffer, 0, buffer.length, bytePositionOfBlock);
+      writeSync(file, buffer, 0, buffer.length, bytePositionOfBlock);
     });
   }
 

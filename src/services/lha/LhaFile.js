@@ -1,8 +1,8 @@
-import fs from "fs";
 import path from "path";
 import LhaHeader from "./LhaHeader.js";
 import Decoder5 from "./Lha5Decode.js";
 import Decoder0 from "./Lha0Decode.js";
+import { closeSync, fstatSync, readSync, writeSync, openSync } from "fs";
 
 export default class LhaFile {
   constructor(filename) {
@@ -10,12 +10,12 @@ export default class LhaFile {
       "-lh0-": Decoder0,
       "-lh5-": Decoder5,
     };
-    this.file = fs.openSync(filename, "r");
+    this.file = openSync(filename, "r");
   }
 
   parseHeaders() {
     this.headers = [];
-    const stats = fs.fstatSync(this.file);
+    const stats = fstatSync(this.file);
     const fileSize = stats.size;
     let headerStart = 0;
     while (headerStart < fileSize - 1) {
@@ -29,7 +29,7 @@ export default class LhaFile {
     this.parseHeaders();
     this.headers.forEach((header) => {
       const compressedBuffer = Buffer.alloc(header.compressedFileSize, 0);
-      fs.readSync(
+      readSync(
         this.file,
         compressedBuffer,
         0,
@@ -47,9 +47,9 @@ export default class LhaFile {
         header.uncompressedFileSize,
       );
       const outBuffer = decoder.decode();
-      const outFile = fs.openSync(path.join(destination, header.filename), "w");
-      fs.writeSync(outFile, outBuffer, 0, outBuffer.length, 0);
-      fs.closeSync(outFile);
+      const outFile = openSync(path.join(destination, header.filename), "w");
+      writeSync(outFile, outBuffer, 0, outBuffer.length, 0);
+      closeSync(outFile);
     });
   }
 }

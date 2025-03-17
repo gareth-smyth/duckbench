@@ -1,5 +1,4 @@
 import http from "http";
-import fs from "fs";
 import path from "path";
 import { URL } from "url";
 import { WebSocketServer } from "ws";
@@ -8,6 +7,7 @@ import PluginStore from "../builder/PluginStore.js";
 import SettingsService from "../services/SettingsService/SettingsService.ts";
 import ValidationError from "../errors/ValidationError.js";
 import Logger from "../services/LoggerService.js";
+import { readFile } from "fs-extra";
 
 export default class Configurator {
   start() {
@@ -126,7 +126,7 @@ export default class Configurator {
 
       const contentType = mimeTypes[extname] || "application/octet-stream";
       Logger.debug(`Reading file ${filePath}`);
-      fs.readFile(filePath, function (error, content) {
+      readFile(filePath, function (error, content) {
         if (error) {
           if (error.code === "ENOENT") {
             Logger.error(`Did not find file ${filePath}`);

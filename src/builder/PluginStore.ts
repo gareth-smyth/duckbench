@@ -1,13 +1,13 @@
-import fs from "fs";
 import path from "path";
 import type { Plugin, PluginConfig } from "../types";
+import { opendirSync } from "fs";
 
 export default class PluginStore {
   private readonly plugins: Record<string, Plugin<PluginConfig>> = {};
 
   static async getStructures() {
     const pluginPath = path.join(import.meta.dirname, "../", "plugins");
-    const pluginsDir = fs.opendirSync(pluginPath);
+    const pluginsDir = opendirSync(pluginPath);
     const plugins = [];
     let directoryEntry;
     while ((directoryEntry = pluginsDir.readSync()) !== null) {

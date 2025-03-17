@@ -1,4 +1,4 @@
-import { copyFileSync, writeFileSync, existsSync } from "node:fs";
+import { copyFileSync, writeFileSync, existsSync } from "fs";
 import path from "path";
 import ADFService from "../../services/ADFService.js";
 import HardDriveService from "../../services/HardDriveService.js";

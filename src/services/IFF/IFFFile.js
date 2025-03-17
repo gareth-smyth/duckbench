@@ -1,4 +1,4 @@
-import fs from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import IFFWrapperChunk from "./IFFWrapperChunk.js";
 import IFFChunk from "./IFFChunk.js";
 
@@ -41,13 +41,13 @@ export default class IFFFile {
   }
 
   static read(filename) {
-    const buffer = fs.readFileSync(filename);
+    const buffer = readFileSync(filename);
     return this.readChunk(buffer);
   }
 
   static write(filename, chunk) {
     const buffer = Buffer.alloc(chunk.getPaddedSize(), 0);
     chunk.write(buffer);
-    fs.writeFileSync(filename, buffer);
+    writeFileSync(filename, buffer);
   }
 }

@@ -1,6 +1,6 @@
 import LhaService from "../../../src/services/LhaService.js";
 import path from "path";
-import fs from "fs";
+import { existsSync, readFileSync, unlinkSync } from "fs";
 import { vi } from "vitest";
 
 beforeAll(() => {
@@ -12,8 +12,8 @@ const TEMP_FILE_PATH = import.meta.dirname;
 function cleanTemp() {
   for (let index = 1; index < 4; index++) {
     const fileName = path.join(TEMP_FILE_PATH, `test${index}.txt`);
-    if (fs.existsSync(fileName)) {
-      fs.unlinkSync(fileName);
+    if (existsSync(fileName)) {
+      unlinkSync(fileName);
     }
   }
 }
@@ -32,13 +32,13 @@ it("extracts a file", () => {
     import.meta.dirname,
   );
 
-  const buffer1 = fs.readFileSync(path.join(TEMP_FILE_PATH, "test1.txt"));
+  const buffer1 = readFileSync(path.join(TEMP_FILE_PATH, "test1.txt"));
   expect(buffer1.toString()).toEqual("\n");
 
-  const buffer2 = fs.readFileSync(path.join(TEMP_FILE_PATH, "test2.txt"));
+  const buffer2 = readFileSync(path.join(TEMP_FILE_PATH, "test2.txt"));
   expect(buffer2.toString()).toEqual("Hi\n");
 
-  const buffer3 = fs.readFileSync(path.join(TEMP_FILE_PATH, "test3.txt"));
+  const buffer3 = readFileSync(path.join(TEMP_FILE_PATH, "test3.txt"));
   expect(buffer3.toString()).toEqual(
     "Hi there this is some longer test that is used to test the ecoding level 5.\n",
   );

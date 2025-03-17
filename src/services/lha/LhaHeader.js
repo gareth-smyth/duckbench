@@ -1,4 +1,4 @@
-import fs from "fs";
+import { readSync } from "fs";
 
 const LevelBaseSize = {
   0: 23,
@@ -13,7 +13,7 @@ const LevelBaseSize = {
 export default class LhaHeader {
   constructor(file, offset) {
     const headerBuffer = Buffer.alloc(21, 0);
-    fs.readSync(file, headerBuffer, 0, 21, offset);
+    readSync(file, headerBuffer, 0, 21, offset);
 
     this.size = headerBuffer.readUInt8(0);
     this.checksum = headerBuffer.readUInt8(1);
@@ -30,11 +30,11 @@ export default class LhaHeader {
     }
 
     const filenameLengthBuffer = Buffer.alloc(1, 0);
-    fs.readSync(file, filenameLengthBuffer, 0, 1, offset + 21);
+    readSync(file, filenameLengthBuffer, 0, 1, offset + 21);
     this.filenameLength = filenameLengthBuffer.readUInt8(0);
 
     const levelOneFixedBuffer = Buffer.alloc(this.filenameLength + 5, 0);
-    fs.readSync(
+    readSync(
       file,
       levelOneFixedBuffer,
       0,

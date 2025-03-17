@@ -1,4 +1,4 @@
-import fs from "fs";
+import { readSync, writeSync } from "fs";
 
 const RIGID_DISK_BLOCK_SIZE = 256;
 
@@ -6,12 +6,12 @@ export default class RigidDiskBlock {
   constructor(file) {
     this.buffer = Buffer.alloc(RIGID_DISK_BLOCK_SIZE, 0);
     if (file) {
-      fs.readSync(file, this.buffer, 0, this.buffer.length, 0);
+      readSync(file, this.buffer, 0, this.buffer.length, 0);
     }
   }
 
   write(file) {
-    fs.writeSync(file, this.buffer, 0, this.buffer.length, 0);
+    writeSync(file, this.buffer, 0, this.buffer.length, 0);
   }
 
   initialise(config, partitionConfig, fileSystemConfigs) {

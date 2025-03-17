@@ -1,16 +1,16 @@
-import fs from "fs";
-vi.mock("fs");
-const mockedFs = fs as MockedObject<typeof fs>;
+import { closeSync, existsSync, openSync, readFileSync, writeSync } from "fs";
 
 import RomConversionService from "../../src/services/RomConversionService.js";
-import { MockedObject } from "vitest";
+import { vi } from "vitest";
 
 describe("realToEmulator", () => {
   it("fails and closes open files when an input file does not exist", () => {
     const fd = "ABCDEFGH";
-    mockedFs.readFileSync.mockReturnValueOnce(fd).mockImplementationOnce(() => {
-      throw new Error();
-    });
+    vi.mocked(readFileSync)
+      .mockReturnValueOnce(fd)
+      .mockImplementationOnce(() => {
+        throw new Error();
+      });
     RomConversionService.realToEmulator(
       ["file1", "file2"],
       "out",
@@ -18,15 +18,15 @@ describe("realToEmulator", () => {
       "256kb",
       8,
     );
-    expect(fs.openSync).toHaveBeenCalledTimes(0);
-    expect(fs.closeSync).toHaveBeenCalledTimes(0);
+    expect(openSync).toHaveBeenCalledTimes(0);
+    expect(closeSync).toHaveBeenCalledTimes(0);
   });
 
   it("does not write output file when it exists and force is false", () => {
     const fd1 = "ABCDEFGH";
     const fd2 = "IJKLMNOP";
-    mockedFs.readFileSync.mockReturnValueOnce(fd1).mockReturnValueOnce(fd2);
-    mockedFs.existsSync.mockReturnValueOnce(true);
+    vi.mocked(readFileSync).mockReturnValueOnce(fd1).mockReturnValueOnce(fd2);
+    vi.mocked(existsSync).mockReturnValueOnce(true);
 
     RomConversionService.realToEmulator(
       ["file1", "file2"],
@@ -36,8 +36,8 @@ describe("realToEmulator", () => {
       8,
     );
 
-    expect(fs.openSync).toHaveBeenCalledTimes(0);
-    expect(fs.writeSync).toHaveBeenCalledTimes(0);
+    expect(openSync).toHaveBeenCalledTimes(0);
+    expect(writeSync).toHaveBeenCalledTimes(0);
   });
 
   describe("when it writes a file", () => {
@@ -47,12 +47,12 @@ describe("realToEmulator", () => {
 
     beforeEach(() => {
       outputFile.length = 0;
-      mockedFs.existsSync.mockReturnValueOnce(true);
-      mockedFs.readFileSync
+      vi.mocked(existsSync).mockReturnValueOnce(true);
+      vi.mocked(readFileSync)
         .mockReturnValueOnce(file1)
         .mockReturnValueOnce(file2);
-      mockedFs.openSync.mockReturnValueOnce(11);
-      mockedFs.writeSync.mockImplementation(
+      vi.mocked(openSync).mockReturnValueOnce(11);
+      vi.mocked(writeSync).mockImplementation(
         (
           fd: number,
           buffer: string,
@@ -76,9 +76,9 @@ describe("realToEmulator", () => {
         16,
       );
 
-      expect(fs.closeSync).toHaveBeenCalledWith(11);
-      expect(fs.openSync).toHaveBeenCalledTimes(1);
-      expect(mockedFs.writeSync.mock.calls.length).toBe(16);
+      expect(closeSync).toHaveBeenCalledWith(11);
+      expect(openSync).toHaveBeenCalledTimes(1);
+      expect(vi.mocked(writeSync).mock.calls.length).toBe(16);
     });
 
     it("merges input files byte swapped when total input size equals output size", () => {
@@ -125,9 +125,9 @@ describe("emulatorToReal", () => {
 
   beforeEach(() => {
     fd2.length = 0;
-    mockedFs.readFileSync.mockReturnValueOnce(fd1);
-    mockedFs.openSync.mockReturnValueOnce(fd2);
-    mockedFs.writeSync.mockImplementation((fd, buffer, offset, length) => {
+    vi.mocked(readFileSync).mockReturnValueOnce(fd1);
+    vi.mocked(openSync).mockReturnValueOnce(fd2);
+    vi.mocked(writeSync).mockImplementation((fd, buffer, offset, length) => {
       fd.push(buffer.substr(offset, length));
     });
   });
@@ -174,7 +174,7 @@ describe("emulatorToReal", () => {
   it("splits the file when requested", () => {
     const fd3 = [];
     const fd4 = [];
-    mockedFs.openSync
+    vi.mocked(openSync)
       .mockReset()
       .mockReturnValueOnce(fd3)
       .mockReturnValueOnce(fd4);
@@ -193,7 +193,7 @@ describe("emulatorToReal", () => {
   });
 
   it("writes the byte swapped file when file exists but force is true", () => {
-    mockedFs.existsSync.mockReturnValueOnce(true);
+    vi.mocked(existsSync).mockReturnValueOnce(true);
     RomConversionService.emulatorToReal(
       "file1",
       "file2",
@@ -207,7 +207,7 @@ describe("emulatorToReal", () => {
   });
 
   it("does not write the file when first file exists and force is false", () => {
-    mockedFs.existsSync.mockReturnValueOnce(true);
+    vi.mocked(existsSync).mockReturnValueOnce(true);
     RomConversionService.emulatorToReal(
       "file1",
       "file2",
@@ -217,11 +217,11 @@ describe("emulatorToReal", () => {
       8,
     );
 
-    expect(fs.writeSync).toHaveBeenCalledTimes(0);
+    expect(writeSync).toHaveBeenCalledTimes(0);
   });
 
   it("does not write files when second output file exists and force is false", () => {
-    mockedFs.existsSync.mockReturnValueOnce(false).mockReturnValueOnce(true);
+    vi.mocked(existsSync).mockReturnValueOnce(false).mockReturnValueOnce(true);
     RomConversionService.emulatorToReal(
       "file1",
       "file2",
@@ -231,6 +231,6 @@ describe("emulatorToReal", () => {
       8,
     );
 
-    expect(fs.writeSync).toHaveBeenCalledTimes(0);
+    expect(writeSync).toHaveBeenCalledTimes(0);
   });
 });

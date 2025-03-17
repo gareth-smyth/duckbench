@@ -1,4 +1,4 @@
-import fs from "fs";
+import { existsSync } from "fs";
 import path from "path";
 
 import SystemDiskService from "../../services/SystemDiskService.js";
@@ -30,7 +30,7 @@ export default class InstallWorkbench310Settings {
           type: "hostFile",
           label: disk.label,
           hasDefaultSearch: true,
-          cached: fs.existsSync(cacheMarkerPath),
+          cached: existsSync(cacheMarkerPath),
         };
       }),
     };

@@ -1,4 +1,4 @@
-import fs from "fs";
+import { writeFileSync } from "fs";
 import path from "path";
 import { ChildProcess, spawn } from "child_process";
 import SettingsService from "../services/SettingsService/SettingsService.js";
@@ -37,7 +37,7 @@ export default class WinUAEEnvironment {
     ) as string;
     const config = buildConfig(amiga, emulatorSettings, emulatorRoot);
     this.uaeRunningConfig = path.join(environment.executionFolder, "amiga.uae");
-    fs.writeFileSync(this.uaeRunningConfig, config);
+    writeFileSync(this.uaeRunningConfig, config);
   }
 
   stop() {

@@ -1,4 +1,4 @@
-import fs from "fs";
+import { existsSync } from "fs";
 import path from "path";
 
 import RomFinderService from "../../services/RomFinderService.js";
@@ -50,16 +50,16 @@ export default class SetupSettings {
     if (process.env.DUCKBENCH_EMU) {
       Logger.trace("Found an emulator using environment vars.");
       return `${process.env.DUCKBENCH_EMU}/WinUAE.exe`;
-    } else if (fs.existsSync("C:/Program Files/WinUAE")) {
+    } else if (existsSync("C:/Program Files/WinUAE")) {
       Logger.trace('Found WinUAE at "C:/Program Files/WinUAE".');
       return "C:/Program Files/WinUAE/WinUAE64.exe";
-    } else if (fs.existsSync("C:/Program Files (x86)/WinUAE")) {
+    } else if (existsSync("C:/Program Files (x86)/WinUAE")) {
       Logger.trace('Found WinUAE at "C:/Program Files (x86)/WinUAE".');
       return "C:/Program Files (x86)/WinUAE/WinUAE.exe";
-    } else if (fs.existsSync("/Applications/Amiberry.app")) {
+    } else if (existsSync("/Applications/Amiberry.app")) {
       Logger.trace('Found Amiberry at "/Applications".');
       return "/Applications/Amiberry.app/Contents/MacOS/Amiberry";
-    } else if (fs.existsSync("/Applications/FS-UAE.app")) {
+    } else if (existsSync("/Applications/FS-UAE.app")) {
       Logger.trace('Found FS-UAE at "/Applications".');
       return "/Applications/FS-UAE.app/Contents/MacOS/FS-UAE";
     } else {
