@@ -1,4 +1,4 @@
-import Setting from "./Setting.js";
+import Setting from "./Setting";
 
 export default class Settings {
   view(node) {

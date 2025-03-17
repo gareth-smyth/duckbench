@@ -1,7 +1,7 @@
 import { copyFileSync } from "fs";
 import path from "path";
 
-import InstallWorkbench320 from "./index.js";
+import InstallWorkbench320 from "./index";
 
 it("copies the hard drive after installation is complete", async () => {
   const installWorkbench320 = new InstallWorkbench320();

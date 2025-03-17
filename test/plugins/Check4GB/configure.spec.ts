@@ -1,4 +1,4 @@
-import Check4GB from "../../../src/plugins/Check4GB/index.js";
+import Check4GB from "../../../src/plugins/Check4GB/index";
 
 it("returns Lha as a dependency", () => {
   const check4GB = new Check4GB();

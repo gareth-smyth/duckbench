@@ -1,13 +1,13 @@
 import { copyFileSync, existsSync } from "fs";
 import path from "path";
+import { MockedObject, vi } from "vitest";
 
-import Communicator from "../../builder/Communicator.js";
+import Communicator from "../../builder/Communicator";
 import { CACHE_DIR } from "../../services/BaseDirService";
 
 vi.mock("../../../src/builder/Communicator");
 
-import WinUAETools from "./index.js";
-import { MockedObject, vi } from "vitest";
+import WinUAETools from "./index";
 
 let communicator: MockedObject<Communicator>;
 beforeEach(() => {

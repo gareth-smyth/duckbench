@@ -1,6 +1,6 @@
-import PluginStore from "./PluginStore";
-import type { Plugin, PluginConfig } from "../types";
 import { vi } from "vitest";
+import type { Plugin, PluginConfig } from "../types";
+import PluginStore from "./PluginStore";
 
 beforeAll(() => {
   vi.unmock("node:fs");

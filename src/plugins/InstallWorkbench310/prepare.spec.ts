@@ -1,8 +1,8 @@
 import { copyFileSync } from "fs";
 import path from "path";
-import { ScreenMode } from "../../services/prefs/ScreenMode.js";
-import InstallWorkbench310 from "./index.js";
 import { vi } from "vitest";
+import { ScreenMode } from "../../services/prefs/ScreenMode";
+import InstallWorkbench310 from "./index";
 
 const pluginBasePath = "../../../src/plugins/InstallWorkbench310";
 

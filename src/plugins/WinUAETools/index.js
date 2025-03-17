@@ -1,7 +1,7 @@
 import { copyFileSync, existsSync } from "fs";
 import path from "path";
-import Logger from "../../services/LoggerService.js";
-import { CACHE_DIR } from "../../services/BaseDirService.js";
+import Logger from "../../services/LoggerService";
+import { CACHE_DIR } from "../../services/BaseDirService";
 
 export default class WinUAETools {
   constructor() {

@@ -1,7 +1,6 @@
-import EnvironmentSetup from "../../builder/EnvironmentSetup.js";
-import A1200 from "./index";
+import EnvironmentSetup from "../../builder/EnvironmentSetup";
 import { Amiga1200 } from "../../amigas";
-import { A1200PluginConfig } from "./index";
+import A1200, { A1200PluginConfig } from "./index";
 
 const environmentSetup = new EnvironmentSetup();
 

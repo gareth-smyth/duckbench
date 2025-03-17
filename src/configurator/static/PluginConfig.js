@@ -1,4 +1,4 @@
-import Option from "./Option.js";
+import Option from "./Option";
 
 export default class PluginConfig {
   view(node) {

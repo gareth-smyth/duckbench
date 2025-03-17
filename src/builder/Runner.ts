@@ -1,9 +1,9 @@
-import PluginStore from "./PluginStore";
-import ValidationError from "../errors/ValidationError.js";
+import ValidationError from "../errors/ValidationError";
 import type { Plugin, PluginConfig, Settings } from "../types";
+import SetupPlugin, { SetupPluginConfig } from "../plugins/Setup";
+import PluginStore from "./PluginStore";
 import EnvironmentSetup from "./EnvironmentSetup";
 import Communicator from "./Communicator";
-import SetupPlugin, { SetupPluginConfig } from "../plugins/Setup";
 
 export default class Runner {
   private readonly pluginStore: PluginStore = new PluginStore();

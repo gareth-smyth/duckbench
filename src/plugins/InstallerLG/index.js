@@ -1,4 +1,4 @@
-import Logger from "../../services/LoggerService.js";
+import Logger from "../../services/LoggerService";
 
 export default class InstallerLG {
   constructor() {

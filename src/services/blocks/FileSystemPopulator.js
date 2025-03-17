@@ -1,8 +1,8 @@
 import { readFileSync, statSync } from "fs";
 import path from "path";
-import AminetService from "../AminetService.js";
-import LhaService from "../LhaService.js";
-import { CACHE_DIR } from "../BaseDirService.js";
+import AminetService from "../AminetService";
+import LhaService from "../LhaService";
+import { CACHE_DIR } from "../BaseDirService";
 
 const FileSystemDosTypeMap = {
   pfs: { dosType: "0x50445303", version: 0x00130002 },

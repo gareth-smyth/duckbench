@@ -1,12 +1,12 @@
 /* eslint-disable no-global-assign */
-import { when } from "jest-when";
 import { chmodSync, copyFileSync, existsSync, mkdirSync, rmdirSync } from "fs";
 import path from "path";
+import { when } from "jest-when";
 import { vi } from "vitest";
 
-import EnvironmentSetup from "./EnvironmentSetup.js";
 import { BASE_DIR } from "../services/BaseDirService";
 import { Amiga1000 } from "../amigas";
+import EnvironmentSetup from "./EnvironmentSetup";
 
 let RealDate: typeof Date;
 

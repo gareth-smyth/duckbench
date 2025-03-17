@@ -1,4 +1,4 @@
-import Patch from "../../../src/plugins/Patch/index.js";
+import Patch from "../../../src/plugins/Patch/index";
 
 const pluginStore = { getPlugin: vi.fn() };
 const lha = { run: vi.fn() };

@@ -1,7 +1,6 @@
 import "./globals.d.ts";
 import createFetchMock from "vitest-fetch-mock";
 import { vi } from "vitest";
-import "vitest-fetch-mock";
 
 vi.mock("node:fs", async () => {
   const fakeFs = {

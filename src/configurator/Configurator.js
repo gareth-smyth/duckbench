@@ -2,12 +2,12 @@ import http from "http";
 import path from "path";
 import { URL } from "url";
 import { WebSocketServer } from "ws";
-import DuckbenchBuilder from "../builder/DuckbenchBuilder.js";
-import PluginStore from "../builder/PluginStore.js";
-import SettingsService from "../services/SettingsService/SettingsService.ts";
-import ValidationError from "../errors/ValidationError.js";
-import Logger from "../services/LoggerService.js";
 import { readFile } from "fs-extra";
+import DuckbenchBuilder from "../builder/DuckbenchBuilder";
+import PluginStore from "../builder/PluginStore";
+import SettingsService from "../services/SettingsService/SettingsService.ts";
+import ValidationError from "../errors/ValidationError";
+import Logger from "../services/LoggerService";
 
 export default class Configurator {
   start() {

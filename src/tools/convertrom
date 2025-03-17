@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /* eslint-disable */
-import Logger from "../services/LoggerService.js";
+import Logger from "../services/LoggerService";
 
-import("../services/BaseDirService.js");
-import("../services/LoggerService.js");
-import RomConversionService from "../services/RomConversionService.js";
+import("../services/BaseDirService");
+import("../services/LoggerService");
+import RomConversionService from "../services/RomConversionService";
 import yargs from "yargs";
 
 yargs

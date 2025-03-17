@@ -1,4 +1,4 @@
-import BaseInstall from "../InstallWorkbench310/index.js";
+import BaseInstall from "../InstallWorkbench310/index";
 
 export default class InstallWorkbench300 extends BaseInstall {
   constructor() {

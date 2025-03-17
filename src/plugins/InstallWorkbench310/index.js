@@ -1,8 +1,8 @@
 import { chmodSync, closeSync, copyFileSync, existsSync, openSync } from "fs";
 import path from "path";
-import { ScreenMode, HIRES_LACED } from "../../services/prefs/ScreenMode.js";
-import Logger from "../../services/LoggerService.js";
-import { CACHE_DIR } from "../../services/BaseDirService.js";
+import { ScreenMode, HIRES_LACED } from "../../services/prefs/ScreenMode";
+import Logger from "../../services/LoggerService";
+import { CACHE_DIR } from "../../services/BaseDirService";
 
 export default class InstallWorkbench310 {
   constructor() {

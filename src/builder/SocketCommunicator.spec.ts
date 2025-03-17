@@ -1,7 +1,6 @@
 import { Socket } from "net";
 vi.mock("net");
 
-import SocketCommunicator from "./SocketCommunicator";
 import { MockedObject, vi } from "vitest";
 import {
   SocketCommandCallback,
@@ -10,6 +9,7 @@ import {
   SocketControlCallBackEvent,
   SocketControlDataEvent,
 } from "../types";
+import SocketCommunicator from "./SocketCommunicator";
 
 // As some functionality resolves promises with setTimeout we need to fake time passing and promise resolution cycle
 async function flushTimeoutsAndPromises() {

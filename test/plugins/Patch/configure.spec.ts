@@ -1,4 +1,4 @@
-import Patch from "../../../src/plugins/Patch/index.js";
+import Patch from "../../../src/plugins/Patch/index";
 
 it("returns Lha as a dependency", () => {
   const patch = new Patch();

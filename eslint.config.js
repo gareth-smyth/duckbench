@@ -1,12 +1,14 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import typescriptEslint from "typescript-eslint";
+import importPlugin from "eslint-plugin-import";
 
 /** @type {import('eslint').Linter.Config[]} */
-export default [
+export default typescriptEslint.config(
   {
     files: ["**/*.{js,mjs,cjs,ts}"],
     rules: {
+      "import/order": ["error"],
       "no-unused-vars": [
         "error",
         {
@@ -37,5 +39,7 @@ export default [
     },
   },
   pluginJs.configs.recommended,
+  importPlugin.flatConfigs.recommended,
+  importPlugin.flatConfigs.typescript,
   ...typescriptEslint.configs.recommended,
-];
+);

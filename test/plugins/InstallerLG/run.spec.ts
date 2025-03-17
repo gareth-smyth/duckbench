@@ -1,4 +1,4 @@
-import InstallerLG from "../../../src/plugins/InstallerLG/index.js";
+import InstallerLG from "../../../src/plugins/InstallerLG/index";
 
 const communicator = { run: vi.fn() };
 const callback = "aCallback";

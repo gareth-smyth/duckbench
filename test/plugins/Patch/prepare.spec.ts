@@ -1,7 +1,7 @@
-import AminetService from "../../../src/services/AminetService.js";
+import AminetService from "../../../src/services/AminetService";
 vi.mock("../../../src/services/AminetService");
 
-import Patch from "../../../src/plugins/Patch/index.js";
+import Patch from "../../../src/plugins/Patch/index";
 
 it("downloads the patch archive", async () => {
   const patch = new Patch();

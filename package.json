@@ -57,6 +57,7 @@
     "babel-plugin-module-resolver": "^5.0.2",
     "eslint": "^9.22.0",
     "eslint-config-google": "0.14.0",
+    "eslint-plugin-import": "^2.31.0",
     "globals": "^16.0.0",
     "jest-when": "^3.7.0",
     "memfs": "^4.17.0",

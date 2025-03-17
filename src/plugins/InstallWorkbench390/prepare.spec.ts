@@ -1,7 +1,7 @@
 import { copyFileSync, existsSync } from "fs";
 import path from "path";
-import InstallWorkbench390 from "./index.js";
 import { vi } from "vitest";
+import InstallWorkbench390 from "./index";
 
 const pluginBasePath = "../../../src/plugins/InstallWorkbench390";
 

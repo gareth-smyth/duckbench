@@ -1,8 +1,8 @@
-import IFFFIle from "../../../src/services/IFF/IFFFile.js";
-import { HIRES_LACED } from "../../../src/services/prefs/ScreenMode.js";
-import IFFWrapperChunk from "../../../src/services/IFF/IFFWrapperChunk.js";
-import { vi } from "vitest";
 import { unlinkSync } from "fs";
+import { vi } from "vitest";
+import IFFFIle from "../../../src/services/IFF/IFFFile";
+import { HIRES_LACED } from "../../../src/services/prefs/ScreenMode";
+import IFFWrapperChunk from "../../../src/services/IFF/IFFWrapperChunk";
 
 beforeAll(() => {
   vi.unmock("node:fs");

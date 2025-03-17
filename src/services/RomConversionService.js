@@ -1,6 +1,6 @@
 import { closeSync, existsSync, openSync, writeSync, readFileSync } from "fs";
 import path from "path";
-import Logger from "./LoggerService.js";
+import Logger from "./LoggerService";
 
 const OUTPUT_SIZE_MAP = {
   "64kb": 0.25,

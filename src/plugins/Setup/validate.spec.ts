@@ -1,9 +1,9 @@
 import { existsSync } from "fs";
 
-import Setup, { SetupPluginConfig } from "./index.js";
 import { vi } from "vitest";
 import { Settings } from "../../types";
 import EnvironmentSetup from "../../builder/EnvironmentSetup";
+import Setup, { SetupPluginConfig } from "./index";
 
 let settings: Settings;
 const config: SetupPluginConfig = { name: "Setup", type: "internal" };

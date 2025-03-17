@@ -1,7 +1,7 @@
-import AminetService from "../../../src/services/AminetService.js";
+import AminetService from "../../../src/services/AminetService";
 vi.mock("../../../src/services/AminetService");
 
-import MMULib from "../../../src/plugins/MMULib/index.js";
+import MMULib from "../../../src/plugins/MMULib/index";
 
 it("downloads the MMULib archive", async () => {
   const mmuLib = new MMULib();

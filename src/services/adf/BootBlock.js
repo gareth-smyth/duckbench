@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import path from "path";
 
-import CheckSum from "./CheckSum.js";
+import CheckSum from "./CheckSum";
 
 const BOOT_TYPE = {
   OFS: 0,

@@ -1,7 +1,7 @@
-import Bitmap from "./Bitmap.js";
-import CheckSum from "./CheckSum.js";
-import Name from "./Name.js";
-import Type from "./Type.js";
+import Bitmap from "./Bitmap";
+import CheckSum from "./CheckSum";
+import Name from "./Name";
+import Type from "./Type";
 
 const BLOCK_TYPE = 2;
 const SECONDARY_TYPE_FILE = -3;
@@ -85,4 +85,4 @@ export default class File {
   }
 }
 
-import FileListItem from "./FileListItem.js";
+import FileListItem from "./FileListItem";

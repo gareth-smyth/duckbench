@@ -1,6 +1,6 @@
-import { buildFsUaeConfig } from "./build-fs-uae-config";
 import { Amiga500Plus } from "../../amigas";
 import { Amiga, EmulatorSettings } from "../../types";
+import { buildFsUaeConfig } from "./build-fs-uae-config";
 
 const standardAmiga: Amiga = {
   definition: Amiga500Plus,

@@ -1,6 +1,6 @@
 import { vi } from "vitest";
-import RedirectInputFile from "./index";
 import Communicator from "../../builder/Communicator";
+import RedirectInputFile from "./index";
 
 it("returns the default file location", async () => {
   const communicator = { echo: vi.fn() } as unknown as Communicator;

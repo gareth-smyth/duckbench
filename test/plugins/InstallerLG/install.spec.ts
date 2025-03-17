@@ -1,4 +1,4 @@
-import InstallerLG from "../../../src/plugins/InstallerLG/index.js";
+import InstallerLG from "../../../src/plugins/InstallerLG/index";
 
 it("calls the communicator to install installerLG once in each location requested", async () => {
   const communicator = { copy: vi.fn() };

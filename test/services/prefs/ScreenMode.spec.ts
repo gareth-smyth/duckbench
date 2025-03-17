@@ -1,9 +1,9 @@
+import { vi } from "vitest";
 import {
   ScreenMode,
   HIRES_LACED,
 } from "../../../src/services/prefs/ScreenMode.js";
-import IFFFile from "../../../src/services/IFF/IFFFile.js";
-import { vi } from "vitest";
+import IFFFile from "../../../src/services/IFF/IFFFile";
 
 vi.mock("../../../src/services/IFF/IFFFile");
 

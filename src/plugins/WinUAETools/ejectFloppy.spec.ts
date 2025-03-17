@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import WinUAETools from "./index.js";
+import WinUAETools from "./index";
 
 const communicator = { run: vi.fn() };
 

@@ -1,8 +1,8 @@
 import { opendirSync } from "fs";
 import path from "path";
 
-import ADFService from "./ADFService.js";
-import Logger from "./LoggerService.js";
+import ADFService from "./ADFService";
+import Logger from "./LoggerService";
 
 /* This is quite complicated to test for little benefit. It's also quite likely to change a lot. */
 /* istanbul ignore next */

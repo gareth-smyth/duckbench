@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 
-import SettingsService from "./SettingsService.js";
 import { vi } from "vitest";
+import SettingsService from "./SettingsService";
 
 it("returns an empty object when settings file does not exist", () => {
   vi.mocked(existsSync).mockReturnValueOnce(false);

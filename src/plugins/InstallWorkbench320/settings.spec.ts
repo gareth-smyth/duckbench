@@ -1,14 +1,14 @@
 import path from "path";
 import { existsSync } from "fs";
+import { MockedObject, vi } from "vitest";
 
-import SystemDiskService from "../../services/SystemDiskService.js";
+import SystemDiskService from "../../services/SystemDiskService";
+import Settings from "./settings";
+
 vi.mock("../../../src/services/SystemDiskService");
 const mockedSystemDiskService = SystemDiskService as MockedObject<
   typeof SystemDiskService
 >;
-
-import Settings from "./settings.js";
-import { MockedObject, vi } from "vitest";
 
 describe("get", () => {
   it("returns the top level details", () => {

@@ -1,6 +1,6 @@
-import { buildAmiberryConfig } from "./build-amiberry-config";
 import { Amiga4000 } from "../../amigas";
 import { Amiga, EmulatorSettings } from "../../types";
+import { buildAmiberryConfig } from "./build-amiberry-config";
 
 const standardAmiga: Amiga = {
   definition: Amiga4000,

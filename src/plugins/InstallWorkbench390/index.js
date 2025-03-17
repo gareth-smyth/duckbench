@@ -1,10 +1,10 @@
 import { closeSync, existsSync, openSync } from "fs";
 import path from "path";
 
-import BaseInstall from "../InstallWorkbench310/index.js";
+import BaseInstall from "../InstallWorkbench310/index";
 import SettingsService from "../../services/SettingsService/SettingsService.ts";
-import Logger from "../../services/LoggerService.js";
-import { CACHE_DIR } from "../../services/BaseDirService.js";
+import Logger from "../../services/LoggerService";
+import { CACHE_DIR } from "../../services/BaseDirService";
 
 export default class InstallWorkbench390 extends BaseInstall {
   constructor() {

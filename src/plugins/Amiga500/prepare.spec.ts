@@ -1,6 +1,6 @@
-import EnvironmentSetup from "../../builder/EnvironmentSetup.js";
-import A500, { A500PluginConfig } from "./index";
+import EnvironmentSetup from "../../builder/EnvironmentSetup";
 import { Amiga500 } from "../../amigas";
+import A500, { A500PluginConfig } from "./index";
 
 const environmentSetup = new EnvironmentSetup();
 

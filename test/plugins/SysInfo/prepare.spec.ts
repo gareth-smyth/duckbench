@@ -1,7 +1,7 @@
-import AminetService from "../../../src/services/AminetService.js";
+import AminetService from "../../../src/services/AminetService";
 vi.mock("../../../src/services/AminetService");
 
-import SysInfo from "../../../src/plugins/SysInfo/index.js";
+import SysInfo from "../../../src/plugins/SysInfo/index";
 
 it("downloads the SysInfo archive", async () => {
   const sysInfo = new SysInfo();

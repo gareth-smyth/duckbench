@@ -1,4 +1,4 @@
-import MMULib from "../../../src/plugins/MMULib/index.js";
+import MMULib from "../../../src/plugins/MMULib/index";
 
 it("returns Lha as a dependency", () => {
   const mmuLib = new MMULib();

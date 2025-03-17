@@ -1,7 +1,7 @@
 import { opendirSync, readFileSync, existsSync, writeFileSync } from "node:fs";
 import path from "path";
-import Logger from "../LoggerService.js";
-import { BASE_DIR } from "../BaseDirService.js";
+import Logger from "../LoggerService";
+import { BASE_DIR } from "../BaseDirService";
 import { Settings } from "../../types";
 
 export default class SettingsService {

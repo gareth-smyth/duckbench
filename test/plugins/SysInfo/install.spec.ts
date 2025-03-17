@@ -1,4 +1,4 @@
-import SysInfo from "../../../src/plugins/SysInfo/index.js";
+import SysInfo from "../../../src/plugins/SysInfo/index";
 
 const pluginStore = { getPlugin: vi.fn() };
 const lha = { run: vi.fn() };

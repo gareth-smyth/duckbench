@@ -1,7 +1,7 @@
 import { closeSync, existsSync, openSync, readFileSync, writeSync } from "fs";
 
-import RomConversionService from "../../src/services/RomConversionService.js";
 import { vi } from "vitest";
+import RomConversionService from "../../src/services/RomConversionService";
 
 describe("realToEmulator", () => {
   it("fails and closes open files when an input file does not exist", () => {

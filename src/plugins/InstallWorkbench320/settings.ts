@@ -1,9 +1,9 @@
 import { existsSync } from "fs";
 import path from "path";
 
-import SystemDiskService from "../../services/SystemDiskService.js";
-import Logger from "../../services/LoggerService.js";
-import { CACHE_DIR } from "../../services/BaseDirService.js";
+import SystemDiskService from "../../services/SystemDiskService";
+import Logger from "../../services/LoggerService";
+import { CACHE_DIR } from "../../services/BaseDirService";
 
 export default class Settings {
   private readonly identifier = "3.2";

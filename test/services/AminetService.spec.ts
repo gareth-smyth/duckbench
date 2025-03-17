@@ -1,11 +1,10 @@
-import { vi } from "vitest";
 import path from "path";
+import { existsSync, writeFileSync } from "fs";
+import { vi } from "vitest";
 import "vitest-fetch-mock";
 import { CACHE_DIR } from "../../src/services/BaseDirService";
 
-import { existsSync, writeFileSync } from "fs";
-
-import AminetService from "../../src/services/AminetService.js";
+import AminetService from "../../src/services/AminetService";
 
 const fileBuffer = "my_file";
 

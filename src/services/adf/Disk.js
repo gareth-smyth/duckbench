@@ -1,9 +1,9 @@
 import { closeSync, openSync, readFileSync, writeSync } from "fs";
 
-import Bitmap from "./Bitmap.js";
-import DiskConfig from "./DiskConfig.js";
-import BootBlock from "./BootBlock.js";
-import RootBlock from "./RootBlock.js";
+import Bitmap from "./Bitmap";
+import DiskConfig from "./DiskConfig";
+import BootBlock from "./BootBlock";
+import RootBlock from "./RootBlock";
 
 export default class Disk {
   constructor(diskFile) {

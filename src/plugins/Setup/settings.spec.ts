@@ -1,12 +1,13 @@
-import RomFinderService from "../../services/RomFinderService.js";
 import { existsSync } from "fs";
 import path from "path";
+import { vi } from "vitest";
+
+import RomFinderService from "../../services/RomFinderService";
+import Settings from "./settings";
+
 vi.mock("../../../src/services/RomFinderService");
 
 RomFinderService.find = vi.fn();
-
-import Settings from "./settings.js";
-import { vi } from "vitest";
 
 describe("emulatorRoot", () => {
   it("defaults emulator root to DUCKBENCH_EMU when it is set", () => {

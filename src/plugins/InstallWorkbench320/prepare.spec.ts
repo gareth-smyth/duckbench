@@ -1,6 +1,6 @@
 import { copyFileSync } from "fs";
 import path from "path";
-import InstallWorkbench320 from "./index.js";
+import InstallWorkbench320 from "./index";
 
 const pluginBasePath = "../../../src/plugins/InstallWorkbench320";
 

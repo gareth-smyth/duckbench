@@ -1,6 +1,6 @@
 import { vi, expect } from "vitest";
-import { buildSerialEnabledBootDisk } from "./build-serial-enabled-boot-disk";
 import ADFService from "../ADFService";
+import { buildSerialEnabledBootDisk } from "./build-serial-enabled-boot-disk";
 
 vi.mock("../ADFService");
 

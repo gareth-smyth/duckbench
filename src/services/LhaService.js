@@ -1,4 +1,4 @@
-import LhaFile from "./lha/LhaFile.js";
+import LhaFile from "./lha/LhaFile";
 
 export default class LhaService {
   static extract(filename, destination) {

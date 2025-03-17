@@ -1,4 +1,4 @@
-import RecommendedPartition from "../../../src/plugins/RecommendedPartition/index.js";
+import RecommendedPartition from "../../../src/plugins/RecommendedPartition/index";
 
 it("returns RedirectInputFile as a dependency", () => {
   const partition = new RecommendedPartition();

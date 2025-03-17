@@ -1,17 +1,17 @@
+import { MockedObject, vi } from "vitest";
+import { PluginConfig } from "../types";
 import EnvironmentSetup from "./EnvironmentSetup";
 import Runner from "./Runner";
+
+import DuckbenchBuilder from "./DuckbenchBuilder";
+import WinUAEEnvironment from "./WinUAEEnvironment";
+import Communicator from "./Communicator";
 
 vi.mock("../../src/plugins/Setup");
 vi.mock("../../src/builder/Runner");
 vi.mock("../../src/builder/EnvironmentSetup");
 vi.mock("../../src/builder/WinUAEEnvironment");
 vi.mock("../../src/builder/Communicator");
-
-import DuckbenchBuilder from "./DuckbenchBuilder";
-import { MockedObject, vi } from "vitest";
-import WinUAEEnvironment from "./WinUAEEnvironment";
-import Communicator from "./Communicator";
-import { PluginConfig } from "../types";
 
 const mockEnvironmentSetupInstance = {
   destroy: vi.fn(),

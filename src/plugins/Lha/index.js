@@ -1,5 +1,5 @@
-import AminetService from "../../services/AminetService.js";
-import Logger from "../../services/LoggerService.js";
+import AminetService from "../../services/AminetService";
+import Logger from "../../services/LoggerService";
 
 export default class Lha {
   constructor() {

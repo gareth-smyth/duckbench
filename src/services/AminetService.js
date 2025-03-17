@@ -1,7 +1,7 @@
 import path from "path";
-import Logger from "./LoggerService.js";
-import { CACHE_DIR } from "./BaseDirService.js";
 import { existsSync, writeFileSync } from "fs";
+import Logger from "./LoggerService";
+import { CACHE_DIR } from "./BaseDirService";
 
 export default class AminetService {
   static async download(netPath, filename = path.basename(netPath)) {

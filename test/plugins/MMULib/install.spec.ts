@@ -1,4 +1,4 @@
-import MMULib from "../../../src/plugins/MMULib/index.js";
+import MMULib from "../../../src/plugins/MMULib/index";
 
 const pluginStore = { getPlugin: vi.fn() };
 const lha = { run: vi.fn() };

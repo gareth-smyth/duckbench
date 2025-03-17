@@ -1,5 +1,5 @@
-import SettingsService from "./SettingsService.js";
 import { vi } from "vitest";
+import SettingsService from "./SettingsService";
 
 beforeAll(() => {
   vi.unmock("node:fs");

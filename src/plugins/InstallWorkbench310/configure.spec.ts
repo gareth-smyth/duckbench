@@ -1,4 +1,4 @@
-import InstallWorkbench310 from "./index.js";
+import InstallWorkbench310 from "./index";
 
 it("returns UnADF dependency", () => {
   const installWorkbench310 = new InstallWorkbench310();

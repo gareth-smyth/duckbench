@@ -1,6 +1,6 @@
 import "./services/BaseDirService";
-import Configurator from "./configurator/Configurator.js";
-import Logger from "./services/LoggerService.js";
+import Configurator from "./configurator/Configurator";
+import Logger from "./services/LoggerService";
 
 try {
   Logger.level = "trace";

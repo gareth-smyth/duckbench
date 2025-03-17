@@ -1,14 +1,14 @@
 import { existsSync } from "fs";
-import InstallWorkbench320 from "./index";
 
+import { MockedObject, vi } from "vitest";
 import Communicator from "../../builder/Communicator";
 import PluginStore from "../../builder/PluginStore";
 import InstallLG from "../InstallerLG";
 import Patch from "../Patch";
 import UnADF from "../UnADF";
 import WinUAETools from "../WinUAETools";
-import { MockedObject, vi } from "vitest";
-import Logger from "../../services/LoggerService.js";
+import Logger from "../../services/LoggerService";
+import InstallWorkbench320 from "./index";
 
 vi.mock("../../../src/services/LoggerService");
 vi.mock("../../../src/builder/Communicator");

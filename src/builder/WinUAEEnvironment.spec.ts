@@ -2,11 +2,11 @@ import { ChildProcess, spawn } from "child_process";
 import path from "path";
 import { writeFileSync } from "fs";
 
-import WinUAEEnvironment from "./WinUAEEnvironment.js";
 import { vi } from "vitest";
-import EnvironmentSetup from "./EnvironmentSetup";
 import { Settings } from "../types";
 import { Amiga1200 } from "../amigas";
+import EnvironmentSetup from "./EnvironmentSetup";
+import WinUAEEnvironment from "./WinUAEEnvironment";
 
 vi.mock("child_process");
 

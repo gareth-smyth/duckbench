@@ -2,8 +2,8 @@ import { unlinkSync, writeFileSync } from "fs";
 import os from "os";
 import path from "path";
 
-import adfService from "../../src/services/ADFService.js";
 import { vi } from "vitest";
+import adfService from "../../src/services/ADFService";
 
 const createdFiles: string[] = [];
 const littleTempFileName = path.join(os.tmpdir(), "testfile.txt");

@@ -1,5 +1,5 @@
-import HostFolder from "./HostFolder.js";
-import HostFile from "./HostFile.js";
+import HostFolder from "./HostFolder";
+import HostFile from "./HostFile";
 
 export default class Setting {
   view(node) {

@@ -1,10 +1,10 @@
 import moment from "moment";
 
-import CheckSum from "./CheckSum.js";
-import Directory from "./Directory.js";
-import Name from "./Name.js";
-import Timestamp from "./Timestamp.js";
-import Type from "./Type.js";
+import CheckSum from "./CheckSum";
+import Directory from "./Directory";
+import Name from "./Name";
+import Timestamp from "./Timestamp";
+import Type from "./Type";
 
 const BLOCK_TYPE = 2;
 const SECONDARY_TYPE_ROOT = 1;

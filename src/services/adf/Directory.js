@@ -1,7 +1,7 @@
-import Bitmap from "./Bitmap.js";
-import CheckSum from "./CheckSum.js";
-import Name from "./Name.js";
-import Type from "./Type.js";
+import Bitmap from "./Bitmap";
+import CheckSum from "./CheckSum";
+import Name from "./Name";
+import Type from "./Type";
 
 const BLOCK_TYPE = 2;
 const SECONDARY_TYPE_DIRECTORY = 2;
@@ -154,6 +154,6 @@ export default class Directory {
   }
 }
 
-import FileFactory from "./FileFactory.js";
-import FileListItem from "./FileListItem.js";
-import File from "./File.js";
+import FileFactory from "./FileFactory";
+import FileListItem from "./FileListItem";
+import File from "./File";

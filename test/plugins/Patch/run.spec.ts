@@ -1,4 +1,4 @@
-import Patch from "../../../src/plugins/Patch/index.js";
+import Patch from "../../../src/plugins/Patch/index";
 
 const communicator = { run: vi.fn() };
 const callback = "aCallback";

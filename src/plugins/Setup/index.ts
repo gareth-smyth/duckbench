@@ -1,10 +1,10 @@
 import { copyFileSync, writeFileSync, existsSync } from "fs";
 import path from "path";
-import ADFService from "../../services/ADFService.js";
-import HardDriveService from "../../services/HardDriveService.js";
-import SettingsService from "../../services/SettingsService/SettingsService.js";
-import Logger from "../../services/LoggerService.js";
-import { CACHE_DIR, TOOLS_DIR } from "../../services/BaseDirService.js";
+import ADFService from "../../services/ADFService";
+import HardDriveService from "../../services/HardDriveService";
+import SettingsService from "../../services/SettingsService/SettingsService";
+import Logger from "../../services/LoggerService";
+import { CACHE_DIR, TOOLS_DIR } from "../../services/BaseDirService";
 import {
   Amiga,
   AmigaDefinition,

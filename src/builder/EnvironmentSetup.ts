@@ -1,7 +1,7 @@
 import path from "path";
+import { copyFileSync, existsSync, mkdirSync, rmdirSync, chmodSync } from "fs";
 import { BASE_DIR } from "../services/BaseDirService";
 import { AmigaDefinition, DiskSetup } from "../types";
-import { copyFileSync, existsSync, mkdirSync, rmdirSync, chmodSync } from "fs";
 
 export default class EnvironmentSetup {
   disks: DiskSetup = { ADF: [], HDF: [], MAPPED_DRIVE: [], CD: [] };

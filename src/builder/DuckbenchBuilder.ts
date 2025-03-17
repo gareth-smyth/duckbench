@@ -1,9 +1,9 @@
-import Runner from "./Runner";
-import EnvironmentSetup from "./EnvironmentSetup";
-import WinUAEEnvironment from "./WinUAEEnvironment.js";
-import Communicator from "./Communicator.js";
 import { PluginConfig, Settings } from "../types";
 import Logger from "../services/LoggerService";
+import Runner from "./Runner";
+import EnvironmentSetup from "./EnvironmentSetup";
+import WinUAEEnvironment from "./WinUAEEnvironment";
+import Communicator from "./Communicator";
 
 export default class DuckbenchBuilder {
   async build(config: PluginConfig[], settings: Settings) {

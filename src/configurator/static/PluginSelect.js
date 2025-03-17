@@ -1,5 +1,5 @@
-import PluginConfig from "./PluginConfig.js";
-import Option from "./Option.js";
+import PluginConfig from "./PluginConfig";
+import Option from "./Option";
 
 export default class PluginSelect {
   view(node) {

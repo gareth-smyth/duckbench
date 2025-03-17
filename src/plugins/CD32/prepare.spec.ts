@@ -1,6 +1,6 @@
-import CD32, { CD32PluginConfig } from "./index";
-import EnvironmentSetup from "../../builder/EnvironmentSetup.js";
+import EnvironmentSetup from "../../builder/EnvironmentSetup";
 import { AmigaCD32 } from "../../amigas";
+import CD32, { CD32PluginConfig } from "./index";
 
 const environmentSetup = new EnvironmentSetup();
 

@@ -1,6 +1,6 @@
-import Configuration from "./Configuration.js";
-import PluginSelect from "./PluginSelect.js";
-import Settings from "./settings/Settings.js";
+import Configuration from "./Configuration";
+import PluginSelect from "./PluginSelect";
+import Settings from "./settings/Settings";
 
 export default class App {
   constructor() {

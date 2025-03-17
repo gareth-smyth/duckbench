@@ -1,9 +1,9 @@
 import { closeSync, openSync, statSync, writeSync } from "fs";
-import FileSystem from "./FileSystem.js";
-import FileSystemSegList from "./FileSystemSegList.js";
-import HardDriveConfig from "./HardDriveConfig.js";
-import Partition from "./Partition.js";
-import RigidDiskBlock from "./RigidDiskBlock.js";
+import FileSystem from "./FileSystem";
+import FileSystemSegList from "./FileSystemSegList";
+import HardDriveConfig from "./HardDriveConfig";
+import Partition from "./Partition";
+import RigidDiskBlock from "./RigidDiskBlock";
 
 export default class HardDrive {
   read(diskFile) {

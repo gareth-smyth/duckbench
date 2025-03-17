@@ -1,7 +1,7 @@
-import HardDrive from "./blocks/HardDrive.js";
-import HardDriveConfig from "./blocks/HardDriveConfig.js";
-import PartitionPopulator from "./blocks/PartitionPopulator.js";
-import FileSystemPopulator from "./blocks/FileSystemPopulator.js";
+import HardDrive from "./blocks/HardDrive";
+import HardDriveConfig from "./blocks/HardDriveConfig";
+import PartitionPopulator from "./blocks/PartitionPopulator";
+import FileSystemPopulator from "./blocks/FileSystemPopulator";
 
 const ONE_MEGABYTE = 0x100000;
 

@@ -1,7 +1,7 @@
 import { vi } from "vitest";
-import { buildConfig } from "./build-config";
 import { EmulatorSettings } from "../../types";
 import { Amiga4000 } from "../../amigas";
+import { buildConfig } from "./build-config";
 import { buildWinUaeConfig } from "./build-win-uae-config";
 import { buildFsUaeConfig } from "./build-fs-uae-config";
 import { buildAmiberryConfig } from "./build-amiberry-config";

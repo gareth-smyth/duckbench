@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 /* eslint-disable */
-import fs from "fs";
 import yargs from "yargs";
-import Logger from "../services/LoggerService.js";
+import Logger from "../services/LoggerService";
 
 yargs
   .command({
@@ -34,9 +33,9 @@ yargs
         .demandOption("duckbench-file");
     },
     handler: async (args) => {
-      await import("../services/LoggerService.js");
+      await import("../services/LoggerService");
       Logger.level = args.logLevel;
-      await import("../services/BaseDirService.js");
+      await import("../services/BaseDirService");
       import Communicator from "../builder/Communicator.ts";
       import DuckbenchBuilder from "../builder/DuckbenchBuilder.ts";
       import WinUAEEnvironment from "../builder/WinUAEEnvironment.ts";
@@ -70,10 +69,10 @@ yargs
       });
     },
     handler: async (args) => {
-      await import("../services/LoggerService.js");
+      await import("../services/LoggerService");
       Logger.level = args.logLevel;
-      await import("../services/BaseDirService.js");
-      import Configurator from "../configurator/Configurator.js";
+      await import("../services/BaseDirService");
+      import Configurator from "../configurator/Configurator";
 
       const configurator = new Configurator();
       configurator.start();

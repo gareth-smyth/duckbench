@@ -1,4 +1,4 @@
-import UnADF from "../../../src/plugins/UnADF/index.js";
+import UnADF from "../../../src/plugins/UnADF/index";
 
 const communicator = {
   copy: vi.fn(),

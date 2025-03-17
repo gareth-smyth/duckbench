@@ -1,4 +1,4 @@
-import { AmigaCD32 } from "../../amigas.js";
+import { AmigaCD32 } from "../../amigas";
 import EnvironmentSetup from "../../builder/EnvironmentSetup";
 import { CPU, Kickstart, Plugin, PluginConfig } from "../../types";
 

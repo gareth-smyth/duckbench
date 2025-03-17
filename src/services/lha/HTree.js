@@ -1,4 +1,4 @@
-import Logger from "../LoggerService.js";
+import Logger from "../LoggerService";
 
 export default class HTree {
   constructor(codeLengths) {

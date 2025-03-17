@@ -38,4 +38,4 @@ export default class FileListItem {
   }
 }
 
-import FileFactory from "./FileFactory.js";
+import FileFactory from "./FileFactory";

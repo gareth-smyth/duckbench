@@ -1,11 +1,11 @@
-import CommandBuilder from "./CommandRunner";
-import SocketCommunicator from "./SocketCommunicator";
 import {
   CommandExpectedResponse,
   CommandOptions,
   SocketCommandCallback,
   SocketControlCallback,
 } from "../types";
+import CommandBuilder from "./CommandRunner";
+import SocketCommunicator from "./SocketCommunicator";
 
 export default class Communicator {
   private readonly commandRunner;

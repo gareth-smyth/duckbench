@@ -1,4 +1,4 @@
-import RecommendedPartition from "../../../src/plugins/RecommendedPartition/index.js";
+import RecommendedPartition from "../../../src/plugins/RecommendedPartition/index";
 
 it("calls the communicator to format the workbench partition", async () => {
   const communicator = { format: vi.fn(), assign: vi.fn() };

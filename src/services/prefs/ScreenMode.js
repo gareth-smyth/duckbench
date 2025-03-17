@@ -1,6 +1,6 @@
-import IFFWrapperChunk from "../IFF/IFFWrapperChunk.js";
-import IFFChunk from "../IFF/IFFChunk.js";
-import IFFFile from "../IFF/IFFFile.js";
+import IFFWrapperChunk from "../IFF/IFFWrapperChunk";
+import IFFChunk from "../IFF/IFFChunk";
+import IFFFile from "../IFF/IFFFile";
 
 export const HIRES_LACED = 0x00029004;
 export const LORES = 0x00029000;

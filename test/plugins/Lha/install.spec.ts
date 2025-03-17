@@ -1,4 +1,4 @@
-import Lha from "../../../src/plugins/Lha/index.js";
+import Lha from "../../../src/plugins/Lha/index";
 
 it("calls the communicator to install lha once in each location requested", async () => {
   const communicator = { run: vi.fn() };

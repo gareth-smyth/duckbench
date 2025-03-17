@@ -1,9 +1,9 @@
-import Communicator from "../../builder/Communicator.js";
+import { MockedObject, vi } from "vitest";
+import Communicator from "../../builder/Communicator";
 import PluginStore from "../../builder/PluginStore";
 import RedirectInputFile from "../RedirectInputFile";
 
-import Setup, { SetupPluginConfig } from "./index.js";
-import { MockedObject, vi } from "vitest";
+import Setup, { SetupPluginConfig } from "./index";
 
 vi.mock("../../../src/builder/Communicator");
 vi.mock("../../../src/builder/PluginStore");

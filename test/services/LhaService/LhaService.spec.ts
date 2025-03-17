@@ -1,7 +1,7 @@
-import LhaService from "../../../src/services/LhaService.js";
 import path from "path";
 import { existsSync, readFileSync, unlinkSync } from "fs";
 import { vi } from "vitest";
+import LhaService from "../../../src/services/LhaService";
 
 beforeAll(() => {
   vi.unmock("node:fs");

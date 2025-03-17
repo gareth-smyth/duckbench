@@ -1,7 +1,7 @@
 import { existsSync } from "fs";
-import Setup from "./index.js";
 import { vi } from "vitest";
 import { Settings } from "../../types";
+import Setup from "./index";
 
 let settings: Settings;
 const config = undefined;

@@ -1,11 +1,11 @@
 import path from "path";
 import { vi } from "vitest";
 
-import RecommendedPartition from "../../../src/plugins/RecommendedPartition/index.js";
+import RecommendedPartition from "../../../src/plugins/RecommendedPartition/index";
 
 vi.mock("../../../src/services/HardDriveService");
 
-import HardDriveService from "../../../src/services/HardDriveService.js";
+import HardDriveService from "../../../src/services/HardDriveService";
 
 it("creates an RDB and attaches it to the environment", async () => {
   const environmentSetup = {

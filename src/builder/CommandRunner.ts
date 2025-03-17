@@ -1,10 +1,10 @@
 import Logger from "../services/LoggerService";
-import SocketCommunicator from "./SocketCommunicator";
 import {
   CommandExpectedResponse,
   CommandOptions,
   SocketCommandCallback,
 } from "../types";
+import SocketCommunicator from "./SocketCommunicator";
 
 export default class CommandRunner {
   private readonly socketCommunicator;

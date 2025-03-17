@@ -1,6 +1,6 @@
 import path from "path";
-import type { Plugin, PluginConfig } from "../types";
 import { opendirSync } from "fs";
+import type { Plugin, PluginConfig } from "../types";
 
 export default class PluginStore {
   private readonly plugins: Record<string, Plugin<PluginConfig>> = {};

@@ -1,8 +1,8 @@
 import { existsSync } from "fs";
 import path from "path";
 
-import RomFinderService from "../../services/RomFinderService.js";
-import Logger from "../../services/LoggerService.js";
+import RomFinderService from "../../services/RomFinderService";
+import Logger from "../../services/LoggerService";
 
 export default class SetupSettings {
   get() {

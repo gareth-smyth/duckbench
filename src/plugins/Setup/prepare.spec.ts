@@ -1,17 +1,17 @@
 import { existsSync } from "fs";
 import path from "path";
+import { vi } from "vitest";
 import { CACHE_DIR } from "../../services/BaseDirService";
 
-import EnvironmentSetup from "../../builder/EnvironmentSetup.js";
-import ADFService from "../../services/ADFService.js";
-import HardDriveService from "../../services/HardDriveService.js";
+import EnvironmentSetup from "../../builder/EnvironmentSetup";
+import ADFService from "../../services/ADFService";
+import HardDriveService from "../../services/HardDriveService";
 
 vi.mock("../../../src/builder/EnvironmentSetup");
 vi.mock("../../../src/services/ADFService");
 vi.mock("../../../src/services/HardDriveService");
 
-import Setup, { SetupPluginConfig } from "./index.js";
-import { vi } from "vitest";
+import Setup, { SetupPluginConfig } from "./index";
 
 const settings = {
   InstallWorkbench310: [{ name: "workbench", value: "aFile" }],

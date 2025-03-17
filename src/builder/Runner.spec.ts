@@ -1,5 +1,11 @@
-import PluginStore from "./PluginStore";
+import { MockedObject, vi } from "vitest";
 import type { Plugin, PluginConfig, Settings } from "../types";
+
+import Setup from "../plugins/Setup";
+import PluginStore from "./PluginStore";
+import Runner from "./Runner";
+import EnvironmentSetup from "./EnvironmentSetup";
+import Communicator from "./Communicator";
 
 vi.mock("../../src/builder/PluginStore");
 
@@ -13,12 +19,6 @@ const mockPluginStoreInstance = {
 beforeEach(() => {
   vi.mocked(PluginStore).mockImplementation(() => mockPluginStoreInstance);
 });
-
-import Runner from "./Runner";
-import { MockedObject, vi } from "vitest";
-import EnvironmentSetup from "./EnvironmentSetup";
-import Communicator from "./Communicator";
-import Setup from "../plugins/Setup";
 
 describe("setupAndConfigure", () => {
   it("adds all passed in configs", async () => {

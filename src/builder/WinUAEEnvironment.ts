@@ -1,10 +1,10 @@
 import { writeFileSync } from "fs";
 import path from "path";
 import { ChildProcess, spawn } from "child_process";
-import SettingsService from "../services/SettingsService/SettingsService.js";
-import EnvironmentSetup from "./EnvironmentSetup";
+import SettingsService from "../services/SettingsService/SettingsService";
 import { Amiga, EmulatorSettings, Settings } from "../types";
 import { buildConfig } from "../services/emulator-config/build-config";
+import EnvironmentSetup from "./EnvironmentSetup";
 
 export default class WinUAEEnvironment {
   private readonly settings;

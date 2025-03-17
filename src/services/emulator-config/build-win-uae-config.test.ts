@@ -1,6 +1,6 @@
-import { buildWinUaeConfig } from "./build-win-uae-config";
 import { Amiga4000 } from "../../amigas";
 import { Amiga, EmulatorSettings } from "../../types";
+import { buildWinUaeConfig } from "./build-win-uae-config";
 
 const standardAmiga: Amiga = {
   definition: Amiga4000,

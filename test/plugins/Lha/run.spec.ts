@@ -1,4 +1,4 @@
-import Lha from "../../../src/plugins/Lha/index.js";
+import Lha from "../../../src/plugins/Lha/index";
 
 const communicator = { run: vi.fn() };
 const callback = "aCallback";

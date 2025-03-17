@@ -1,6 +1,6 @@
 import { existsSync } from "fs";
 import path from "path";
-import { CACHE_DIR } from "../../services/BaseDirService.js";
+import { CACHE_DIR } from "../../services/BaseDirService";
 
 export default class Settings {
   get() {

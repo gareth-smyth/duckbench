@@ -1,4 +1,4 @@
-import Check4GB from "../../../src/plugins/Check4GB/index.js";
+import Check4GB from "../../../src/plugins/Check4GB/index";
 
 const pluginStore = { getPlugin: vi.fn() };
 const lha = { run: vi.fn() };

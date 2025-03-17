@@ -2,7 +2,7 @@ import { existsSync, unlinkSync } from "fs";
 import path from "path";
 import { vi } from "vitest";
 
-import HardDriveService from "../../../src/services/HardDriveService.js";
+import HardDriveService from "../../../src/services/HardDriveService";
 
 vi.mock("../../../src/services/AminetService");
 vi.mock("../../../src/services/LhaService");

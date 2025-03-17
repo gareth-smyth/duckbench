@@ -1,6 +1,6 @@
+import { MockedObject, vi } from "vitest";
 import CommandRunner from "./CommandRunner";
 import SocketCommunicator from "./SocketCommunicator";
-import { MockedObject, vi } from "vitest";
 vi.mock("../../src/builder/SocketCommunicator");
 
 let socketCommunicator: MockedObject<SocketCommunicator>;
